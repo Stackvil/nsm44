@@ -1,0 +1,115 @@
+.footer {
+    background-color: var(--color-primary);
+    color: white;
+    padding: var(--space-16) 0 var(--space-8);
+    margin-top: var(--space-20);
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-8);
+    margin-bottom: var(--space-12);
+}
+
+.footer-section h3 {
+    font-size: var(--text-2xl);
+    color: var(--color-accent);
+    margin-bottom: var(--space-4);
+}
+
+.footer-section h4 {
+    font-size: var(--text-lg);
+    color: var(--color-accent);
+    margin-bottom: var(--space-4);
+    font-weight: var(--font-semibold);
+}
+
+.footer-description {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: var(--leading-relaxed);
+    margin-bottom: var(--space-6);
+}
+
+.footer-social {
+    display: flex;
+    gap: var(--space-3);
+}
+
+.footer-social-link {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    color: white;
+    transition: all var(--transition-base);
+}
+
+.footer-social-link:hover {
+    background-color: var(--color-accent);
+    color: var(--color-primary);
+    transform: translateY(-2px);
+}
+
+.footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.footer-links a {
+    color: rgba(255, 255, 255, 0.8);
+    transition: color var(--transition-base);
+}
+
+.footer-links a:hover {
+    color: var(--color-accent);
+}
+
+.footer-contact {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.footer-contact li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: var(--space-8);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-bottom p {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-2);
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .footer {
+        padding: var(--space-12) 0 var(--space-6);
+    }
+
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: var(--space-8);
+    }
+
+    .footer-section:first-child {
+        text-align: center;
+    }
+
+    .footer-social {
+        justify-content: center;
+    }
+}

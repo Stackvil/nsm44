@@ -1,0 +1,385 @@
+// This is your Prisma schema file
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// ============================================
+// USER & AUTHENTICATION
+// ============================================
+
+model User {
+  id              String   @id @default(uuid())
+  email           String   @unique
+  password        String
+  role            String   @default("ALUMNI") // ALUMNI, ADMIN, SUPER_ADMIN
+  isVerified      Boolean  @default(false)
+  verificationToken String?
+  resetPasswordToken String?
+  resetPasswordExpires DateTime?
+  twoFactorSecret String?
+  twoFactorEnabled Boolean @default(false)
+  lastLogin       DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  profile         AlumniProfile?
+  jobs            Job[]
+  jobApplications JobApplication[]
+  mentorRequests  MentorshipRequest[] @relation("MentorRequests")
+  menteeRequests  MentorshipRequest[] @relation("MenteeRequests")
+  eventRSVPs      EventRSVP[]
+  donations       Donation[]
+  orders          Order[]
+  cartItems       CartItem[]
+
+  @@map("users")
+}
+
+// ============================================
+// ALUMNI PROFILES
+// ============================================
+
+model AlumniProfile {
+  id                  String   @id @default(uuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  firstName           String
+  lastName            String
+  batchYear           Int
+  degree              String
+  major               String?
+  industry            String?
+  company             String?
+  position            String?
+  location            String?
+  city                String?
+  country             String?
+  phone               String?
+  linkedinUrl         String?
+  bio                 String?
+  skills              String   @default("") // SQLite: stored as CSV
+  interests           String   @default("") // SQLite: stored as CSV
+  profileImage        String?
+  coverImage          String?
+  
+  isPublic            Boolean  @default(true)
+  isAvailableForMentorship Boolean @default(false)
+  verificationStatus  String   @default("PENDING") // PENDING, VERIFIED, REJECTED
+  verificationDocument String?
+  
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@map("alumni_profiles")
+}
+
+// ============================================
+// JOBS & CAREER HUB
+// ============================================
+
+model Job {
+  id              String   @id @default(uuid())
+  postedById      String
+  postedBy        User     @relation(fields: [postedById], references: [id])
+  
+  title           String
+  company         String
+  location        String
+  jobType         String   // FULL_TIME, PART_TIME, CONTRACT, INTERNSHIP, FREELANCE
+  experienceLevel String   // ENTRY_LEVEL, MID_LEVEL, SENIOR_LEVEL, EXECUTIVE
+  description     String
+  requirements    String
+  responsibilities String?
+  salary          String?
+  salaryMin       Float?
+  salaryMax       Float?
+  currency        String   @default("INR")
+  applicationUrl  String?
+  isActive        Boolean  @default(true)
+  expiresAt       DateTime?
+  
+  applications    JobApplication[]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("jobs")
+}
+
+model JobApplication {
+  id              String   @id @default(uuid())
+  jobId           String
+  job             Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  applicantId     String
+  applicant       User     @relation(fields: [applicantId], references: [id])
+  
+  coverLetter     String?
+  resumeUrl       String?
+  status          String   @default("PENDING") // PENDING, REVIEWED, SHORTLISTED, REJECTED, ACCEPTED
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([jobId, applicantId])
+  @@map("job_applications")
+}
+
+model MentorshipRequest {
+  id              String   @id @default(uuid())
+  mentorId        String
+  mentor          User     @relation("MentorRequests", fields: [mentorId], references: [id])
+  menteeId        String
+  mentee          User     @relation("MenteeRequests", fields: [menteeId], references: [id])
+  
+  message         String
+  status          String   @default("PENDING") // PENDING, ACCEPTED, REJECTED, COMPLETED
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("mentorship_requests")
+}
+
+// ============================================
+// EVENTS & REUNIONS
+// ============================================
+
+model Event {
+  id              String   @id @default(uuid())
+  title           String
+  description     String
+  eventType       String   // REUNION, NETWORKING, WORKSHOP, WEBINAR, SOCIAL, CONFERENCE, FUNDRAISER
+  startDate       DateTime
+  endDate         DateTime?
+  location        String
+  address         String?
+  isVirtual       Boolean  @default(false)
+  virtualLink     String?
+  
+  maxAttendees    Int?
+  ticketPrice     Float    @default(0)
+  earlyBirdPrice  Float?
+  earlyBirdDeadline DateTime?
+  
+  imageUrl        String?
+  isActive        Boolean  @default(true)
+  isFeatured      Boolean  @default(false)
+  
+  rsvps           EventRSVP[]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("events")
+}
+
+model EventRSVP {
+  id              String   @id @default(uuid())
+  eventId         String
+  event           Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  
+  status          String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED, ATTENDED
+  attendees       Int      @default(1)
+  paymentId       String?
+  amountPaid      Float?
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([eventId, userId])
+  @@map("event_rsvps")
+}
+
+// ============================================
+// DONATIONS & GIVING
+// ============================================
+
+model Donation {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  
+  amount          Float
+  currency        String   @default("INR")
+  purpose         String?
+  campaign        String?
+  isRecurring     Boolean  @default(false)
+  frequency       String?  // MONTHLY, QUARTERLY, YEARLY
+  
+  paymentId       String   @unique
+  paymentStatus   String   // PENDING, COMPLETED, FAILED, REFUNDED
+  paymentMethod   String
+  paymentGateway  String
+  
+  isAnonymous     Boolean  @default(false)
+  receiptUrl      String?
+  taxReceiptNumber String?
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("donations")
+}
+
+// ============================================
+// E-COMMERCE (MEMENTO STORE)
+// ============================================
+
+model Product {
+  id              String   @id @default(uuid())
+  name            String
+  description     String
+  price           Float
+  compareAtPrice  Float?
+  category        String
+  tags            String   @default("") // SQLite: stored as CSV
+  imageUrl        String
+  images          String   @default("") // SQLite: stored as CSV
+  stock           Int      @default(0)
+  sku             String?  @unique
+  isActive        Boolean  @default(true)
+  isFeatured      Boolean  @default(false)
+  
+  variants        ProductVariant[]
+  orderItems      OrderItem[]
+  cartItems       CartItem[]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("products")
+}
+
+model ProductVariant {
+  id              String   @id @default(uuid())
+  productId       String
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  name            String
+  value           String
+  priceAdjustment Float    @default(0)
+  stock           Int      @default(0)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("product_variants")
+}
+
+model CartItem {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId       String
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  quantity        Int      @default(1)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([userId, productId])
+  @@map("cart_items")
+}
+
+model Order {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  
+  orderNumber     String   @unique
+  totalAmount     Float
+  subtotal        Float
+  tax             Float    @default(0)
+  shipping        Float    @default(0)
+  discount        Float    @default(0)
+  
+  status          String   @default("PENDING") // PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED, REFUNDED
+  paymentId       String?
+  paymentStatus   String   @default("PENDING") // PENDING, COMPLETED, FAILED, REFUNDED
+  
+  shippingAddress String
+  billingAddress  String?
+  trackingNumber  String?
+  notes           String?
+  
+  items           OrderItem[]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id              String   @id @default(uuid())
+  orderId         String
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId       String
+  product         Product  @relation(fields: [productId], references: [id])
+  
+  quantity        Int
+  price           Float
+  total           Float
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("order_items")
+}
+
+// ============================================
+// NEWSLETTER & COMMUNICATIONS
+// ============================================
+
+model Newsletter {
+  id              String   @id @default(uuid())
+  email           String   @unique
+  isSubscribed    Boolean  @default(true)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("newsletters")
+}
+
+// ============================================
+// ADMIN & ANALYTICS
+// ============================================
+
+model AuditLog {
+  id              String   @id @default(uuid())
+  userId          String?
+  action          String
+  entity          String
+  entityId        String?
+  changes         String?
+  ipAddress       String?
+  userAgent       String?
+  
+  createdAt       DateTime @default(now())
+
+  @@map("audit_logs")
+}
+
+// ============================================
+// CONTENT MANAGEMENT
+// ============================================
+
+model PageContent {
+  id        String   @id @default(uuid())
+  slug      String   @unique // e.g., 'home', 'about', 'contact'
+  content   String   // JSON structure stored as String for SQLite
+  updatedBy String?
+  updatedAt DateTime @updatedAt
+  
+  @@map("page_contents")
+}

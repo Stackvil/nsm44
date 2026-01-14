@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - NSM Alumni</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --primary-color: #667eea;
+      --secondary-color: #764ba2;
+      --success-color: #10b981;
+      --danger-color: #ef4444;
+      --warning-color: #f59e0b;
+      --info-color: #3b82f6;
+      --dark: #1f2937;
+      --dark-light: #374151;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea15 0%, #764ba215 50%, #f093fb15 100%);
+      background-attachment: fixed;
+      color: var(--gray-800);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Animated Background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 20%, rgba(240, 147, 251, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Header */
+    .admin-header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      padding: 20px 40px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .admin-header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .admin-header h1 i {
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 28px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .user-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      background: var(--gray-100);
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    .user-badge i {
+      width: 32px;
+      height: 32px;
+      background: var(--primary-gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 14px;
+    }
+
+    .logout-btn {
+      padding: 10px 20px;
+      background: var(--danger-color);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logout-btn:hover {
+      background: #dc2626;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* Stats Cards */
+    .stats-section {
+      max-width: 1600px;
+      margin: 30px auto;
+      padding: 0 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--primary-gradient);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-2xl);
+    }
+
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .stat-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: white;
+      background: var(--primary-gradient);
+      box-shadow: var(--shadow-md);
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--gray-900);
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: var(--gray-500);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Dashboard Container */
+    .dashboard-container {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 0 40px 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 28px;
+    }
+
+    .dashboard-card {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: var(--shadow-xl);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dashboard-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--primary-gradient);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .dashboard-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-2xl);
+    }
+
+    .dashboard-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid var(--gray-100);
+    }
+
+    .card-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--primary-gradient);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+      box-shadow: var(--shadow-md);
+      transition: all 0.3s;
+    }
+
+    .dashboard-card:hover .card-icon {
+      transform: rotate(5deg) scale(1.1);
+    }
+
+    .card-header h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--gray-900);
+      flex: 1;
+    }
+
+    /* Forms */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--gray-700);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid var(--gray-200);
+      border-radius: 12px;
+      font-size: 15px;
+      font-family: inherit;
+      transition: all 0.3s;
+      background: white;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 14px 24px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .btn-primary {
+      background: var(--primary-gradient);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    .btn-danger {
+      background: var(--danger-color);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-success {
+      background: var(--success-color);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #059669;
+      transform: translateY(-2px);
+    }
+
+    .btn-small {
+      padding: 8px 16px;
+      font-size: 13px;
+    }
+
+    /* Photo Upload */
+    .photo-upload-area {
+      border: 2px dashed var(--gray-300);
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      background: var(--gray-50);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .photo-upload-area::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(102, 126, 234, 0.1);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .photo-upload-area:hover {
+      border-color: var(--primary-color);
+      background: rgba(102, 126, 234, 0.05);
+    }
+
+    .photo-upload-area:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .photo-upload-area.dragover {
+      border-color: var(--primary-color);
+      background: rgba(102, 126, 234, 0.1);
+      transform: scale(1.02);
+    }
+
+    .photo-upload-area i {
+      font-size: 48px;
+      color: var(--gray-400);
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .photo-upload-area p {
+      position: relative;
+      z-index: 1;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 8px;
+    }
+
+    .photo-upload-area p:last-child {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--gray-500);
+      margin: 0;
+    }
+
+    .photo-count {
+      margin-top: 16px;
+      padding: 12px 20px;
+      background: rgba(102, 126, 234, 0.1);
+      border: 2px solid var(--primary-color);
+      border-radius: 12px;
+      color: var(--primary-color);
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .photo-preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .photo-preview-item {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid var(--gray-200);
+      transition: all 0.3s;
+      box-shadow: var(--shadow);
+    }
+
+    .photo-preview-item:hover {
+      transform: scale(1.05) rotate(2deg);
+      border-color: var(--primary-color);
+      box-shadow: var(--shadow-lg);
+      z-index: 10;
+    }
+
+    .photo-preview-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .photo-preview-item .remove-photo {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(239, 68, 68, 0.95);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      transition: all 0.2s;
+      box-shadow: var(--shadow);
+    }
+
+    .photo-preview-item .remove-photo:hover {
+      background: var(--danger-color);
+      transform: scale(1.15);
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      background: var(--gray-100);
+      padding: 4px;
+      border-radius: 12px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 12px 20px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-600);
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+
+    .tab-btn.active {
+      background: white;
+      color: var(--primary-color);
+      box-shadow: var(--shadow);
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Items List */
+    .items-list {
+      max-height: 450px;
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+
+    .items-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .items-list::-webkit-scrollbar-track {
+      background: var(--gray-100);
+      border-radius: 10px;
+    }
+
+    .items-list::-webkit-scrollbar-thumb {
+      background: var(--gray-300);
+      border-radius: 10px;
+    }
+
+    .items-list::-webkit-scrollbar-thumb:hover {
+      background: var(--gray-400);
+    }
+
+    .item-card {
+      background: var(--gray-50);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 2px solid transparent;
+      transition: all 0.3s;
+    }
+
+    .item-card:hover {
+      background: white;
+      border-color: var(--primary-color);
+      box-shadow: var(--shadow-md);
+      transform: translateX(4px);
+    }
+
+    .item-card-info h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 6px;
+    }
+
+    .item-card-info p {
+      font-size: 13px;
+      color: var(--gray-500);
+    }
+
+    .item-card-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Success Message */
+    .success-message {
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      color: #065f46;
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      display: none;
+      border: 2px solid #10b981;
+      box-shadow: var(--shadow-md);
+      font-weight: 600;
+      animation: slideDown 0.3s;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Navigation Tabs */
+    .admin-nav-tabs {
+      max-width: 1600px;
+      margin: 0 auto 30px;
+      padding: 0 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-tabs-container {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 16px;
+      padding: 8px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+    }
+
+    .nav-tab-btn {
+      padding: 12px 24px;
+      background: transparent;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-600);
+      transition: all 0.3s;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-tab-btn:hover {
+      background: var(--gray-100);
+      color: var(--primary-color);
+    }
+
+    .nav-tab-btn.active {
+      background: var(--primary-gradient);
+      color: white;
+      box-shadow: var(--shadow-md);
+    }
+
+    .admin-page-section {
+      display: none;
+      animation: fadeIn 0.3s;
+    }
+
+    .admin-page-section.active {
+      display: block;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+
+    .data-table thead {
+      background: var(--gray-100);
+    }
+
+    .data-table th {
+      padding: 16px;
+      text-align: left;
+      font-weight: 700;
+      color: var(--gray-700);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .data-table td {
+      padding: 16px;
+      border-top: 1px solid var(--gray-200);
+      color: var(--gray-700);
+      font-size: 14px;
+    }
+
+    .data-table tbody tr:hover {
+      background: var(--gray-50);
+    }
+
+    .badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .badge-success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success-color);
+    }
+
+    .badge-primary {
+      background: rgba(102, 126, 234, 0.1);
+      color: var(--primary-color);
+    }
+
+    .badge-info {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--info-color);
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      background: var(--gray-100);
+      padding: 4px;
+      border-radius: 12px;
+    }
+
+    .filter-tab-btn {
+      flex: 1;
+      padding: 10px 20px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-600);
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+
+    .filter-tab-btn.active {
+      background: white;
+      color: var(--primary-color);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--gray-500);
+    }
+
+    .empty-state i {
+      font-size: 64px;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+
+    .empty-state h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: var(--gray-700);
+    }
+
+    .empty-state p {
+      font-size: 14px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .admin-header {
+        padding: 16px 20px;
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+      }
+
+      .stats-section,
+      .dashboard-container,
+      .admin-nav-tabs {
+        padding: 0 20px;
+      }
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-tabs-container {
+        flex-wrap: wrap;
+      }
+
+      .data-table {
+        font-size: 12px;
+      }
+
+      .data-table th,
+      .data-table td {
+        padding: 12px 8px;
+      }
+    }
+
+    /* Loading Animation */
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    .loading {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    /* Notification Badge */
+    .notification-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: var(--danger-color);
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      border: 2px solid white;
+      box-shadow: var(--shadow-md);
+    }
+
+    .notification-icon-wrapper {
+      position: relative;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .notification-icon-wrapper:hover {
+      background: var(--gray-100);
+    }
+
+    /* Nav Badge */
+    .nav-badge {
+      background: var(--danger-color);
+      color: white;
+      border-radius: 12px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-left: 8px;
+    }
+
+    /* Approval Item Styles */
+    .approvals-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .approval-item {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--gray-200);
+      transition: all 0.3s ease;
+    }
+
+    .approval-item:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+    }
+
+    .approval-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--gray-100);
+    }
+
+    .approval-type {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .approval-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      font-size: 13px;
+      color: var(--gray-600);
+    }
+
+    .approval-content {
+      margin-bottom: 20px;
+    }
+
+    .approval-content h4 {
+      color: var(--gray-800);
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    .approval-content p {
+      color: var(--gray-600);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .approval-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    /* Admin Item Styles */
+    .admins-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .admin-item {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .admin-item:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .admin-info {
+      flex: 1;
+    }
+
+    .admin-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 8px;
+    }
+
+    .admin-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 13px;
+      color: var(--gray-600);
+    }
+
+    .admin-details span {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Pending Posts Styles */
+    .pending-posts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .pending-post-item {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      border-left: 4px solid var(--warning-color);
+      transition: all 0.3s ease;
+    }
+
+    .pending-post-item:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .pending-post-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .pending-post-type {
+      background: var(--warning-color);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .pending-post-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--warning-color);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .pending-post-content {
+      color: var(--gray-600);
+      font-size: 14px;
+    }
+
+    /* Role Badge Styles */
+    .role-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .role-badge.super-admin {
+      background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+      color: white;
+    }
+
+    .role-badge.admin {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .role-badge.representative {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-header">
+    <h1>
+      <i class="fas fa-shield-alt"></i>
+      NSM Alumni Admin Dashboard
+    </h1>
+    <div class="user-info">
+      <div class="notification-icon-wrapper" id="notification-wrapper" style="position: relative; cursor: pointer;">
+        <i class="fas fa-bell" style="font-size: 20px; color: var(--gray-600);"></i>
+        <span id="notification-badge" class="notification-badge" style="display: none; position: absolute; top: -8px; right: -8px; background: var(--danger-color); color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700;">0</span>
+      </div>
+      <div class="user-badge">
+        <i class="fas fa-user"></i>
+        <div style="display: flex; flex-direction: column; align-items: flex-start;">
+          <span id="admin-username">Admin</span>
+          <span id="admin-role" style="font-size: 11px; color: var(--gray-500); font-weight: 500;">Role</span>
+        </div>
+      </div>
+      <button class="logout-btn" id="logout-btn">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </div>
+  </div>
+
+  <div class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <i class="fas fa-bullhorn"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="updates-count">0</div>
+        <div class="stat-label">Total Updates</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+            <i class="fas fa-calendar-alt"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="events-count">0</div>
+        <div class="stat-label">Event Photos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+            <i class="fas fa-images"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="gallery-count">0</div>
+        <div class="stat-label">Gallery Photos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+            <i class="fas fa-users"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="reunion-count">0</div>
+        <div class="stat-label">Reunion Photos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);">
+            <i class="fas fa-user-check"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="users-count">0</div>
+        <div class="stat-label">Registered Users</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+            <i class="fas fa-rupee-sign"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="donations-count">0</div>
+        <div class="stat-label">Total Donations</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-nav-tabs">
+    <div class="nav-tabs-container">
+      <button class="nav-tab-btn active" data-page="content">
+        <i class="fas fa-edit"></i> Content Management
+      </button>
+      <button class="nav-tab-btn" data-page="homepage-photos">
+        <i class="fas fa-home"></i> Homepage Photos
+      </button>
+      <button class="nav-tab-btn" data-page="approvals" style="display: none;">
+        <i class="fas fa-check-circle"></i> Pending Approvals
+        <span id="approvals-count-badge" class="nav-badge" style="display: none;">0</span>
+      </button>
+      <button class="nav-tab-btn" data-page="user-management" style="display: none;">
+        <i class="fas fa-user-shield"></i> User Management
+      </button>
+      <button class="nav-tab-btn" data-page="my-pending" style="display: none;">
+        <i class="fas fa-clock"></i> My Pending Posts
+      </button>
+      <button class="nav-tab-btn" data-page="users">
+        <i class="fas fa-users"></i> User Activity
+      </button>
+      <button class="nav-tab-btn" data-page="registrations">
+        <i class="fas fa-user-plus"></i> Registrations
+      </button>
+      <button class="nav-tab-btn" data-page="donations">
+        <i class="fas fa-heart"></i> Donations
+      </button>
+    </div>
+  </div>
+
+  <div class="dashboard-container">
+    <div id="success-message" class="success-message"></div>
+
+    <!-- Content Management Page -->
+    <div id="page-content" class="admin-page-section active">
+      <div class="dashboard-grid">
+      <!-- Latest Updates Card -->
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div class="card-icon">
+            <i class="fas fa-bullhorn"></i>
+          </div>
+          <h2>Latest Updates</h2>
+        </div>
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="add-update">Add Update</button>
+          <button class="tab-btn" data-tab="manage-updates">Manage</button>
+        </div>
+        <div id="add-update" class="tab-content active">
+          <form id="update-form">
+            <div class="form-group">
+              <label><i class="fas fa-heading"></i> Title</label>
+              <input type="text" id="update-title" required placeholder="Enter update title">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-align-left"></i> Content</label>
+              <textarea id="update-content" required placeholder="Enter update content"></textarea>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-calendar"></i> Date</label>
+              <input type="date" id="update-date" required>
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-plus"></i> Add Update
+            </button>
+          </form>
+        </div>
+        <div id="manage-updates" class="tab-content">
+          <div class="items-list" id="updates-list"></div>
+        </div>
+      </div>
+
+      <!-- Event Photos Card -->
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div class="card-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+            <i class="fas fa-calendar-alt"></i>
+          </div>
+          <h2>Event Photos</h2>
+        </div>
+        <form id="event-photo-form">
+          <div class="form-group">
+            <label><i class="fas fa-tag"></i> Event Name</label>
+            <input type="text" id="event-name" required placeholder="Enter event name">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-calendar"></i> Event Date</label>
+            <input type="date" id="event-date" required>
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-images"></i> Upload Photos</label>
+            <div class="photo-upload-area" id="event-upload-area">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <p><strong>Click or drag multiple photos here</strong></p>
+              <p>You can select multiple photos at once (Ctrl+Click or Shift+Click)</p>
+              <input type="file" id="event-photos" multiple accept="image/*" style="display: none;">
+            </div>
+            <div class="photo-count" id="event-photo-count" style="display: none;"></div>
+            <div class="photo-preview" id="event-photo-preview"></div>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-upload"></i> Upload Event Photos
+          </button>
+        </form>
+      </div>
+
+      <!-- Photo Gallery Card -->
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div class="card-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+            <i class="fas fa-images"></i>
+          </div>
+          <h2>Photo Gallery</h2>
+        </div>
+        <form id="gallery-photo-form">
+          <div class="form-group">
+            <label><i class="fas fa-calendar-alt"></i> Select Year</label>
+            <select id="gallery-year" required>
+              <option value="">Select Year</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-images"></i> Upload Photos</label>
+            <div class="photo-upload-area" id="gallery-upload-area">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <p><strong>Click or drag multiple photos here</strong></p>
+              <p>You can select multiple photos at once (Ctrl+Click or Shift+Click)</p>
+              <input type="file" id="gallery-photos" multiple accept="image/*" style="display: none;">
+            </div>
+            <div class="photo-count" id="gallery-photo-count" style="display: none;"></div>
+            <div class="photo-preview" id="gallery-photo-preview"></div>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-upload"></i> Upload Gallery Photos
+          </button>
+        </form>
+      </div>
+
+      <!-- Chapter Gallery Card -->
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div class="card-icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+            <i class="fas fa-map-marked-alt"></i>
+          </div>
+          <h2>Chapter Gallery</h2>
+        </div>
+        <form id="chapter-photo-form">
+          <div class="form-group">
+            <label><i class="fas fa-globe"></i> Chapter Type</label>
+            <select id="chapter-type" required>
+              <option value="">Select Type</option>
+              <option value="all">All Chapters</option>
+              <option value="india">India Chapters</option>
+              <option value="international">International Chapters</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-calendar-alt"></i> Select Year</label>
+            <select id="chapter-year" required>
+              <option value="">Select Year</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-images"></i> Upload Photos</label>
+            <div class="photo-upload-area" id="chapter-upload-area">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <p><strong>Click or drag multiple photos here</strong></p>
+              <p>You can select multiple photos at once (Ctrl+Click or Shift+Click)</p>
+              <input type="file" id="chapter-photos" multiple accept="image/*" style="display: none;">
+            </div>
+            <div class="photo-count" id="chapter-photo-count" style="display: none;"></div>
+            <div class="photo-preview" id="chapter-photo-preview"></div>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-upload"></i> Upload Chapter Photos
+          </button>
+        </form>
+      </div>
+
+      <!-- Reunion Photos Card -->
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div class="card-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+            <i class="fas fa-users"></i>
+          </div>
+          <h2>Reunion Photos</h2>
+        </div>
+        <form id="reunion-photo-form">
+          <div class="form-group">
+            <label><i class="fas fa-calendar-alt"></i> Select Year</label>
+            <select id="reunion-year" required>
+              <option value="">Select Year</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-images"></i> Upload Photos</label>
+            <div class="photo-upload-area" id="reunion-upload-area">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <p><strong>Click or drag multiple photos here</strong></p>
+              <p>You can select multiple photos at once (Ctrl+Click or Shift+Click)</p>
+              <input type="file" id="reunion-photos" multiple accept="image/*" style="display: none;">
+            </div>
+            <div class="photo-count" id="reunion-photo-count" style="display: none;"></div>
+            <div class="photo-preview" id="reunion-photo-preview"></div>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-upload"></i> Upload Reunion Photos
+          </button>
+        </form>
+      </div>
+
+      <!-- General Content Updates Card -->
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div class="card-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <i class="fas fa-edit"></i>
+          </div>
+          <h2>Content Updates</h2>
+        </div>
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="home-updates">Home Page</button>
+          <button class="tab-btn" data-tab="about-updates">About Page</button>
+        </div>
+        <div id="home-updates" class="tab-content active">
+          <form id="home-content-form">
+            <div class="form-group">
+              <label><i class="fas fa-heading"></i> Hero Title</label>
+              <input type="text" id="hero-title" placeholder="Main hero section title">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-quote-left"></i> Hero Quote</label>
+              <input type="text" id="hero-quote" placeholder="Hero section quote">
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i> Save Changes
+            </button>
+          </form>
+        </div>
+        <div id="about-updates" class="tab-content">
+          <form id="about-content-form">
+            <div class="form-group">
+              <label><i class="fas fa-list"></i> Section</label>
+              <select id="about-section">
+                <option value="overview">About Overview</option>
+                <option value="president">President's Message</option>
+                <option value="executive">Executive Committee</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-align-left"></i> Content</label>
+              <textarea id="about-content" rows="6"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i> Save Changes
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- Homepage Photos Page -->
+    <div id="page-homepage-photos" class="admin-page-section">
+      <div class="dashboard-grid">
+        <!-- Homepage Middle Box Photos Card -->
+        <div class="dashboard-card">
+          <div class="card-header">
+            <div class="card-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);">
+              <i class="fas fa-image"></i>
+            </div>
+            <h2>Homepage Middle Box Photos</h2>
+          </div>
+          <form id="middle-box-photo-form">
+            <div class="form-group">
+              <label><i class="fas fa-info-circle"></i> Info</label>
+              <p style="font-size: 13px; color: var(--gray-600); margin-top: 5px;">
+                Upload photos for the center slider on homepage (middle box)
+              </p>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-images"></i> Upload Photos</label>
+              <div class="photo-upload-area" id="middle-box-upload-area">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p><strong>Click or drag multiple photos here</strong></p>
+                <p>You can select multiple photos at once (Ctrl+Click or Shift+Click)</p>
+                <input type="file" id="middle-box-photos" multiple accept="image/*" style="display: none;">
+              </div>
+              <div class="photo-count" id="middle-box-photo-count" style="display: none;"></div>
+              <div class="photo-preview" id="middle-box-photo-preview"></div>
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-upload"></i> Update Middle Box Photos
+            </button>
+          </form>
+        </div>
+
+        <!-- Homepage Photo Gallery Card -->
+        <div class="dashboard-card">
+          <div class="card-header">
+            <div class="card-icon" style="background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);">
+              <i class="fas fa-images"></i>
+            </div>
+            <h2>Homepage Photo Gallery</h2>
+          </div>
+          <form id="homepage-gallery-photo-form">
+            <div class="form-group">
+              <label><i class="fas fa-info-circle"></i> Info</label>
+              <p style="font-size: 13px; color: var(--gray-600); margin-top: 5px;">
+                Upload photos for the photo gallery slider at the bottom of homepage
+              </p>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-images"></i> Upload Photos</label>
+              <div class="photo-upload-area" id="homepage-gallery-upload-area">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p><strong>Click or drag multiple photos here</strong></p>
+                <p>You can select multiple photos at once (Ctrl+Click or Shift+Click)</p>
+                <input type="file" id="homepage-gallery-photos" multiple accept="image/*" style="display: none;">
+              </div>
+              <div class="photo-count" id="homepage-gallery-photo-count" style="display: none;"></div>
+              <div class="photo-preview" id="homepage-gallery-photo-preview"></div>
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-upload"></i> Update Homepage Gallery Photos
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Activity Page -->
+    <div id="page-users" class="admin-page-section">
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div class="card-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);">
+            <i class="fas fa-user-check"></i>
+          </div>
+          <h2>User Login Activity</h2>
+        </div>
+        <div class="items-list" style="max-height: 600px;">
+          <table class="data-table" id="user-activity-table">
+            <thead>
+              <tr>
+                <th>Date & Time</th>
+                <th>User Email/Contact</th>
+                <th>Login Method</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="user-activity-body">
+              <tr>
+                <td colspan="4" class="empty-state">
+                  <i class="fas fa-inbox"></i>
+                  <h3>No login activity yet</h3>
+                  <p>User login records will appear here</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Registrations Page -->
+    <div id="page-registrations" class="admin-page-section">
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div class="card-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+            <i class="fas fa-user-plus"></i>
+          </div>
+          <h2>Registration & Payment Records</h2>
+        </div>
+        <div class="items-list" style="max-height: 600px;">
+          <table class="data-table" id="registrations-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Course</th>
+                <th>Batch</th>
+                <th>Payment Method</th>
+                <th>Amount</th>
+                <th>Registered Date</th>
+              </tr>
+            </thead>
+            <tbody id="registrations-body">
+              <tr>
+                <td colspan="8" class="empty-state">
+                  <i class="fas fa-inbox"></i>
+                  <h3>No registrations yet</h3>
+                  <p>Registration records will appear here</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Donations Page -->
+    <div id="page-donations" class="admin-page-section">
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div class="card-icon" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+            <i class="fas fa-heart"></i>
+          </div>
+          <h2>Donation Records</h2>
+        </div>
+        <div class="filter-tabs">
+          <button class="filter-tab-btn active" data-filter="all">
+            <i class="fas fa-list"></i> All Donations
+          </button>
+          <button class="filter-tab-btn" data-filter="nsm">
+            <i class="fas fa-user-graduate"></i> NSM Students/Alumni
+          </button>
+          <button class="filter-tab-btn" data-filter="general">
+            <i class="fas fa-users"></i> General Public
+          </button>
+        </div>
+        <div class="items-list" style="max-height: 600px;">
+          <table class="data-table" id="donations-table">
+            <thead>
+              <tr>
+                <th>Date & Time</th>
+                <th>Donor Name</th>
+                <th>Email</th>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Payment Method</th>
+                <th>Transaction ID</th>
+              </tr>
+            </thead>
+            <tbody id="donations-body">
+              <tr>
+                <td colspan="7" class="empty-state">
+                  <i class="fas fa-inbox"></i>
+                  <h3>No donations yet</h3>
+                  <p>Donation records will appear here</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pending Approvals Page (Super Admin/Admin Only) -->
+    <div id="page-approvals" class="admin-page-section">
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div class="card-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <h2>Pending Approvals</h2>
+          <p style="color: var(--gray-500); font-size: 14px; margin-top: 8px;">Review and approve content submitted by Representative Admins</p>
+        </div>
+        <div id="pending-approvals-list" class="approvals-list" style="padding: 20px;">
+          <p style="text-align: center; color: #999; padding: 40px;">Loading approvals...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Management Page (Super Admin/Admin Only) -->
+    <div id="page-user-management" class="admin-page-section">
+      <div class="dashboard-grid">
+        <div class="dashboard-card">
+          <div class="card-header">
+            <div class="card-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+              <i class="fas fa-user-shield"></i>
+            </div>
+            <h2>Add Representative Admin</h2>
+          </div>
+          <form id="add-representative-admin-form" style="padding: 20px;">
+            <div class="form-group">
+              <label><i class="fas fa-user"></i> Full Name</label>
+              <input type="text" id="rep-admin-name" required placeholder="Enter full name">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-at"></i> Username</label>
+              <input type="text" id="rep-admin-username" required placeholder="Enter username">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-envelope"></i> Email</label>
+              <input type="email" id="rep-admin-email" required placeholder="Enter email address">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-lock"></i> Password</label>
+              <input type="password" id="rep-admin-password" required placeholder="Enter password">
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-plus"></i> Add Representative Admin
+            </button>
+          </form>
+        </div>
+
+        <div class="dashboard-card">
+          <div class="card-header">
+            <div class="card-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+              <i class="fas fa-users-cog"></i>
+            </div>
+            <h2>Representative Admins</h2>
+          </div>
+          <div id="representative-admins-list" class="admins-list" style="padding: 20px;">
+            <p style="text-align: center; color: #999; padding: 40px;">Loading admins...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- My Pending Posts (Representative Admin Only) -->
+    <div id="page-my-pending" class="admin-page-section">
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div class="card-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+            <i class="fas fa-clock"></i>
+          </div>
+          <h2>My Pending Posts</h2>
+          <p style="color: var(--gray-500); font-size: 14px; margin-top: 8px;">Track the status of your submitted content</p>
+        </div>
+        <div id="my-pending-posts-list" class="pending-posts-list" style="padding: 20px;">
+          <p style="text-align: center; color: #999; padding: 40px;">No pending posts</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module" src="/src/admin.ts"></script>
+</body>
+</html>

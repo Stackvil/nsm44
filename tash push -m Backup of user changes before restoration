@@ -1,0 +1,148 @@
+warning: in the working copy of 'index.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/main.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/styles.css', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/types.ts', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/index.html b/index.html[m
+[1mindex bf0565a..0b3c56b 100644[m
+[1m--- a/index.html[m
+[1m+++ b/index.html[m
+[36m@@ -92,7 +92,7 @@[m
+     <header class="top-header">[m
+       <div class="container header-inner">[m
+         <div class="logo-area">[m
+[31m-          <img src="/images/HOME PAGE PHOTOS NSM/NSM LOGO 1.jpeg" alt="NSM Logo" class="nsm-logo-img" />[m
+[32m+[m[32m          <div class="logo-circle">NSM</div>[m
+           <div class="logo-text">[m
+             <span class="logo-title">NSM Alumni Association</span>[m
+             <span class="logo-subtitle">NSM College</span>[m
+[36m@@ -241,9 +241,6 @@[m
+             <li class="nav-item">[m
+               <a href="#" data-page="contact">Contact Us</a>[m
+             </li>[m
+[31m-            <li class="nav-item">[m
+[31m-              <a href="#" data-page="donate" class="nav-donate-btn">Donate</a>[m
+[31m-            </li>[m
+           </ul>[m
+         </div>[m
+       </nav>[m
+[36m@@ -254,7 +251,6 @@[m
+       <div class="hero-overlay"></div>[m
+       <div class="hero-content">[m
+         <h1 id="hero-title">ABOUT NSM</h1>[m
+[31m-        <p class="hero-subtitle">TOWARDS A BETTER WORLD</p>[m
+       </div>[m
+     </section>[m
+ [m
+[36m@@ -278,51 +274,57 @@[m
+                 <div class="events-photos-container">[m
+                   <div class="event-photo-slide slide-up-down">[m
+                     <img[m
+[31m-                      src="/images/HOME PAGE PHOTOS NSM/event.jpg"[m
+[31m-                      alt="NSM Event"[m
+[32m+[m[32m                      src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1920&q=95&auto=format&fit=crop"[m
+[32m+[m[32m                      alt="NSM Award Ceremony"[m
+                       class="event-slide-img"[m
+                       loading="lazy"[m
+                     />[m
+[32m+[m[32m                    <div class="event-photo-label">Award Ceremony 2024</div>[m
+                   </div>[m
+                   <div class="event-photo-slide slide-down-up">[m
+                     <img[m
+[31m-                      src="/images/HOME PAGE PHOTOS NSM/event 1.jpg"[m
+[31m-                      alt="NSM Event"[m
+[32m+[m[32m                      src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1920&q=95&auto=format&fit=crop"[m
+[32m+[m[32m                      alt="NSM Alumni Meet"[m
+                       class="event-slide-img"[m
+                       loading="lazy"[m
+                     />[m
+[32m+[m[32m                    <div class="event-photo-label">Alumni Global Meet</div>[m
+                   </div>[m
+                   <div class="event-photo-slide slide-left-right">[m
+                     <img[m
+[31m-                      src="/images/HOME PAGE PHOTOS NSM/event2.jpg"[m
+[31m-                      alt="NSM Event"[m
+[32m+[m[32m                      src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1920&q=95&auto=format&fit=crop"[m
+[32m+[m[32m                      alt="NSM Workshop"[m
+                       class="event-slide-img"[m
+                       loading="lazy"[m
+                     />[m
+[32m+[m[32m                    <div class="event-photo-label">Career Workshop</div>[m
+                   </div>[m
+                   <div class="event-photo-slide slide-right-left">[m
+                     <img[m
+[31m-                      src="/images/HOME PAGE PHOTOS NSM/event 3.jpg"[m
+[31m-                      alt="NSM Event"[m
+[32m+[m[32m                      src="https://images.unsplash.com/photo-1529390079861-591de354faf5?w=1920&q=95&auto=format&fit=crop"[m
+[32m+[m[32m                      alt="NSM Graduation"[m
+                       class="event-slide-img"[m
+                       loading="lazy"[m
+                     />[m
+[32m+[m[32m                    <div class="event-photo-label">Graduation Day</div>[m
+                   </div>[m
+                   <div class="event-photo-slide slide-up-down">[m
+                     <img[m
+[31m-                      src="/images/HOME PAGE PHOTOS NSM/event 4.jpg"[m
+[31m-                      alt="NSM Event"[m
+[32m+[m[32m                      src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1920&q=95&auto=format&fit=crop"[m
+[32m+[m[32m                      alt="NSM Seminar"[m
+                       class="event-slide-img"[m
+                       loading="lazy"[m
+                     />[m
+[32m+[m[32m                    <div class="event-photo-label">Industry Seminar</div>[m
+                   </div>[m
+                   <div class="event-photo-slide slide-down-up">[m
+                     <img[m
+[31m-                      src="/images/HOME PAGE PHOTOS NSM/event 5.jpg"[m
+[31m-                      alt="NSM Event"[m
+[32m+[m[32m                      src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=1920&q=95&auto=format&fit=crop"[m
+[32m+[m[32m                      alt="NSM Conference"[m
+                       class="event-slide-img"[m
+                       loading="lazy"[m
+                     />[m
+[32m+[m[32m                    <div class="event-photo-label">Annual Conference</div>[m
+                   </div>[m
+                 </div>[m
+               </div>[m
+[36m@@ -335,6 +337,7 @@[m
+                 <p class="home-info-text">[m
+                   Click "Join Now" and complete the registration. Get verified to access exclusive alumni benefits and networking.[m
+                 </p>[m
+[32m+[m[32m                <a href="#" class="read-more-link">Read More</a>[m
+               </div>[m
+ [m
+               <div class="home-info-box">[m
+[36m@@ -345,6 +348,7 @@[m
+                 <p class="home-info-text">[m
+                   Scholarship programs, infrastructure development, research funding, and mentorship initiatives.[m
+                 </p>[m
+[32m+[m[32m                <a href="#" class="read-more-link">Read More</a>[m
+               </div>[m
+             </div>[m
+ [m
+[36m@@ -355,51 +359,69 @@[m
+                   <div class="center-slider-wrapper">[m
+                     <div class="center-slide active">[m
+                       <img[m
+[31m-                        src="/images/HOME PAGE PHOTOS NSM/middel main box.jpg"[m
+[31m-                        alt="NSM Main Box"[m
+[32m+[m[32m                        src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&q=95&auto=format&fit=crop"[m
+[32m+[m[32m                        alt="NSM Classroom"[m
+                         class="center-slide-image"[m
+                         loading="lazy"[m
+                       />[m
+[32m+[m[32m                      <div class="slide-caption-overlay">[m
+[32m+[m[32m                        <div class="slide-caption-text">Modern Classrooms at NSM College</div>[m
+[32m+[m[32m                      </div>[m
+                     </div>[m
+                     <div class="center-slide">[m
+                       <img[m
+[31m-                        src="/images/HOME PAGE PHOTOS NSM/middel main box 1.jpg"[m
+[31m-                        alt="NSM Main Box"[m
+[32m+[m[32m                        src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=1200&q=95&auto=format&fit=crop"[m
+[32m+[m[32m                        alt="NSM Laboratory"[m
+                         class="center-slide-image"[m
+                         loading="lazy"[m
+                       />[m
+[32m+[m[32m                      <div class="slide-caption-overlay">[m
+[32m+[m[32m                        <div class="slide-caption-text">State-of-the-Art Laboratories</div>[m
+[32m+[m[32m           
