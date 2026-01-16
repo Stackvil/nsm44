@@ -1234,7 +1234,21 @@
           <p class="page-text" style="margin-bottom: 30px;">Update your profile information. You can add or edit your
             details at any time.</p>
 
-          <form id="user-profile-form" class="profile-edit-form">
+          <!-- Login Required Message -->
+          <div id="profile-login-prompt" class="profile-login-prompt" style="display: none;">
+            <div class="profile-login-content">
+              <div class="profile-login-icon">
+                <i class="fas fa-lock"></i>
+              </div>
+              <h4>Login Required</h4>
+              <p>Please login to manage your profile. Once logged in, you'll be able to view and edit your profile details.</p>
+              <button class="profile-login-btn" onclick="openLoginModal()">
+                <i class="fas fa-sign-in-alt"></i> Login to Manage Profile
+              </button>
+            </div>
+          </div>
+
+          <form id="user-profile-form" class="profile-edit-form" style="display: none;">
             <div class="profile-form-section">
               <h4 class="form-section-title"><i class="fas fa-user-circle"></i> Profile Picture</h4>
               <div class="profile-picture-section">
@@ -11433,6 +11447,81 @@
       background: #cbd5e0;
     }
 
+    /* Profile Login Prompt Styles */
+    .profile-login-prompt {
+      background: #ffffff;
+      border-radius: 15px;
+      padding: 60px 40px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .profile-login-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .profile-login-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--loyola-blue), #004080);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .profile-login-icon i {
+      font-size: 36px;
+      color: #ffffff;
+    }
+
+    .profile-login-prompt h4 {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--loyola-blue);
+      margin: 0;
+    }
+
+    .profile-login-prompt p {
+      font-size: 16px;
+      color: #666;
+      line-height: 1.6;
+      margin: 0;
+      max-width: 500px;
+    }
+
+    .profile-login-btn {
+      padding: 14px 40px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+      background: var(--loyola-blue);
+      color: #ffffff;
+      margin-top: 10px;
+    }
+
+    .profile-login-btn:hover {
+      background: #003366;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 39, 77, 0.3);
+    }
+
+    .profile-login-btn i {
+      font-size: 18px;
+    }
+
     @media (max-width: 768px) {
       .profile-form-grid {
         grid-template-columns: 1fr;
@@ -13573,12 +13662,31 @@
         });
       }
 
+      // Function to toggle profile visibility based on login status
+      function updateProfileVisibility() {
+        const isLoggedIn = checkLoginStatus();
+        const profileForm = document.getElementById('user-profile-form');
+        const profileLoginPrompt = document.getElementById('profile-login-prompt');
+
+        if (isLoggedIn) {
+          // User is logged in - show form, hide login prompt
+          if (profileForm) profileForm.style.display = 'block';
+          if (profileLoginPrompt) profileLoginPrompt.style.display = 'none';
+        } else {
+          // User is not logged in - hide form, show login prompt
+          if (profileForm) profileForm.style.display = 'none';
+          if (profileLoginPrompt) profileLoginPrompt.style.display = 'block';
+        }
+      }
+
       // Update login status when user logs in (listen for login success)
       // This should be called when login is successful
       window.handleLoginSuccess = function () {
         window.isUserLoggedIn = true;
         sessionStorage.setItem('nsm_user_logged_in', 'true');
         closeChaptersLoginModal();
+        // Update profile visibility after login
+        updateProfileVisibility();
         // Automatically show the last requested details, if any
         const lastRequestedChapter = sessionStorage.getItem('last_requested_chapter_details');
         if (lastRequestedChapter) {
@@ -13586,6 +13694,9 @@
           sessionStorage.removeItem('last_requested_chapter_details');
         }
       };
+
+      // Check login status on page load and update profile visibility
+      updateProfileVisibility();
 
       // Profile Form Handler
       const profileForm = document.getElementById('user-profile-form');
@@ -13619,6 +13730,13 @@
       if (profileForm) {
         profileForm.addEventListener('submit', function (e) {
           e.preventDefault();
+
+          // Check if user is logged in before allowing form submission
+          if (!checkLoginStatus()) {
+            alert('Please login to manage your profile.');
+            openLoginModal();
+            return;
+          }
 
           const formData = new FormData(profileForm);
           const profileData = {

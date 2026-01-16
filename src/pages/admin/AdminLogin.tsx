@@ -16,10 +16,10 @@ const AdminLogin: React.FC = () => {
         setLoading(true);
 
         try {
-            // Using the actual backend auth endpoint
+            // Using localStorage-based auth (no backend)
             const res = await api.post('/auth/login', { username, password });
 
-            // Should verify role here if backend returns it
+            // Verify role
             if (res.data.data.user.role !== 'ADMIN' && res.data.data.user.role !== 'SUPER_ADMIN') {
                 setError('Access denied. Admin privileges required.');
                 setLoading(false);
@@ -34,7 +34,7 @@ const AdminLogin: React.FC = () => {
             navigate('/admin');
         } catch (err: any) {
             console.error('Login failed', err);
-            setError(err.response?.data?.message || 'Invalid credentials. Please try again.');
+            setError(err.message || 'Invalid credentials. Please try again.');
         } finally {
             setLoading(false);
         }

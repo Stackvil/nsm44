@@ -1,6 +1,6 @@
 # NSM Alumni Association
 
-A modern, responsive website for the NSM Alumni Association built with TypeScript and Vite.
+A modern, responsive website for the NSM Alumni Association built with TypeScript and Vite. This is a **frontend-only** application that uses localStorage for data persistence - no backend server required!
 
 ## Features
 
@@ -9,6 +9,8 @@ A modern, responsive website for the NSM Alumni Association built with TypeScrip
 - 🎨 Modern, responsive design
 - 🔄 Single-page application with smooth navigation
 - 📱 Mobile-friendly layout
+- 💾 Frontend-only - all data stored in browser localStorage
+- 🚀 No backend required - runs completely standalone
 
 ## Getting Started
 
