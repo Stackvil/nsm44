@@ -1,6 +1,68 @@
 // Frontend-only API using localStorage
 // No backend required - all data stored in browser localStorage
 
+// Initialize admin credentials with default users
+const initializeAdminCredentials = () => {
+    const stored = localStorage.getItem('admin_credentials');
+    if (!stored) {
+        const defaultCredentials = [
+            {
+                id: '1',
+                username: 'superadmin',
+                email: 'superadmin@nsmosa.org',
+                password: 'SuperAdmin@2024!',
+                role: 'SUPER_ADMIN',
+                name: 'Super Administrator'
+            },
+            {
+                id: '2',
+                username: 'admin',
+                email: 'admin@nsmosa.org',
+                password: 'Admin@2024!',
+                role: 'ADMIN',
+                name: 'Administrator'
+            },
+            {
+                id: '3',
+                username: 'gurjeet',
+                email: 'vjwgurjeet@gmail.com',
+                password: '12345678',
+                role: 'ADMIN',
+                name: 'Gurjeet Singh Sahni',
+                phone: '9848529755',
+                batchYear: '1998'
+            }
+        ];
+        localStorage.setItem('admin_credentials', JSON.stringify(defaultCredentials));
+        return defaultCredentials;
+    }
+    
+    // Check if Gurjeet's account exists, if not add it
+    const credentials = JSON.parse(stored);
+    const gurjeetExists = credentials.find((c: any) => 
+        c.email === 'vjwgurjeet@gmail.com' || c.username === 'gurjeet'
+    );
+    
+    if (!gurjeetExists) {
+        credentials.push({
+            id: '3',
+            username: 'gurjeet',
+            email: 'vjwgurjeet@gmail.com',
+            password: '12345678',
+            role: 'ADMIN',
+            name: 'Gurjeet Singh Sahni',
+            phone: '9848529755',
+            batchYear: '1998'
+        });
+        localStorage.setItem('admin_credentials', JSON.stringify(credentials));
+    }
+    
+    return credentials;
+};
+
+// Initialize on module load
+initializeAdminCredentials();
+
 const api = {
     get: async (url: string) => {
         // Simulate API delay
@@ -27,8 +89,8 @@ const api = {
         
         // Handle auth login
         if (url.includes('/auth/login')) {
-            // Check localStorage for credentials
-            const credentials = JSON.parse(localStorage.getItem('admin_credentials') || '[]');
+            // Initialize and get credentials
+            const credentials = initializeAdminCredentials();
             const user = credentials.find((c: any) => 
                 (c.username === payload.username || c.email === payload.username) && 
                 c.password === payload.password

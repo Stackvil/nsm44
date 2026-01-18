@@ -1,53 +1,71 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AuthProvider } from './contexts/AuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import Home from './pages/Home';
-import AlumniDirectory from './pages/AlumniDirectory';
-import CareerHub from './pages/CareerHub';
-import Events from './pages/Events';
-import Giving from './pages/Giving';
-import Store from './pages/Store';
-import Dashboard from './pages/Dashboard';
-import Login from './pages/Auth/Login';
-import Register from './pages/Auth/Register';
-import FAQ from './pages/FAQ';
-import Contact from './pages/Contact';
-import Member from './pages/Member';
+
+// Lazy load all page components for better performance
+const Home = lazy(() => import('./pages/Home'));
+const AlumniDirectory = lazy(() => import('./pages/AlumniDirectory'));
+const CareerHub = lazy(() => import('./pages/CareerHub'));
+const Events = lazy(() => import('./pages/Events'));
+const Giving = lazy(() => import('./pages/Giving'));
+const Store = lazy(() => import('./pages/Store'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Login = lazy(() => import('./pages/Auth/Login'));
+const Register = lazy(() => import('./pages/Auth/Register'));
+const FAQ = lazy(() => import('./pages/FAQ'));
+const Contact = lazy(() => import('./pages/Contact'));
+const Member = lazy(() => import('./pages/Member'));
 
 // About Pages
-import About from './pages/about/About';
-import AboutOverview from './pages/about/AboutOverview';
-import PresidentsMessage from './pages/about/PresidentsMessage';
-import ExecutiveCommittee from './pages/about/ExecutiveCommittee';
-import AlumniChapters from './pages/about/AlumniChapters';
-import AlumniBenefits from './pages/about/AlumniBenefits';
-import AnnualReports from './pages/about/AnnualReports';
+const About = lazy(() => import('./pages/about/About'));
+const AboutOverview = lazy(() => import('./pages/about/AboutOverview'));
+const PresidentsMessage = lazy(() => import('./pages/about/PresidentsMessage'));
+const ExecutiveCommittee = lazy(() => import('./pages/about/ExecutiveCommittee'));
+const AlumniChapters = lazy(() => import('./pages/about/AlumniChapters'));
+const AlumniBenefits = lazy(() => import('./pages/about/AlumniBenefits'));
+const AnnualReports = lazy(() => import('./pages/about/AnnualReports'));
 
 // Connect Pages
-import Connect from './pages/connect/Connect';
-import MyProfile from './pages/connect/MyProfile';
-import AlumniEvent from './pages/connect/AlumniEvent';
-import AlumniDirectoryConnect from './pages/connect/AlumniDirectory';
-import BusinessDirectory from './pages/connect/BusinessDirectory';
-import HowToGive from './pages/connect/HowToGive';
-import ConnectWithUs from './pages/connect/ConnectWithUs';
+const Connect = lazy(() => import('./pages/connect/Connect'));
+const MyProfile = lazy(() => import('./pages/connect/MyProfile'));
+const AlumniEvent = lazy(() => import('./pages/connect/AlumniEvent'));
+const AlumniDirectoryConnect = lazy(() => import('./pages/connect/AlumniDirectory'));
+const BusinessDirectory = lazy(() => import('./pages/connect/BusinessDirectory'));
+const HowToGive = lazy(() => import('./pages/connect/HowToGive'));
+const ConnectWithUs = lazy(() => import('./pages/connect/ConnectWithUs'));
 
 // Reunion Pages
-import Reunion from './pages/reunion/Reunion';
-import AboutReunion from './pages/reunion/AboutReunion';
-import ReunionGallery from './pages/reunion/ReunionGallery';
+const Reunion = lazy(() => import('./pages/reunion/Reunion'));
+const AboutReunion = lazy(() => import('./pages/reunion/AboutReunion'));
+const ReunionGallery = lazy(() => import('./pages/reunion/ReunionGallery'));
 
 // Gallery Pages
-import Gallery from './pages/gallery/Gallery';
-import PhotoGallery from './pages/gallery/PhotoGallery';
-import VideoGallery from './pages/gallery/VideoGallery';
+const Gallery = lazy(() => import('./pages/gallery/Gallery'));
+const PhotoGallery = lazy(() => import('./pages/gallery/PhotoGallery'));
+const VideoGallery = lazy(() => import('./pages/gallery/VideoGallery'));
 
 // Admin Imports
-import AdminLayout from './layouts/AdminLayout';
-import AdminLogin from './pages/admin/AdminLogin';
-import PageManager from './pages/admin/PageManager';
-import PageEditor from './pages/admin/PageEditor';
+const AdminLayout = lazy(() => import('./layouts/AdminLayout'));
+const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'));
+const PageManager = lazy(() => import('./pages/admin/PageManager'));
+const PageEditor = lazy(() => import('./pages/admin/PageEditor'));
+
+// Loading component for Suspense fallback
+const PageLoader = () => (
+    <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '50vh',
+        fontSize: '16px',
+        color: '#666'
+    }}>
+        Loading...
+    </div>
+);
 
 const queryClient = new QueryClient();
 
@@ -63,7 +81,9 @@ const PublicLayout = ({ children }: { children: React.ReactNode }) => (
 function App() {
     return (
         <QueryClientProvider client={queryClient}>
-            <Router>
+            <AuthProvider>
+                <Router>
+                <Suspense fallback={<PageLoader />}>
                 <Routes>
                     {/* Admin Routes - No Navbar/Footer, has its own Layout */}
                     <Route path="/admin/login" element={<AdminLogin />} />
@@ -121,7 +141,9 @@ function App() {
                     <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
                     <Route path="/register" element={<PublicLayout><Register /></PublicLayout>} />
                 </Routes>
+                </Suspense>
             </Router>
+            </AuthProvider>
         </QueryClientProvider>
     );
 }

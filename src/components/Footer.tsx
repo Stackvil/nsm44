@@ -26,7 +26,7 @@ const Footer: React.FC = () => {
                             <a href="#" aria-label="LinkedIn" className="footer-social-link">
                                 <Linkedin size={20} />
                             </a>
-                            <a href="#" aria-label="Instagram" className="footer-social-link">
+                            <a href="https://www.instagram.com/nsm_alumni?igsh=MXBzcDd3NzI2eW0xcg==" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="footer-social-link">
                                 <Instagram size={20} />
                             </a>
                         </div>

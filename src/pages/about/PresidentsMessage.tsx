@@ -7,54 +7,27 @@ const PresidentsMessage: React.FC = () => {
                 <div>
                     <h1 className="page-title" style={{ marginBottom: '2rem' }}>President's Message</h1>
                     <div style={{ lineHeight: '1.8', color: '#555' }}>
-                        <p style={{ fontSize: '1.1rem', fontWeight: '600', marginBottom: '1.5rem', color: '#00274d' }}>
-                            Dear NSMOSA Alumni Family,
+                        <p style={{ marginBottom: '1.5rem' }}>
+                            It gives me immense pride and pleasure to welcome you to the official website of NSM Old Students Association (NSM OSA).
                         </p>
                         <p style={{ marginBottom: '1.5rem' }}>
-                            I consider it as a great honour to address you from this renowned seat of learning, N. St. Mathew's
-                            Public School, Vijayawada.
+                            NSM OSA is more than an alumni platform. It is a living bond that connects generations of students through shared values, memories, and a commitment to growth. Our association strives to strengthen these connections by fostering meaningful engagement, collaboration, and mutual support among alumni, students, and the institution.
                         </p>
                         <p style={{ marginBottom: '1.5rem' }}>
-                            This abode of learning stands tall in this city of Vijayawada, because of the vision of its founders,
-                            the dedication of the teachers, excellence of students and the cooperation of the parents community.
-                            It has been built on strong value system that passes from generation to generation.
+                            Over the years, NSM OSA has grown into a vibrant community that actively contributes to academic excellence, professional development, social responsibility, and the overall progress of our alma mater. This journey has been possible because of the collective efforts, dedication, and goodwill of our members.
                         </p>
                         <p style={{ marginBottom: '1.5rem' }}>
-                            As we move ahead, we are striving to evolve into an ultra modern centre of education, following the
-                            ever changing contours of pedagogy. We are able to challenge ourselves in order to bring out the best
-                            in the students. The campus is serene, green and this adds to our belief perfectly calm and we believe
-                            that we are able to groom the young scholars.
-                        </p>
-                        <p style={{ marginBottom: '1.5rem' }}>
-                            Children are born with an urge to succeed. They only need a good environment to grow and should be
-                            sufficiently motivated to use every single opportunity that comes their way. In this endeavour, I,
-                            with pride, mention the role of our diligent and committed faculty, who are endowed with boundless
-                            energy. In order to bring out the unexplored potential of the students, we need constant encouragement
-                            and support from the parents' community.
-                        </p>
-                        <p style={{ marginBottom: '1.5rem' }}>
-                            We leave no stone unturned to empower the children with the necessary knowledge and skills that stand
-                            them in good stead in their future. However, we also realise that every child comes with unique
-                            qualities and capabilities. Hence, adequate care is taken to groom each of them to be a competent and
-                            complete individual. We believe that imparting education is a shared commitment between dedicated
-                            teachers, motivated students and enthusiastic parents.
-                        </p>
-                        <p style={{ marginBottom: '1.5rem' }}>
-                            Right from its inception in the year 1974, this mighty institution has been on quest for excellence in
-                            curricular, co-curricular and extra-curricular pursuits and is strongly moving ahead with an aim of
-                            shaping the young NSMites 'Towards a Better World'.
+                            This website serves as a digital bridge. A place to reconnect, stay informed about upcoming events and initiatives, celebrate achievements, and participate in shaping the future of NSM OSA. I encourage all alumni to stay engaged, contribute their ideas, and be active partners in our shared mission.
                         </p>
                         <p style={{ marginBottom: '2rem' }}>
-                            As we gear up to march into the Golden Era of NSMOSA, I urge you to join us in this remarkable academic
-                            mission that will shape the future of the students and make them ready to face the challenges that the
-                            world will pose for them in their future.
+                            Together, let us continue to uphold the legacy of NSM and inspire future generations with unity, integrity, and purpose.
                         </p>
                         <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '2px solid #e0e0e0' }}>
-                            <p style={{ marginBottom: '0.5rem' }}>Warm regards,</p>
+                            <p style={{ marginBottom: '0.5rem' }}>Warm Regards,</p>
                             <p style={{ fontSize: '1.2rem', fontWeight: '600', marginBottom: '0.5rem', color: '#00274d' }}>
-                                Dr. Rajesh Kumar
+                                Nalluri Venkat Jagdish
                             </p>
-                            <p style={{ color: '#666' }}>President, NSM Old Students Association</p>
+                            <p style={{ color: '#666' }}>President NSM OSA</p>
                         </div>
                     </div>
                 </div>
@@ -62,7 +35,7 @@ const PresidentsMessage: React.FC = () => {
                     <div style={{ position: 'relative', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}>
                         <img 
                             src="/images/presedent.jpeg" 
-                            alt="Dr. Rajesh Kumar - President, NSM Old Students Association"
+                            alt="Nalluri Venkat Jagdish - President NSM OSA"
                             style={{ width: '100%', display: 'block' }}
                         />
                         <div style={{ 
@@ -74,9 +47,9 @@ const PresidentsMessage: React.FC = () => {
                             padding: '2rem',
                             color: 'white'
                         }}>
-                            <h3 style={{ marginBottom: '0.5rem' }}>Dr. Rajesh Kumar</h3>
+                            <h3 style={{ marginBottom: '0.5rem' }}>Nalluri Venkat Jagdish</h3>
                             <p style={{ marginBottom: '0.25rem' }}>President</p>
-                            <p style={{ fontSize: '0.9rem', opacity: 0.9 }}>NSM Old Students Association</p>
+                            <p style={{ fontSize: '0.9rem', opacity: 0.9 }}>NSM OSA</p>
                         </div>
                     </div>
                 </div>

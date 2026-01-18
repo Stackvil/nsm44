@@ -243,9 +243,90 @@
             name: 'Administrator',
             createdAt: Date.now(),
             createdBy: 'system'
+          },
+          {
+            id: '3',
+            username: 'gurjeet',
+            email: 'vjwgurjeet@gmail.com',
+            password: '12345678', // In production, this should be hashed
+            role: 'admin',
+            name: 'Gurjeet Singh Sahni',
+            phone: '9848529755',
+            batchYear: '1998',
+            createdAt: Date.now(),
+            createdBy: 'system'
           }
         ];
         localStorage.setItem('nsm_admin_users', JSON.stringify(defaultUsers));
+      } else {
+        // Check if Gurjeet exists, if not add him
+        const existingUsers = JSON.parse(localStorage.getItem('nsm_admin_users') || '[]');
+        const gurjeetExists = existingUsers.find(u => u.email === 'vjwgurjeet@gmail.com' || u.username === 'gurjeet');
+        if (!gurjeetExists) {
+          existingUsers.push({
+            id: '3',
+            username: 'gurjeet',
+            email: 'vjwgurjeet@gmail.com',
+            password: '12345678',
+            role: 'admin',
+            name: 'Gurjeet Singh Sahni',
+            phone: '9848529755',
+            batchYear: '1998',
+            createdAt: Date.now(),
+            createdBy: 'system'
+          });
+          localStorage.setItem('nsm_admin_users', JSON.stringify(existingUsers));
+        }
+      }
+      
+      // Also initialize admin_credentials for React app compatibility
+      if (!localStorage.getItem('admin_credentials')) {
+        const adminCredentials = [
+          {
+            id: '1',
+            username: 'superadmin',
+            email: 'superadmin@nsmosa.org',
+            password: 'SuperAdmin@2024!',
+            role: 'SUPER_ADMIN',
+            name: 'Super Administrator'
+          },
+          {
+            id: '2',
+            username: 'admin',
+            email: 'admin@nsmosa.org',
+            password: 'Admin@2024!',
+            role: 'ADMIN',
+            name: 'Administrator'
+          },
+          {
+            id: '3',
+            username: 'gurjeet',
+            email: 'vjwgurjeet@gmail.com',
+            password: '12345678',
+            role: 'ADMIN',
+            name: 'Gurjeet Singh Sahni',
+            phone: '9848529755',
+            batchYear: '1998'
+          }
+        ];
+        localStorage.setItem('admin_credentials', JSON.stringify(adminCredentials));
+      } else {
+        // Check if Gurjeet exists in admin_credentials
+        const credentials = JSON.parse(localStorage.getItem('admin_credentials') || '[]');
+        const gurjeetExists = credentials.find((c) => c.email === 'vjwgurjeet@gmail.com' || c.username === 'gurjeet');
+        if (!gurjeetExists) {
+          credentials.push({
+            id: '3',
+            username: 'gurjeet',
+            email: 'vjwgurjeet@gmail.com',
+            password: '12345678',
+            role: 'ADMIN',
+            name: 'Gurjeet Singh Sahni',
+            phone: '9848529755',
+            batchYear: '1998'
+          });
+          localStorage.setItem('admin_credentials', JSON.stringify(credentials));
+        }
       }
     }
 
@@ -268,8 +349,8 @@
       // Get admin users
       const adminUsers = JSON.parse(localStorage.getItem('nsm_admin_users') || '[]');
       
-      // Find user by username
-      const user = adminUsers.find(u => u.username === username);
+      // Find user by username or email
+      const user = adminUsers.find(u => u.username === username || u.email === username);
       
       if (user && user.password === password) {
         // Create session token

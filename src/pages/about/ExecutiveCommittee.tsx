@@ -1,151 +1,166 @@
 import React from 'react';
 
+interface OfficeBearer {
+    name: string;
+    designation: string;
+    email: string;
+    professionalTitle: string;
+    organization: string;
+    additionalInfo?: string;
+    location?: string;
+    photo?: string;
+}
+
+interface CommitteeData {
+    organization: string;
+    committee: string;
+    term: string;
+    officeBearers: OfficeBearer[];
+}
+
 const ExecutiveCommittee: React.FC = () => {
-    const committeeData = {
+    const committeeData: CommitteeData = {
         organization: "NSM Alumni",
-        body: "Governing Council",
-        title: "Office Bearer's",
+        committee: "Governing Council",
         term: "2024-27",
-        team: [
+        officeBearers: [
             {
                 name: "Venkat Jagdish Nalluri",
                 designation: "President",
-                email: "vjnots@gmail.com",
-                professional_title: "Managing Director",
-                organization: "OTS Advertisings"
+                email: "vinots@gmail.com",
+                professionalTitle: "Managing Director",
+                organization: "OTS Advertisings",
+                photo: "president.jpg"
             },
             {
                 name: "Gurjeet Singh Sahni",
                 designation: "General Secretary",
                 email: "vjwgurjeet@gmail.com",
-                professional_title: "Managing Director",
+                professionalTitle: "Managing Director",
                 organization: "Sahni Auto Pvt Ltd",
-                additional_info: "Dealers for Tata Commercial Vehicles"
+                additionalInfo: "Dealer for Tata Commercial Vehicles",
+                photo: "general_secretary.jpg"
             },
             {
                 name: "Jayanarayana Kureti",
                 designation: "Sr. Vice President",
                 email: "jaykureti@gmail.com",
-                professional_title: "Founder & CEO",
+                professionalTitle: "Founder & CEO",
                 organization: "Jaan Entertainment Pvt Ltd",
-                additional_info: "ETHREE: Rajiv Gandhi Park"
+                location: "ETHREE, Rajiv Gandhi Park",
+                photo: "sr_vice_president.jpg"
             },
             {
-                name: "Aeesha Khatoon",
+                name: "Ayesha Khatoon",
                 designation: "Sr. Secretary",
-                email: "aeeshakhatoon10@gmail.com",
-                professional_title: "Optometrist",
-                organization: "Dilip Opticals"
+                email: "aaeshakhatoon10@gmail.com",
+                professionalTitle: "Optometrist",
+                organization: "Dilip Opticals",
+                photo: "sr_secretary.jpg"
             },
             {
                 name: "Jaideep Arza",
                 designation: "Jr. Vice President",
                 email: "ajaideep@gmail.com",
-                professional_title: "Proprietor",
-                organization: "Sri Dhanalakshmi Stones & Tiles"
+                professionalTitle: "Proprietor",
+                organization: "Sri Dhanalakshmi Stones & Tiles",
+                photo: "jr_vice_president.jpg"
             },
             {
-                name: "Kowtha.V.Subba Rao",
+                name: "Kowtha V. Subba Rao",
                 designation: "Treasurer",
-                email: "kowtha1@hotmail.com",
-                professional_title: "Chartered Accountant",
+                email: "kowtha@hotmail.com",
+                professionalTitle: "Chartered Accountant",
                 organization: "M/s Kowtha & Co.",
-                additional_info: "Partner"
+                photo: "treasurer.jpg"
             },
             {
                 name: "Suhrith Durbha",
                 designation: "Jr. Secretary",
                 email: "suhrith.raja@gmail.com",
-                professional_title: "Business Associate",
-                organization: "Bank of Baroda"
+                professionalTitle: "Business Associate",
+                organization: "Bank of Baroda",
+                photo: "jr_secretary.jpg"
             }
         ]
     };
 
-    const getBadgeClass = (designation: string) => {
-        if (designation.toLowerCase().includes('president')) {
+    const getProfessionalDetails = (member: OfficeBearer): string => {
+        let details = `${member.professionalTitle}, ${member.organization}`;
+        if (member.additionalInfo) {
+            details += `, ${member.additionalInfo}`;
+        }
+        if (member.location) {
+            details += `, ${member.location}`;
+        }
+        return details;
+    };
+
+    const getBadgeColor = (designation: string) => {
+        const des = designation.toLowerCase();
+        if (des.includes('president') && !des.includes('vice') && !des.includes('sr.') && !des.includes('jr.')) {
             return '#ff6b35'; // Orange for President
-        } else if (designation.toLowerCase().includes('vice president')) {
-            return '#00274d'; // Dark blue for VP
-        } else if (designation.toLowerCase().includes('secretary')) {
-            return '#0066cc'; // Blue for Secretary
+        } else if (des.includes('vice president')) {
+            return '#718096'; // Gray for Vice President
+        } else if (des.includes('secretary')) {
+            return '#718096'; // Gray for Secretary
+        } else if (des.includes('treasurer')) {
+            return '#4a90e2'; // Light blue for Treasurer
         } else {
             return '#4a90e2'; // Light blue for others
         }
     };
 
-    const formatAffiliation = (member: typeof committeeData.team[0]) => {
-        let affiliation = `${member.professional_title}, ${member.organization}`;
-        if (member.additional_info) {
-            affiliation += `, ${member.additional_info}`;
-        }
-        return affiliation;
-    };
-
     return (
         <div className="container py-16">
-            <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-                <h1 className="page-title" style={{ marginBottom: '0.5rem' }}>
-                    {committeeData.title} {committeeData.term}
-                </h1>
-                <p style={{ 
-                    fontSize: '1.5rem', 
-                    color: '#ff6b35', 
-                    fontStyle: 'italic',
-                    marginBottom: '0.5rem',
-                    fontWeight: '600'
-                }}>
-                    {committeeData.body}
-                </p>
-                <p style={{ 
-                    fontSize: '1.2rem', 
-                    color: '#666',
-                    marginTop: '1rem'
-                }}>
-                    Here's Our Team
-                </p>
-            </div>
-
+            <h2 className="page-title" style={{ marginBottom: '1rem', textAlign: 'center' }}>
+                {committeeData.organization} - {committeeData.committee}
+            </h2>
+            <p style={{ marginBottom: '0.5rem', color: '#00274d', fontSize: '1.2rem', fontWeight: '600', textAlign: 'center' }}>
+                Term: {committeeData.term}
+            </p>
+            {/* Updated: 2024-27 Executive Committee */}
             <p style={{ marginBottom: '3rem', color: '#666', fontSize: '1.1rem', textAlign: 'center' }}>
-                Meet the dedicated members of the {committeeData.organization} {committeeData.body} who work tirelessly to
+                Meet the dedicated members of the NSM Old Students Association Executive Committee who work tirelessly to
                 strengthen our alumni network and support the growth of our alma mater.
             </p>
             
             <div style={{ 
                 background: '#fff', 
-                borderRadius: '10px', 
+                borderRadius: '15px', 
                 overflow: 'hidden',
-                boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-                marginBottom: '2rem'
+                boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                border: '1px solid #e0e0e0'
             }}>
                 <div style={{ 
                     display: 'grid', 
-                    gridTemplateColumns: '200px 1fr 1.5fr 1.5fr',
+                    gridTemplateColumns: '200px 1fr 1fr',
+                    gap: '20px',
                     background: '#00274d',
                     color: 'white',
-                    padding: '1.5rem',
+                    padding: '20px 30px',
                     fontWeight: '600'
                 }}>
-                    <div>Position</div>
+                    <div>Designation</div>
                     <div>Name</div>
-                    <div>Email</div>
-                    <div>Affiliation</div>
+                    <div>Professional Details</div>
                 </div>
                 
-                {committeeData.team.map((member, index) => {
-                    const isPresident = member.designation.toLowerCase().includes('president') && 
-                                       !member.designation.toLowerCase().includes('vice');
+                {committeeData.officeBearers.map((member, index) => {
+                    const isPresident = member.designation.toLowerCase() === 'president';
                     return (
                         <div 
                             key={index}
                             style={{ 
                                 display: 'grid', 
-                                gridTemplateColumns: '200px 1fr 1.5fr 1.5fr',
-                                padding: '1.5rem',
-                                borderBottom: index < committeeData.team.length - 1 ? '1px solid #e0e0e0' : 'none',
+                                gridTemplateColumns: '200px 1fr 1fr',
+                                gap: '20px',
+                                padding: '20px 30px',
+                                borderBottom: index < committeeData.officeBearers.length - 1 ? '1px solid #f0f0f0' : 'none',
                                 background: isPresident ? '#fff8f0' : '#fff',
-                                transition: 'background 0.2s',
-                                alignItems: 'center'
+                                transition: 'background 0.3s',
+                                alignItems: 'center',
+                                borderLeft: isPresident ? '4px solid #ff6b35' : 'none'
                             }}
                             onMouseEnter={(e) => {
                                 if (!isPresident) e.currentTarget.style.background = '#f8f9fa';
@@ -159,43 +174,37 @@ const ExecutiveCommittee: React.FC = () => {
                                     display: 'inline-block',
                                     padding: '0.5rem 1rem',
                                     borderRadius: '20px',
-                                    fontSize: '0.9rem',
+                                    fontSize: '0.85rem',
                                     fontWeight: '600',
-                                    background: getBadgeClass(member.designation),
-                                    color: 'white'
+                                    background: getBadgeColor(member.designation),
+                                    color: 'white',
+                                    textTransform: 'uppercase'
                                 }}>
                                     {member.designation}
                                 </span>
                             </div>
                             <div style={{ 
                                 fontWeight: isPresident ? '600' : '400',
-                                color: isPresident ? '#00274d' : '#333',
-                                fontSize: isPresident ? '1.1rem' : '1rem'
+                                color: '#333',
+                                fontSize: '1rem'
                             }}>
                                 {member.name}
+                                {member.email && (
+                                    <div style={{ 
+                                        fontSize: '0.85rem', 
+                                        color: '#666', 
+                                        marginTop: '0.25rem',
+                                        fontWeight: 'normal'
+                                    }}>
+                                        {member.email}
+                                    </div>
+                                )}
                             </div>
                             <div style={{ 
                                 color: '#666',
                                 fontSize: '0.95rem'
                             }}>
-                                <a 
-                                    href={`mailto:${member.email}`}
-                                    style={{ 
-                                        color: '#0066cc',
-                                        textDecoration: 'none'
-                                    }}
-                                    onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
-                                    onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
-                                >
-                                    {member.email}
-                                </a>
-                            </div>
-                            <div style={{ 
-                                color: '#666',
-                                fontSize: '0.95rem',
-                                lineHeight: '1.5'
-                            }}>
-                                {formatAffiliation(member)}
+                                {getProfessionalDetails(member)}
                             </div>
                         </div>
                     );
@@ -208,9 +217,8 @@ const ExecutiveCommittee: React.FC = () => {
             }}
             className="mobile-committee-view"
             >
-                {committeeData.team.map((member, index) => {
-                    const isPresident = member.designation.toLowerCase().includes('president') && 
-                                       !member.designation.toLowerCase().includes('vice');
+                {committeeData.officeBearers.map((member, index) => {
+                    const isPresident = member.designation.toLowerCase() === 'president';
                     return (
                         <div
                             key={index}
@@ -220,7 +228,7 @@ const ExecutiveCommittee: React.FC = () => {
                                 borderRadius: '10px',
                                 marginBottom: '1.5rem',
                                 boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-                                borderLeft: `4px solid ${getBadgeClass(member.designation)}`
+                                borderLeft: `4px solid ${getBadgeColor(member.designation)}`
                             }}
                         >
                             <div style={{
@@ -234,8 +242,9 @@ const ExecutiveCommittee: React.FC = () => {
                                     borderRadius: '20px',
                                     fontSize: '0.85rem',
                                     fontWeight: '600',
-                                    background: getBadgeClass(member.designation),
-                                    color: 'white'
+                                    background: getBadgeColor(member.designation),
+                                    color: 'white',
+                                    textTransform: 'uppercase'
                                 }}>
                                     {member.designation}
                                 </span>
@@ -248,27 +257,21 @@ const ExecutiveCommittee: React.FC = () => {
                             }}>
                                 {member.name}
                             </h3>
-                            <div style={{
-                                marginBottom: '0.5rem',
-                                color: '#666'
-                            }}>
-                                <strong>Email:</strong>{' '}
-                                <a 
-                                    href={`mailto:${member.email}`}
-                                    style={{ 
-                                        color: '#0066cc',
-                                        textDecoration: 'none'
-                                    }}
-                                >
-                                    {member.email}
-                                </a>
-                            </div>
+                            {member.email && (
+                                <div style={{
+                                    color: '#666',
+                                    fontSize: '0.9rem',
+                                    marginBottom: '0.5rem'
+                                }}>
+                                    <strong>Email:</strong> {member.email}
+                                </div>
+                            )}
                             <div style={{
                                 color: '#666',
                                 fontSize: '0.95rem',
                                 lineHeight: '1.5'
                             }}>
-                                <strong>Affiliation:</strong> {formatAffiliation(member)}
+                                <strong>Professional Details:</strong> {getProfessionalDetails(member)}
                             </div>
                         </div>
                     );

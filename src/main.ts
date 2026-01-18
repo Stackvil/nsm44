@@ -1846,6 +1846,206 @@ function initYearShopGallery(): void {
   });
 }
 
+// Initialize PPT Gallery - Display PPT files directly
+function initPPTGallery(): void {
+  const pptConfigs = [
+    {
+      containerId: 'ppt-images-2023-24',
+      pptPath: '/Gen Sec report 2023-24.pptx',
+      name: 'Gen Sec Report 2023-24'
+    },
+    {
+      containerId: 'ppt-images-2024-25',
+      pptPath: '/Gen Sec report PPT 2024-25.pptx',
+      name: 'Gen Sec Report PPT 2024-25'
+    }
+  ];
+
+  pptConfigs.forEach(config => {
+    const container = document.getElementById(config.containerId);
+    if (!container) return;
+
+    // Create PPT viewer container
+    const viewerContainer = document.createElement('div');
+    viewerContainer.className = 'ppt-viewer-container';
+    viewerContainer.style.cssText = 'width: 100%; margin: 20px 0;';
+    
+    // Check if we're in production (deployed) or local
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const fileUrl = window.location.origin + config.pptPath;
+    
+    if (!isLocal) {
+      // For deployed sites, use Office Online viewer
+      const viewerWrapper = document.createElement('div');
+      viewerWrapper.className = 'ppt-viewer-wrapper';
+      viewerWrapper.style.cssText = 'width: 100%; height: 600px; margin: 20px 0; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); background: #f5f5f5; display: flex; align-items: center; justify-content: center;';
+      
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileUrl)}`;
+      iframe.style.cssText = 'width: 100%; height: 100%; border: none;';
+      iframe.setAttribute('allowfullscreen', 'true');
+      iframe.setAttribute('loading', 'lazy');
+      
+      // Add loading message
+      const loadingMsg = document.createElement('div');
+      loadingMsg.textContent = 'Loading presentation...';
+      loadingMsg.style.cssText = 'position: absolute; color: #666; font-size: 16px;';
+      viewerWrapper.appendChild(loadingMsg);
+      
+      iframe.onload = () => {
+        loadingMsg.style.display = 'none';
+      };
+      
+      iframe.onerror = () => {
+        // Fallback to Google viewer
+        iframe.src = `https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true`;
+      };
+      
+      viewerWrapper.appendChild(iframe);
+      viewerContainer.appendChild(viewerWrapper);
+    } else {
+      // For local development, show download and info
+      const localInfo = document.createElement('div');
+      localInfo.style.cssText = 'background: #fff3cd; border: 2px solid #ffc107; border-radius: 10px; padding: 20px; margin: 20px 0; text-align: center;';
+      localInfo.innerHTML = `
+        <p style="margin: 0 0 15px 0; color: #856404; font-size: 16px;">
+          <i class="fas fa-info-circle"></i> PPT viewer requires the site to be deployed. 
+          For local development, please download the file to view it.
+        </p>
+      `;
+      viewerContainer.appendChild(localInfo);
+    }
+    
+    // Add download/view buttons
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = 'display: flex; gap: 15px; justify-content: center; margin-top: 15px; flex-wrap: wrap;';
+    
+    const downloadBtn = document.createElement('a');
+    downloadBtn.href = config.pptPath;
+    downloadBtn.download = config.pptPath.split('/').pop() || 'presentation.pptx';
+    downloadBtn.className = 'ppt-download-btn';
+    downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PPT';
+    downloadBtn.style.cssText = 'display: inline-block; padding: 12px 24px; background: #00274d; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; transition: all 0.3s ease;';
+    downloadBtn.onmouseover = () => {
+      downloadBtn.style.background = '#003d7a';
+      downloadBtn.style.transform = 'translateY(-2px)';
+    };
+    downloadBtn.onmouseout = () => {
+      downloadBtn.style.background = '#00274d';
+      downloadBtn.style.transform = 'translateY(0)';
+    };
+    
+    const viewBtn = document.createElement('a');
+    viewBtn.href = config.pptPath;
+    viewBtn.target = '_blank';
+    viewBtn.className = 'ppt-view-btn';
+    viewBtn.innerHTML = '<i class="fas fa-external-link-alt"></i> Open in New Tab';
+    viewBtn.style.cssText = 'display: inline-block; padding: 12px 24px; background: #28a745; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; transition: all 0.3s ease;';
+    viewBtn.onmouseover = () => {
+      viewBtn.style.background = '#218838';
+      viewBtn.style.transform = 'translateY(-2px)';
+    };
+    viewBtn.onmouseout = () => {
+      viewBtn.style.background = '#28a745';
+      viewBtn.style.transform = 'translateY(0)';
+    };
+    
+    buttonContainer.appendChild(downloadBtn);
+    buttonContainer.appendChild(viewBtn);
+    viewerContainer.appendChild(buttonContainer);
+    
+    container.appendChild(viewerContainer);
+    
+    // Also try to load as images from folder (if extracted)
+    const folderPath = config.pptPath.replace('.pptx', '/').replace('/Gen Sec report', '/Gen Sec report');
+    const maxSlides = 50;
+    const loadedImages: string[] = [];
+    
+    const tryLoadImage = (slideNum: number): Promise<string | null> => {
+      return new Promise((resolve) => {
+        const formats = ['.jpg', '.jpeg', '.png', '.webp'];
+        const prefixes = ['slide-', 'Slide-', 'slide_', 'Slide_', ''];
+        
+        let attempts = 0;
+        const totalAttempts = formats.length * prefixes.length;
+        
+        const tryNext = (): void => {
+          const prefix = prefixes[Math.floor(attempts / formats.length)];
+          const format = formats[attempts % formats.length];
+          const imagePath = `${folderPath}${prefix}${slideNum}${format}`;
+          
+          const img = new Image();
+          img.onload = () => {
+            resolve(imagePath);
+          };
+          img.onerror = () => {
+            attempts++;
+            if (attempts < totalAttempts) {
+              tryNext();
+            } else {
+              resolve(null);
+            }
+          };
+          img.src = imagePath;
+        };
+        
+        tryNext();
+      });
+    };
+
+    // Try to load extracted images in background
+    const loadSlides = async (): Promise<void> => {
+      for (let i = 1; i <= maxSlides; i++) {
+        const imagePath = await tryLoadImage(i);
+        if (imagePath) {
+          loadedImages.push(imagePath);
+        } else {
+          break;
+        }
+      }
+
+      // If images found, add them below the viewer
+      if (loadedImages.length > 0) {
+        const imagesGrid = document.createElement('div');
+        imagesGrid.className = 'ppt-images-grid';
+        imagesGrid.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 30px;';
+        
+        loadedImages.forEach((imagePath, index) => {
+          const imgContainer = document.createElement('div');
+          imgContainer.className = 'ppt-slide-item';
+          imgContainer.innerHTML = `
+            <img src="${imagePath}" 
+                 alt="${config.name} - Slide ${index + 1}" 
+                 loading="lazy" 
+                 data-slide-index="${index}"
+                 data-slide-url="${imagePath}"
+                 style="width: 100%; height: 100%; object-fit: contain; cursor: pointer; border-radius: 8px;">
+          `;
+          imagesGrid.appendChild(imgContainer);
+        });
+        
+        container.appendChild(imagesGrid);
+        
+        // Add click handlers for lightbox
+        const allPhotos = loadedImages;
+        imagesGrid.addEventListener('click', (e) => {
+          const target = e.target as HTMLElement;
+          const img = target.closest('img');
+          if (img && img.parentElement?.classList.contains('ppt-slide-item') && !isLightboxOpen) {
+            e.preventDefault();
+            e.stopPropagation();
+            const currentIndex = parseInt(img.dataset.slideIndex || '0', 10);
+            openPhotoLightbox(allPhotos, currentIndex);
+          }
+        });
+      }
+    };
+
+    // Load images in background (non-blocking)
+    loadSlides();
+  });
+}
+
 // Initialize School Photos Gallery in About Section
 function initSchoolPhotosGallery(): void {
   const gallery = document.querySelector('.school-photos-grid');
@@ -2284,6 +2484,7 @@ if (document.readyState === 'loading') {
     initContactForm();
     initGlobe3DEffect();
     initSchoolPhotosGallery();
+    initPPTGallery();
   });
 } else {
   initAdminIntegration();
@@ -2305,6 +2506,7 @@ if (document.readyState === 'loading') {
   initGlobe3DEffect();
   initEventsTabs();
   initSchoolPhotosGallery();
+  initPPTGallery();
 }
 
 // Initialize Events Tabs
