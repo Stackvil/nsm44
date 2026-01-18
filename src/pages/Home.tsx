@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Users, Calendar, Briefcase, Heart, Award, Building2, GraduationCap, Network, Mail, Phone, MapPin } from 'lucide-react';
-import Button from '../components/Button';
 import './Home.css';
 
 const Home: React.FC = () => {

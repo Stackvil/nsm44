@@ -16,11 +16,6 @@ const MyProfile: React.FC = () => {
         return () => clearInterval(interval);
     }, []);
 
-    const openLoginModal = () => {
-        // This would trigger the login modal - for now redirect to login page
-        window.location.href = '/login';
-    };
-
     if (!isLoggedIn) {
         return (
             <div className="container py-16">

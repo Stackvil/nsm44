@@ -19,16 +19,29 @@ const AdminLogin: React.FC = () => {
             // Using localStorage-based auth (no backend)
             const res = await api.post('/auth/login', { username, password });
 
+            // Check if response data exists
+            if (!res.data?.data) {
+                setError('Invalid response from server. Please try again.');
+                setLoading(false);
+                return;
+            }
+
+            const responseData = res.data.data;
+
             // Verify role
-            if (res.data.data.user.role !== 'ADMIN' && res.data.data.user.role !== 'SUPER_ADMIN') {
+            if (responseData.user?.role !== 'ADMIN' && responseData.user?.role !== 'SUPER_ADMIN') {
                 setError('Access denied. Admin privileges required.');
                 setLoading(false);
                 return;
             }
 
             // Store token and user info
-            localStorage.setItem('token', res.data.data.token);
-            localStorage.setItem('user', JSON.stringify(res.data.data.user));
+            if (responseData.token) {
+                localStorage.setItem('token', responseData.token);
+            }
+            if (responseData.user) {
+                localStorage.setItem('user', JSON.stringify(responseData.user));
+            }
 
             // Redirect to admin dashboard
             navigate('/admin');
