@@ -85,14 +85,7 @@ export class DB {
         });
     }
 
-    private static async add<T>(storeName: string, item: T): Promise<void> {
-        const store = await this.getStore(storeName, 'readwrite');
-        return new Promise((resolve, reject) => {
-            const request = store.add(item);
-            request.onsuccess = () => resolve();
-            request.onerror = () => reject(request.error);
-        });
-    }
+
 
     private static async put<T>(storeName: string, item: T): Promise<void> {
         const store = await this.getStore(storeName, 'readwrite');
@@ -120,7 +113,7 @@ export class DB {
     }
 
     public static async saveEvent(event: EventPhoto): Promise<void> {
-        return this.add(STORES.EVENTS, event);
+        return this.put(STORES.EVENTS, event);
     }
 
     public static async deleteEvent(id: string): Promise<void> {
@@ -133,7 +126,7 @@ export class DB {
     }
 
     public static async saveGallery(gallery: GalleryPhoto): Promise<void> {
-        return this.add(STORES.GALLERY, gallery);
+        return this.put(STORES.GALLERY, gallery);
     }
 
     public static async deleteGallery(id: string): Promise<void> {
@@ -146,7 +139,7 @@ export class DB {
     }
 
     public static async saveReunion(reunion: ReunionPhoto): Promise<void> {
-        return this.add(STORES.REUNION, reunion);
+        return this.put(STORES.REUNION, reunion);
     }
 
     public static async deleteReunion(id: string): Promise<void> {
