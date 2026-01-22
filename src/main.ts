@@ -126,8 +126,7 @@ function initApp(): void {
   // Handle navigation link clicks
   navLinks.forEach((link) => {
     link.addEventListener('click', (e: MouseEvent) => {
-<<<<<<< HEAD
-=======
+
       const navItem = link.closest<HTMLElement>('.nav-item');
       const hasDropdown = navItem?.classList.contains('has-dropdown');
 
@@ -140,7 +139,7 @@ function initApp(): void {
       }
 
       // For non-dropdown items, navigate normally
->>>>>>> 236f3e1 (Migrate photo storage to IndexedDB and fix admin dashboard)
+
       e.preventDefault();
       const pageKey = link.dataset.page;
       if (isValidPageKey(pageKey)) {
@@ -2025,38 +2024,38 @@ function initPPTGallery(): void {
     const viewerContainer = document.createElement('div');
     viewerContainer.className = 'ppt-viewer-container';
     viewerContainer.style.cssText = 'width: 100%; margin: 20px 0;';
-    
+
     // Check if we're in production (deployed) or local
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     const fileUrl = window.location.origin + config.pptPath;
-    
+
     if (!isLocal) {
       // For deployed sites, use Office Online viewer
       const viewerWrapper = document.createElement('div');
       viewerWrapper.className = 'ppt-viewer-wrapper';
       viewerWrapper.style.cssText = 'width: 100%; height: 600px; margin: 20px 0; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); background: #f5f5f5; display: flex; align-items: center; justify-content: center;';
-      
+
       const iframe = document.createElement('iframe');
       iframe.src = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileUrl)}`;
       iframe.style.cssText = 'width: 100%; height: 100%; border: none;';
       iframe.setAttribute('allowfullscreen', 'true');
       iframe.setAttribute('loading', 'lazy');
-      
+
       // Add loading message
       const loadingMsg = document.createElement('div');
       loadingMsg.textContent = 'Loading presentation...';
       loadingMsg.style.cssText = 'position: absolute; color: #666; font-size: 16px;';
       viewerWrapper.appendChild(loadingMsg);
-      
+
       iframe.onload = () => {
         loadingMsg.style.display = 'none';
       };
-      
+
       iframe.onerror = () => {
         // Fallback to Google viewer
         iframe.src = `https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true`;
       };
-      
+
       viewerWrapper.appendChild(iframe);
       viewerContainer.appendChild(viewerWrapper);
     } else {
@@ -2071,11 +2070,11 @@ function initPPTGallery(): void {
       `;
       viewerContainer.appendChild(localInfo);
     }
-    
+
     // Add download/view buttons
     const buttonContainer = document.createElement('div');
     buttonContainer.style.cssText = 'display: flex; gap: 15px; justify-content: center; margin-top: 15px; flex-wrap: wrap;';
-    
+
     const downloadBtn = document.createElement('a');
     downloadBtn.href = config.pptPath;
     downloadBtn.download = config.pptPath.split('/').pop() || 'presentation.pptx';
@@ -2090,7 +2089,7 @@ function initPPTGallery(): void {
       downloadBtn.style.background = '#00274d';
       downloadBtn.style.transform = 'translateY(0)';
     };
-    
+
     const viewBtn = document.createElement('a');
     viewBtn.href = config.pptPath;
     viewBtn.target = '_blank';
@@ -2105,31 +2104,31 @@ function initPPTGallery(): void {
       viewBtn.style.background = '#28a745';
       viewBtn.style.transform = 'translateY(0)';
     };
-    
+
     buttonContainer.appendChild(downloadBtn);
     buttonContainer.appendChild(viewBtn);
     viewerContainer.appendChild(buttonContainer);
-    
+
     container.appendChild(viewerContainer);
-    
+
     // Also try to load as images from folder (if extracted)
     const folderPath = config.pptPath.replace('.pptx', '/').replace('/Gen Sec report', '/Gen Sec report');
     const maxSlides = 50;
     const loadedImages: string[] = [];
-    
+
     const tryLoadImage = (slideNum: number): Promise<string | null> => {
       return new Promise((resolve) => {
         const formats = ['.jpg', '.jpeg', '.png', '.webp'];
         const prefixes = ['slide-', 'Slide-', 'slide_', 'Slide_', ''];
-        
+
         let attempts = 0;
         const totalAttempts = formats.length * prefixes.length;
-        
+
         const tryNext = (): void => {
           const prefix = prefixes[Math.floor(attempts / formats.length)];
           const format = formats[attempts % formats.length];
           const imagePath = `${folderPath}${prefix}${slideNum}${format}`;
-          
+
           const img = new Image();
           img.onload = () => {
             resolve(imagePath);
@@ -2144,7 +2143,7 @@ function initPPTGallery(): void {
           };
           img.src = imagePath;
         };
-        
+
         tryNext();
       });
     };
@@ -2165,7 +2164,7 @@ function initPPTGallery(): void {
         const imagesGrid = document.createElement('div');
         imagesGrid.className = 'ppt-images-grid';
         imagesGrid.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 30px;';
-        
+
         loadedImages.forEach((imagePath, index) => {
           const imgContainer = document.createElement('div');
           imgContainer.className = 'ppt-slide-item';
@@ -2179,9 +2178,9 @@ function initPPTGallery(): void {
           `;
           imagesGrid.appendChild(imgContainer);
         });
-        
+
         container.appendChild(imagesGrid);
-        
+
         // Add click handlers for lightbox
         const allPhotos = loadedImages;
         imagesGrid.addEventListener('click', (e) => {
