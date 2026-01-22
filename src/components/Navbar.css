@@ -3,8 +3,13 @@
     box-shadow: var(--shadow-sm);
     position: sticky;
     top: 0;
-    z-index: var(--z-sticky);
+    z-index: 1000;
     border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+}
+
+.navbar .container {
+    overflow: visible;
 }
 
 .navbar-content {
@@ -55,11 +60,12 @@
 
 .navbar-dropdown {
     position: relative;
+    z-index: 1001;
 }
 
 .navbar-dropdown-menu {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 8px);
     left: 0;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
@@ -68,7 +74,7 @@
     min-width: 220px;
     padding: var(--space-2);
     margin-top: var(--space-2);
-    z-index: 1000;
+    z-index: 1001;
     animation: slideDown 0.2s ease-out;
 }
 
