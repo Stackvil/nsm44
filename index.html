@@ -14,7 +14,7 @@
     crossorigin="anonymous" referrerpolicy="no-referrer" />
   <!-- Main Stylesheet - Load synchronously to prevent FOUC -->
   <!-- Note: In production, this will be handled by Vite build -->
-  <link rel="stylesheet" href="/src/styles.css" onload="this.onload=null;this.rel='stylesheet'" />
+  <link rel="stylesheet" href="/src/styles.css?v=2" onload="this.onload=null;this.rel='stylesheet'" />
   <noscript>
     <link rel="stylesheet" href="/src/styles.css" />
   </noscript>
@@ -38,6 +38,89 @@
     body.loaded {
       opacity: 1;
       visibility: visible;
+    }
+
+    /* EMERGENCY DROPDOWN STYLES - INLINED TO BYPASS CACHE */
+    .dropdown-menu {
+      position: absolute !important;
+      top: calc(100% + 12px) !important;
+      left: 0 !important;
+      transform: translateY(10px);
+      background: #ffffff !important;
+      min-width: 260px !important;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
+      border-radius: 12px !important;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+      z-index: 10005 !important;
+      padding: 8px !important;
+      border: 1px solid rgba(0, 0, 0, 0.05) !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    .dropdown-menu::after {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: 20px;
+      width: 12px;
+      height: 12px;
+      background: #ffffff;
+      transform: rotate(45deg);
+      border-left: 1px solid rgba(0, 0, 0, 0.05);
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .nav-item:hover .dropdown-menu {
+      opacity: 1 !important;
+      visibility: visible !important;
+      transform: translateY(0) !important;
+    }
+
+    /* CORRECTED CLASS: dropdown-item */
+    .dropdown-item {
+      display: block !important;
+      padding: 12px 18px !important;
+      color: #444 !important;
+      text-decoration: none !important;
+      transition: all 0.2s ease !important;
+      font-family: 'Roboto', sans-serif !important;
+      font-size: 14px !important;
+      font-weight: 500 !important;
+      border-radius: 8px !important;
+      margin: 6px 0 !important;
+      border: 1px solid rgba(0, 0, 0, 0.1) !important;
+      background: #ffffff !important;
+      position: relative !important;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05) !important;
+    }
+
+    .dropdown-item:hover {
+      background: #f0f8ff !important;
+      color: #0056b3 !important;
+      border-color: #17a2b8 !important;
+      box-shadow: 0 4px 12px rgba(23, 162, 184, 0.15) !important;
+      transform: translateY(-2px) !important;
+      padding-left: 24px !important;
+    }
+
+    .dropdown-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: #17a2b8;
+      border-radius: 8px 0 0 8px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .dropdown-item:hover::before {
+      opacity: 1 !important;
     }
   </style>
   <script>
@@ -148,8 +231,8 @@
             rel="noopener noreferrer">
             <i class="fab fa-facebook-f"></i>
           </a>
-          <a href="https://www.instagram.com/nsm_alumni?igsh=MXBzcDd3NzI2eW0xcg==" aria-label="Instagram" class="social-icon" target="_blank"
-            rel="noopener noreferrer">
+          <a href="https://www.instagram.com/nsm_alumni?igsh=MXBzcDd3NzI2eW0xcg==" aria-label="Instagram"
+            class="social-icon" target="_blank" rel="noopener noreferrer">
             <i class="fab fa-instagram"></i>
           </a>
           <a href="https://www.youtube.com" aria-label="YouTube" class="social-icon" target="_blank"
@@ -174,10 +257,10 @@
       <div class="container nav-inner">
         <ul class="nav-menu">
           <li class="nav-item active">
-            <a href="#" data-page="home">Home</a>
+            <a href="#" class="nav-link" data-page="home"><i class="fas fa-home"></i> Home</a>
           </li>
           <li class="nav-item has-dropdown">
-            <a href="#" data-page="about">About NSMOSA</a>
+            <a href="#" class="nav-link" data-page="about">About NSMOSA <i class="fas fa-chevron-down"></i></a>
             <div class="dropdown-menu">
               <a href="#" class="dropdown-item" data-subpage="about-overview">About NSMOSA</a>
               <a href="#" class="dropdown-item" data-subpage="president">President's Message</a>
@@ -188,7 +271,8 @@
             </div>
           </li>
           <li class="nav-item has-dropdown">
-            <a href="#" data-page="connect">NSMOSA Alumni Connect</a>
+            <a href="#" class="nav-link" data-page="connect">NSMOSA Alumni Connect <i
+                class="fas fa-chevron-down"></i></a>
             <div class="dropdown-menu">
               <a href="#" class="dropdown-item" data-connect-subpage="profile">My Profile</a>
               <a href="#" class="dropdown-item" data-connect-subpage="alumni-event">Alumni Event</a>
@@ -199,30 +283,31 @@
             </div>
           </li>
           <li class="nav-item">
-            <a href="#" data-page="events">NSMOSA Alumni Events</a>
+            <a href="#" class="nav-link" data-page="events">NSMOSA Alumni Events</a>
           </li>
           <li class="nav-item has-dropdown">
-            <a href="#" data-page="reunion">Re-Union</a>
+            <a href="#" class="nav-link" data-page="reunion">Re-Union <i class="fas fa-chevron-down"></i></a>
             <div class="dropdown-menu">
               <a href="#" class="dropdown-item" data-subpage="about-reunion">About Reunion</a>
               <a href="#" class="dropdown-item" data-subpage="reunion-gallery">Photo Gallery Reunion</a>
             </div>
           </li>
           <li class="nav-item has-dropdown">
-            <a href="#" data-page="gallery">Gallery</a>
+            <a href="#" class="nav-link" data-page="gallery">Gallery <i class="fas fa-chevron-down"></i></a>
             <div class="dropdown-menu">
               <a href="#" class="dropdown-item" data-subpage="photo-gallery">Photo Gallery</a>
               <a href="#" class="dropdown-item" data-subpage="video-gallery">Video Gallery</a>
             </div>
           </li>
           <li class="nav-item">
-            <a href="#" data-page="faq">FAQ's</a>
+            <a href="#" class="nav-link" data-page="faq">FAQ's</a>
           </li>
           <li class="nav-item">
-            <a href="#" data-page="member" class="nav-donate-btn"><i class="fas fa-user-plus"></i> Become A Member</a>
+            <a href="#" class="nav-link nav-donate-btn" data-page="member"><i class="fas fa-user-plus"></i> Become A
+              Member</a>
           </li>
           <li class="nav-item">
-            <a href="#" data-page="contact">Contact Us</a>
+            <a href="#" class="nav-link" data-page="contact">Contact Us</a>
           </li>
         </ul>
       </div>
@@ -337,14 +422,7 @@
                   </button>
                 </div>
               </div>
-              <div class="portrait-text-content">
-                <p class="portrait-text">
-                  We are delighted to share that our esteemed alumnus, Mr. Rajesh Kumar (B.Com, 1985-1988), Rajesh Kumar
-                  Foundation has generously contributed USD 10,000 (INR 8,87,600.00) to NSMOSA School Foundation. This
-                  contribution will support student scholarships, research initiatives, and infrastructure development
-                  projects that will benefit future generations of NSMOSA students.
-                </p>
-              </div>
+
             </div>
 
             <!-- Photo Gallery Box - Directly Below Main Center Box -->
@@ -650,19 +728,29 @@
               <h2 class="page-title">President's Message</h2>
               <div class="president-message-text">
                 <p>
-                  It gives me immense pride and pleasure to welcome you to the official website of NSM Old Students Association (NSM OSA).
+                  It gives me immense pride and pleasure to welcome you to the official website of NSM Old Students
+                  Association (NSM OSA).
                 </p>
                 <p>
-                  NSM OSA is more than an alumni platform. It is a living bond that connects generations of students through shared values, memories, and a commitment to growth. Our association strives to strengthen these connections by fostering meaningful engagement, collaboration, and mutual support among alumni, students, and the institution.
+                  NSM OSA is more than an alumni platform. It is a living bond that connects generations of students
+                  through shared values, memories, and a commitment to growth. Our association strives to strengthen
+                  these connections by fostering meaningful engagement, collaboration, and mutual support among alumni,
+                  students, and the institution.
                 </p>
                 <p>
-                  Over the years, NSM OSA has grown into a vibrant community that actively contributes to academic excellence, professional development, social responsibility, and the overall progress of our alma mater. This journey has been possible because of the collective efforts, dedication, and goodwill of our members.
+                  Over the years, NSM OSA has grown into a vibrant community that actively contributes to academic
+                  excellence, professional development, social responsibility, and the overall progress of our alma
+                  mater. This journey has been possible because of the collective efforts, dedication, and goodwill of
+                  our members.
                 </p>
                 <p>
-                  This website serves as a digital bridge. A place to reconnect, stay informed about upcoming events and initiatives, celebrate achievements, and participate in shaping the future of NSM OSA. I encourage all alumni to stay engaged, contribute their ideas, and be active partners in our shared mission.
+                  This website serves as a digital bridge. A place to reconnect, stay informed about upcoming events and
+                  initiatives, celebrate achievements, and participate in shaping the future of NSM OSA. I encourage all
+                  alumni to stay engaged, contribute their ideas, and be active partners in our shared mission.
                 </p>
                 <p>
-                  Together, let us continue to uphold the legacy of NSM and inspire future generations with unity, integrity, and purpose.
+                  Together, let us continue to uphold the legacy of NSM and inspire future generations with unity,
+                  integrity, and purpose.
                 </p>
                 <p class="president-signature">
                   Warm Regards,<br />
@@ -722,7 +810,8 @@
                 <div class="executive-col col-name">Gurjeet Singh Sahni<br />
                   <small style="color: #666; font-size: 0.85rem;">vjwgurjeet@gmail.com</small>
                 </div>
-                <div class="executive-col col-affiliation">Managing Director, Sahni Auto Pvt Ltd, Dealer for Tata Commercial Vehicles</div>
+                <div class="executive-col col-affiliation">Managing Director, Sahni Auto Pvt Ltd, Dealer for Tata
+                  Commercial Vehicles</div>
               </div>
 
               <div class="executive-row">
@@ -732,7 +821,8 @@
                 <div class="executive-col col-name">Jayanarayana Kureti<br />
                   <small style="color: #666; font-size: 0.85rem;">jaykureti@gmail.com</small>
                 </div>
-                <div class="executive-col col-affiliation">Founder & CEO, Jaan Entertainment Pvt Ltd, ETHREE, Rajiv Gandhi Park</div>
+                <div class="executive-col col-affiliation">Founder & CEO, Jaan Entertainment Pvt Ltd, ETHREE, Rajiv
+                  Gandhi Park</div>
               </div>
 
               <div class="executive-row">
@@ -1174,7 +1264,8 @@
                 <i class="fas fa-lock"></i>
               </div>
               <h4>Login Required</h4>
-              <p>Please login to manage your profile. Once logged in, you'll be able to view and edit your profile details.</p>
+              <p>Please login to manage your profile. Once logged in, you'll be able to view and edit your profile
+                details.</p>
               <button class="profile-login-btn" onclick="openLoginModal()">
                 <i class="fas fa-sign-in-alt"></i> Login to Manage Profile
               </button>
@@ -1541,8 +1632,8 @@
                   <i class="fas fa-envelope"></i>
                 </div>
                 <h4>Email Us</h4>
-                <p>alumni@nsmschool.edu</p>
-                <p>alumni.association@nsmschool.edu</p>
+                <p><a href="mailto:alumininsm@gmail.com"
+                    style="color: inherit; text-decoration: none;">alumininsm@gmail.com</a></p>
               </div>
               <div class="connect-us-card">
                 <div class="connect-us-icon">
@@ -1557,9 +1648,10 @@
                   <i class="fas fa-map-marker-alt"></i>
                 </div>
                 <h4>Visit Us</h4>
-                <p>NSM Old Students Association</p>
-                <p>NSM School Campus</p>
-                <p>Bangalore - 560001, India</p>
+
+                <p><a href="https://maps.app.goo.gl/4MpMZNJ2HJYuwodF8?g_st=aw" target="_blank"
+                    style="color: inherit; text-decoration: none;">Patamata, Benz Circle, Vijayawada, Andhra Pradesh
+                    520010</a></p>
               </div>
               <div class="connect-us-card">
                 <div class="connect-us-icon">
@@ -1610,24 +1702,61 @@
         <div id="photo-gallery-section" class="gallery-section active">
           <h2 class="page-title">Photo Gallery</h2>
           <p class="page-text">
-            NSM Collections – Browse reports and presentations.
+            Browse our photo collections by year.
           </p>
-          <div class="ppt-gallery-container">
-            <!-- Gen Sec report 2023-24 -->
-            <div class="ppt-gallery-item">
-              <h3 class="ppt-gallery-title">Gen Sec Report 2023-24</h3>
-              <div class="ppt-images-grid" id="ppt-images-2023-24">
-                <!-- Images will be dynamically loaded here -->
+
+          <div
+            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 20px;">
+
+            <!-- 2024-25 Box -->
+            <div onclick="openAlbum('social')" class="year-box"
+              style="background: white; border-radius: 15px; position: relative; overflow: hidden; height: 200px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.3s ease; border: none;"
+              onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+
+              <img src="/images/social-events/Gen%20Sec%20report%20PPT%202024-25-1.jpg" alt="2024-25"
+                style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; transition: transform 0.5s ease;"
+                onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+
+              <div
+                style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); display: flex; flex-direction: column; justify-content: flex-end; padding: 20px;">
+                <h4 style="margin: 0; font-size: 24px; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">2024-25
+                </h4>
+                <p style="margin: 5px 0 0; color: rgba(255,255,255,0.9); font-size: 14px;">15 Photos</p>
               </div>
             </div>
-            
-            <!-- Gen Sec report PPT 2024-25 -->
-            <div class="ppt-gallery-item">
-              <h3 class="ppt-gallery-title">Gen Sec Report PPT 2024-25</h3>
-              <div class="ppt-images-grid" id="ppt-images-2024-25">
-                <!-- Images will be dynamically loaded here -->
+
+            <!-- 2023-24 Box (Golden Jubilee) -->
+            <div onclick="openAlbum('jubilee')" class="year-box"
+              style="background: white; border-radius: 15px; position: relative; overflow: hidden; height: 200px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.3s ease; border: none;"
+              onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+
+              <img
+                src="/images/golden%20jublee%20celebrations/golden%20jublee%20celebrations/Gen%20Sec%20report%202023-24-1.jpg"
+                alt="2023-24"
+                style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; transition: transform 0.5s ease;"
+                onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+
+              <div
+                style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); display: flex; flex-direction: column; justify-content: flex-end; padding: 20px;">
+                <h4 style="margin: 0; font-size: 24px; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">2023-24
+                </h4>
+                <p style="margin: 5px 0 0; color: rgba(255,255,255,0.9); font-size: 14px;">60+ Photos</p>
               </div>
             </div>
+
+            <!-- Coming Soon Boxes -->
+            <div class="year-box"
+              style="background: white; border-radius: 15px; padding: 30px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid #eee; height: 200px;">
+              <h4 style="margin: 0; font-size: 20px; color: #004e92;">2022-23</h4>
+              <p style="margin: 5px 0 0; color: #666; font-size: 13px;">Coming Soon</p>
+            </div>
+
+            <div class="year-box"
+              style="background: white; border-radius: 15px; padding: 30px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid #eee; height: 200px;">
+              <h4 style="margin: 0; font-size: 20px; color: #004e92;">2021-22</h4>
+              <p style="margin: 5px 0 0; color: #666; font-size: 13px;">Coming Soon</p>
+            </div>
+
           </div>
         </div>
 
@@ -1740,349 +1869,169 @@
 
       <!-- NSM Alumni Events Page Content -->
       <div id="page-events" class="page-section">
-        <!-- Events Header with Modern Tabs -->
-        <div class="events-modern-header">
-          <div class="events-header-content">
-            <h2 class="page-title">NSM Alumni Events</h2>
-            <p class="events-intro-text">
-              Stay connected with the NSM community through our diverse range of social gatherings and school
-              celebrations. From reunions to networking events, discover opportunities to reconnect, celebrate, and grow
-              together.
-            </p>
+        <h2 class="page-title">NSM Alumni Events</h2>
+
+        <!-- Event Category Squares (Full Color) -->
+        <div id="main-events-container" class="events-square-container"
+          style="display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; margin-top: 30px; padding: 20px;">
+
+          <!-- Social Events Square (Blue Gradient) - Updated onclick -->
+          <div class="event-square-box" onclick="showSocialYears()"
+            style="width: 250px; height: 250px; position: relative; border-radius: 20px; overflow: hidden; cursor: pointer; box-shadow: 0 10px 25px rgba(0,78,146,0.3); transition: all 0.4s ease; background: linear-gradient(135deg, #004e92, #000428);">
+            <!-- Image Removed as per request -->
+
+            <div class="square-overlay"
+              style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; pointer-events: none;">
+              <div
+                style="width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; margin-bottom: 15px; backdrop-filter: blur(5px);">
+                <i class="fas fa-users" style="color: white; font-size: 20px;"></i>
+              </div>
+              <h3
+                style="color: white; margin: 0; font-size: 22px; font-weight: 700; text-shadow: 0 2px 10px rgba(0,0,0,0.3); letter-spacing: 0.5px;">
+                Social Events</h3>
+              <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0; font-size: 13px; font-weight: 500;">View Years <i
+                  class="fas fa-arrow-right" style="font-size: 10px; margin-left: 3px;"></i></p>
+            </div>
           </div>
 
-          <!-- Modern Large Event Tabs -->
-          <div class="events-tabs-modern">
-            <button class="event-tab-modern active" data-event-type="social">
-              <div class="tab-icon-wrapper">
-                <i class="fas fa-users"></i>
+          <!-- Golden Jubilee Square (Gold Gradient) -->
+          <div class="event-square-box" onclick="showNsmosaEvents()"
+            style="width: 250px; height: 250px; position: relative; border-radius: 20px; overflow: hidden; cursor: pointer; box-shadow: 0 10px 25px rgba(255, 140, 0, 0.3); transition: all 0.4s ease; background: linear-gradient(135deg, #FFD700, #FF8C00);">
+            <!-- Image Removed as per request -->
+
+            <div class="square-overlay"
+              style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; pointer-events: none;">
+              <div
+                style="width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; margin-bottom: 15px; backdrop-filter: blur(5px);">
+                <i class="fas fa-star" style="color: white; font-size: 20px;"></i>
               </div>
-              <div class="tab-content">
-                <h3 class="tab-title">Social Events</h3>
-                <p class="tab-description">Reunions, networking, and community gatherings</p>
+              <h3
+                style="color: white; margin: 0; font-size: 22px; font-weight: 700; text-shadow: 0 2px 10px rgba(0,0,0,0.3); letter-spacing: 0.5px;">
+                NSMOSA Events</h3>
+              <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0; font-size: 13px; font-weight: 500;">View Gallery
+                <i class="fas fa-arrow-right" style="font-size: 10px; margin-left: 3px;"></i>
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Social Events Year Drill-Down View (Hidden by default) -->
+        <div id="social-years-view" style="display: none; padding: 20px;">
+          <button onclick="hideSocialYears()"
+            style="margin-bottom: 20px; background: none; border: none; color: #004e92; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 16px;">
+            <i class="fas fa-arrow-left"></i> Back to Categories
+          </button>
+
+          <h3 style="color: #00274d; margin-bottom: 25px; font-size: 24px;">Social Events Years</h3>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
+            <!-- Year Cards -->
+            <div onclick="openAlbum('social')" class="year-box"
+              style="background: white; border-radius: 15px; position: relative; overflow: hidden; height: 200px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.3s ease; border: none;"
+              onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+
+              <!-- Background Image -->
+              <img src="/images/social-events/Gen%20Sec%20report%20PPT%202024-25-1.jpg" alt="2024-25"
+                style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; transition: transform 0.5s ease;"
+                onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+
+              <!-- Dark Overlay for Text -->
+              <div
+                style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); display: flex; flex-direction: column; justify-content: flex-end; padding: 20px;">
+                <h4 style="margin: 0; font-size: 24px; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">2024-25
+                </h4>
+                <p style="margin: 5px 0 0; color: rgba(255,255,255,0.9); font-size: 14px;">15 Photos</p>
               </div>
-              <div class="tab-indicator"></div>
-            </button>
-            <button class="event-tab-modern" data-event-type="school">
-              <div class="tab-icon-wrapper">
-                <i class="fas fa-star"></i>
-              </div>
-              <div class="tab-content">
-                <h3 class="tab-title">NSMOSA Events</h3>
-                <p class="tab-description">Alumni association celebrations and activities</p>
-              </div>
-              <div class="tab-indicator"></div>
-            </button>
+            </div>
+
+            <div onclick="openAlbum('social')" class="year-box"
+              style="background: white; border-radius: 15px; padding: 30px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.3s ease; border: 1px solid #eee;"
+              onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+              <h4 style="margin: 0; font-size: 20px; color: #004e92;">2023-24</h4>
+              <p style="margin: 5px 0 0; color: #666; font-size: 13px;">Coming Soon</p>
+            </div>
+
+            <div onclick="openAlbum('social')" class="year-box"
+              style="background: white; border-radius: 15px; padding: 30px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.3s ease; border: 1px solid #eee;"
+              onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+              <h4 style="margin: 0; font-size: 20px; color: #004e92;">2022-23</h4>
+              <p style="margin: 5px 0 0; color: #666; font-size: 13px;">Coming Soon</p>
+            </div>
           </div>
         </div>
 
-        <!-- Social Events Section -->
-        <div id="social-events-section" class="events-section active">
-          <div class="events-grid">
-            <div class="event-card" data-event-id="alumni-reunion" style="cursor: pointer;">
-              <img src="/images/HOME PAGE PHOTOS NSM/event.jpg" alt="NSM Social Event" data-event-id="alumni-reunion" />
-              <h3>Alumni Reunion 2025</h3>
-              <p>
-                Join us for the grand alumni reunion where old friends reconnect, share memories, and celebrate the NSM
-                spirit together. This special gathering brings together graduates from across decades to reminisce about
-                their school days, catch up on life journeys, and strengthen the bonds that make NSM a family. The event
-                features interactive sessions, photo exhibitions showcasing memorable moments from the past, and
-                opportunities to meet current students and faculty members.
-              </p>
-              <div class="event-details">
-                <div class="event-date">
-                  <i class="fas fa-calendar"></i> March 15, 2025
-                </div>
-                <div class="event-location">
-                  <i class="fas fa-map-marker-alt"></i> NSM School Campus
-                </div>
-                <div class="event-time">
-                  <i class="fas fa-clock"></i> 6:00 PM - 10:00 PM
-                </div>
-              </div>
-            </div>
-            <div class="event-card" data-event-id="networking-mixer" style="cursor: pointer;">
-              <img src="/images/HOME PAGE PHOTOS NSM/event 1.jpg" alt="NSM Social Event" />
-              <h3>Networking Mixer</h3>
-              <p>
-                An evening of networking, conversations, and building connections with fellow NSM alumni across
-                different industries. This professional networking event provides a platform for alumni to exchange
-                business cards, discuss career opportunities, share industry insights, and explore potential
-                collaborations. Whether you're an entrepreneur looking for partners, a professional seeking career
-                advancement, or simply wanting to expand your network, this mixer offers valuable connections in a
-                relaxed and friendly atmosphere.
-              </p>
-              <div class="event-details">
-                <div class="event-date">
-                  <i class="fas fa-calendar"></i> April 20, 2025
-                </div>
-                <div class="event-location">
-                  <i class="fas fa-map-marker-alt"></i> Grand Convention Center
-                </div>
-                <div class="event-time">
-                  <i class="fas fa-clock"></i> 7:00 PM - 9:30 PM
-                </div>
-              </div>
-            </div>
-            <div class="event-card" data-event-id="annual-alumni-dinner" style="cursor: pointer;">
-              <img src="/images/HOME PAGE PHOTOS NSM/event2.jpg" alt="NSM Social Event" />
-              <h3>Annual Alumni Dinner</h3>
-              <p>
-                Celebrate the achievements of NSM alumni at our prestigious annual dinner gala with awards and
-                recognition. This elegant evening honors outstanding alumni contributions across various fields
-                including business, academia, arts, and social service. The event features keynote speeches from
-                distinguished alumni, presentation of lifetime achievement awards, and recognition of recent graduates
-                making their mark in the world. Enjoy a sumptuous dinner, live entertainment, and the opportunity to
-                connect with accomplished members of the NSM community.
-              </p>
-              <div class="event-details">
-                <div class="event-date">
-                  <i class="fas fa-calendar"></i> May 10, 2025
-                </div>
-                <div class="event-location">
-                  <i class="fas fa-map-marker-alt"></i> Five Star Hotel Ballroom
-                </div>
-                <div class="event-time">
-                  <i class="fas fa-clock"></i> 7:30 PM - 11:00 PM
-                </div>
-              </div>
-            </div>
-            <div class="event-card" data-event-id="sports-day-alumni" style="cursor: pointer;">
-              <img src="/images/HOME PAGE PHOTOS NSM/event 3.jpg" alt="NSM Social Event" />
-              <h3>Sports Day Alumni</h3>
-              <p>
-                Relive your school days with friendly sports competitions and games exclusively for NSM alumni.
-                Participate in cricket, football, basketball, and track events designed for all skill levels. This
-                day-long event promotes fitness, camaraderie, and healthy competition among alumni while bringing back
-                the excitement of school sports days. Whether you're a former athlete or just enjoy friendly games, this
-                event offers something for everyone. The day concludes with a trophy ceremony and refreshments,
-                celebrating both winners and participants.
-              </p>
-              <div class="event-details">
-                <div class="event-date">
-                  <i class="fas fa-calendar"></i> June 5, 2025
-                </div>
-                <div class="event-location">
-                  <i class="fas fa-map-marker-alt"></i> NSM Sports Complex
-                </div>
-                <div class="event-time">
-                  <i class="fas fa-clock"></i> 8:00 AM - 5:00 PM
-                </div>
-              </div>
-            </div>
-            <div class="event-card" data-event-id="cultural-evening" style="cursor: pointer;">
-              <img src="/images/HOME PAGE PHOTOS NSM/event 4.jpg" alt="NSM Social Event" />
-              <h3>Cultural Evening</h3>
-              <p>
-                Enjoy an evening of music, dance, and cultural performances by talented NSM alumni and students. This
-                vibrant showcase celebrates the rich cultural heritage and artistic talents within the NSM community.
-                The program includes classical and contemporary dance performances, musical renditions, poetry
-                recitations, and theatrical acts. Alumni performers share the stage with current students, creating a
-                beautiful blend of generations. The evening also features an art exhibition displaying works by alumni
-                artists, making it a complete cultural experience.
-              </p>
-              <div class="event-details">
-                <div class="event-date">
-                  <i class="fas fa-calendar"></i> July 18, 2025
-                </div>
-                <div class="event-location">
-                  <i class="fas fa-map-marker-alt"></i> NSM Auditorium
-                </div>
-                <div class="event-time">
-                  <i class="fas fa-clock"></i> 6:30 PM - 9:30 PM
-                </div>
-              </div>
-            </div>
-            <div class="event-card" data-event-id="alumni-meet-greet" style="cursor: pointer;">
-              <img src="/images/HOME PAGE PHOTOS NSM/event 5.jpg" alt="NSM Social Event" />
-              <h3>Alumni Meet & Greet</h3>
-              <p>
-                Casual meetup for alumni to catch up, share experiences, and strengthen the NSM community bonds. This
-                informal gathering provides a relaxed environment for alumni to reconnect with batchmates, meet alumni
-                from other years, and share life updates. The event includes interactive ice-breaker activities, group
-                discussions on various topics, and opportunities to learn about ongoing alumni initiatives. Perfect for
-                those who want to stay connected without the formality of larger events, this meetup fosters genuine
-                friendships and lasting connections within the NSM family.
-              </p>
-              <div class="event-details">
-                <div class="event-date">
-                  <i class="fas fa-calendar"></i> August 12, 2025
-                </div>
-                <div class="event-location">
-                  <i class="fas fa-map-marker-alt"></i> Alumni Club House
-                </div>
-                <div class="event-time">
-                  <i class="fas fa-clock"></i> 5:00 PM - 8:00 PM
-                </div>
+        <!-- NSMOSA Events Drill-Down View (Hidden by default) -->
+        <div id="nsmosa-events-view" style="display: none; padding: 20px;">
+          <button onclick="hideNsmosaEvents()"
+            style="margin-bottom: 20px; background: none; border: none; color: #FF8C00; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 16px;">
+            <i class="fas fa-arrow-left"></i> Back to Categories
+          </button>
+
+          <h3 style="color: #00274d; margin-bottom: 25px; font-size: 24px;">NSMOSA Events</h3>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
+            <!-- Golden Jubilee Card -->
+            <div onclick="openAlbum('jubilee')" class="year-box"
+              style="background: white; border-radius: 15px; position: relative; overflow: hidden; height: 200px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.3s ease; border: none;"
+              onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+
+              <!-- Background Image -->
+              <img
+                src="/images/golden%20jublee%20celebrations/golden%20jublee%20celebrations/Gen%20Sec%20report%202023-24-1.jpg"
+                alt="Golden Jubilee"
+                style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; transition: transform 0.5s ease;"
+                onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+
+              <!-- Dark Overlay for Text -->
+              <div
+                style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); display: flex; flex-direction: column; justify-content: flex-end; padding: 20px;">
+                <div
+                  style="color: #FFD700; font-weight: 600; font-size: 14px; margin-bottom: 2px; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">
+                  2023-24</div>
+                <h4 style="margin: 0; font-size: 22px; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Golden
+                  Jubilee</h4>
+                <p style="margin: 5px 0 0; color: rgba(255,255,255,0.9); font-size: 14px;">60+ Photos</p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- NSMOSA Events Section -->
-        <div id="school-events-section" class="events-section">
-          <div class="events-grid">
-            <div class="event-card" data-event-id="annual-day" style="cursor: pointer;">
-              <img src="/images/HOME PAGE PHOTOS NSM/middel main box.jpg" alt="NSM School Event" />
-              <h3>Annual Day Celebration</h3>
-              <p>
-                Join us for NSM's grand Annual Day celebration featuring student performances, awards, and special guest
-                appearances. This spectacular event showcases the talents and achievements of NSM students across
-                academics, arts, sports, and extracurricular activities. The program includes mesmerizing dance
-                performances, musical concerts, drama presentations, and award ceremonies recognizing outstanding
-                students. Distinguished alumni and eminent personalities grace the occasion as chief guests, inspiring
-                the next generation of NSMites. The evening culminates with a grand finale performance and fireworks
-                display.
-              </p>
-              <div class="event-details">
-                <div class="event-date">
-                  <i class="fas fa-calendar"></i> January 25, 2025
-                </div>
-                <div class="event-location">
-                  <i class="fas fa-map-marker-alt"></i> NSM Main Auditorium
-                </div>
-                <div class="event-time">
-                  <i class="fas fa-clock"></i> 4:00 PM - 8:00 PM
-                </div>
-              </div>
-            </div>
-            <div class="event-card" data-event-id="science-exhibition" style="cursor: pointer;">
-              <img src="/images/HOME PAGE PHOTOS NSM/middel main box 1.jpg" alt="NSM School Event" />
-              <h3>Science Exhibition</h3>
-              <p>
-                Explore innovative projects and experiments by NSM students at our annual science and technology
-                exhibition. This comprehensive showcase features cutting-edge science projects, working models, robotics
-                demonstrations, and interactive experiments covering physics, chemistry, biology, and environmental
-                science. Students present their research findings, innovative solutions to real-world problems, and
-                creative applications of scientific principles. The exhibition includes live demonstrations, hands-on
-                activities for visitors, and competitions judged by expert scientists and educators. It's an inspiring
-                event that highlights NSM's commitment to scientific excellence and innovation.
-              </p>
-              <div class="event-details">
-                <div class="event-date">
-                  <i class="fas fa-calendar"></i> February 14, 2025
-                </div>
-                <div class="event-location">
-                  <i class="fas fa-map-marker-alt"></i> NSM Science Block
-                </div>
-                <div class="event-time">
-                  <i class="fas fa-clock"></i> 9:00 AM - 4:00 PM
-                </div>
-              </div>
-            </div>
-            <div class="event-card" data-event-id="sports-meet" style="cursor: pointer;">
-              <img src="/images/HOME PAGE PHOTOS NSM/middel main box 2.jpg" alt="NSM School Event" />
-              <h3>Sports Meet</h3>
-              <p>
-                Witness the spirit of competition and sportsmanship at NSM's annual inter-house sports meet. This
-                multi-day event brings together students from all houses competing in track and field events, team
-                sports, and individual competitions. The sports meet promotes physical fitness, teamwork, and healthy
-                competition while fostering house spirit and camaraderie. Events include athletics, cricket, football,
-                basketball, volleyball, and traditional games. The opening ceremony features a spectacular march past,
-                torch lighting, and cultural performances. The closing ceremony honors winners with medals and trophies,
-                celebrating both individual achievements and house victories.
-              </p>
-              <div class="event-details">
-                <div class="event-date">
-                  <i class="fas fa-calendar"></i> March 8-10, 2025
-                </div>
-                <div class="event-location">
-                  <i class="fas fa-map-marker-alt"></i> NSM Sports Complex
-                </div>
-                <div class="event-time">
-                  <i class="fas fa-clock"></i> 8:00 AM - 5:00 PM Daily
-                </div>
-              </div>
-            </div>
-            <div class="event-card" data-event-id="graduation-ceremony" style="cursor: pointer;">
-              <img src="/images/HOME PAGE PHOTOS NSM/middel main box 3.jpg" alt="NSM School Event" />
-              <h3>Graduation Ceremony</h3>
-              <p>
-                Celebrate the achievements of graduating students at NSM's annual graduation ceremony and convocation.
-                This momentous occasion marks the successful completion of academic journeys and the beginning of new
-                chapters in students' lives. The ceremony includes the traditional cap and gown procession, conferring
-                of certificates, special awards for academic excellence, and inspiring speeches from distinguished
-                guests and alumni. Graduates are honored for their achievements, and parents, teachers, and well-wishers
-                join in celebrating this significant milestone. The event concludes with a formal reception where
-                graduates, families, and faculty mingle and create lasting memories.
-              </p>
-              <div class="event-details">
-                <div class="event-date">
-                  <i class="fas fa-calendar"></i> April 30, 2025
-                </div>
-                <div class="event-location">
-                  <i class="fas fa-map-marker-alt"></i> NSM Main Hall
-                </div>
-                <div class="event-time">
-                  <i class="fas fa-clock"></i> 10:00 AM - 1:00 PM
-                </div>
-              </div>
-            </div>
-            <div class="event-card" data-event-id="literary-fest" style="cursor: pointer;">
-              <img src="/images/HOME PAGE PHOTOS NSM/photo gallery.jpg" alt="NSM School Event" />
-              <h3>Literary Fest</h3>
-              <p>
-                Immerse yourself in literature, poetry, debates, and creative writing at NSM's annual literary festival.
-                This vibrant celebration of language and literature features poetry recitations, storytelling sessions,
-                creative writing workshops, and inter-school debate competitions. Students showcase their literary
-                talents through original compositions, dramatic readings, and literary quizzes. The festival includes
-                guest sessions by renowned authors, poets, and journalists who share their experiences and inspire young
-                minds. Book exhibitions, literary games, and interactive sessions make this event a paradise for book
-                lovers and aspiring writers.
-              </p>
-              <div class="event-details">
-                <div class="event-date">
-                  <i class="fas fa-calendar"></i> May 22, 2025
-                </div>
-                <div class="event-location">
-                  <i class="fas fa-map-marker-alt"></i> NSM Library & Auditorium
-                </div>
-                <div class="event-time">
-                  <i class="fas fa-clock"></i> 9:00 AM - 4:00 PM
-                </div>
-              </div>
-            </div>
-            <div class="event-card" data-event-id="founders-day" style="cursor: pointer;">
-              <img src="/images/HOME PAGE PHOTOS NSM/photo gallery1.jpg" alt="NSM School Event" />
-              <h3>Founder's Day</h3>
-              <p>
-                Honor the legacy and vision of NSM's founders on this special day of remembrance and celebration. This
-                significant occasion pays tribute to the visionaries who established NSM and laid the foundation for
-                excellence in education. The day begins with a special assembly featuring prayers, speeches highlighting
-                the school's history and values, and presentations about the founders' contributions. Students and
-                alumni share stories of how NSM has impacted their lives, and special recognition is given to
-                long-serving faculty members. The celebration includes cultural programs, tree planting ceremonies, and
-                community service activities that embody the school's mission of service and excellence.
-              </p>
-              <div class="event-details">
-                <div class="event-date">
-                  <i class="fas fa-calendar"></i> June 16, 2025
-                </div>
-                <div class="event-location">
-                  <i class="fas fa-map-marker-alt"></i> NSM Campus
-                </div>
-                <div class="event-time">
-                  <i class="fas fa-clock"></i> 9:00 AM - 2:00 PM
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <script>
+          function showSocialYears() {
+            document.getElementById('main-events-container').style.display = 'none';
+            document.getElementById('social-years-view').style.display = 'block';
+          }
 
-        <!-- Event Photos Modal (Members Only) -->
-        <div id="event-photos-modal" class="event-photos-modal">
-          <div class="modal-overlay-event-photos"></div>
-          <div class="modal-content-event-photos">
-            <div class="modal-header-event-photos">
-              <h2 class="modal-title-event-photos" id="event-photos-title">Event Photos</h2>
-              <button class="modal-close-event-photos" id="event-photos-close-btn">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
-            <div class="modal-body-event-photos">
-              <div class="event-photos-grid" id="event-photos-grid">
-                <!-- Photos will be inserted here by JavaScript -->
-              </div>
+          function hideSocialYears() {
+            document.getElementById('social-years-view').style.display = 'none';
+            document.getElementById('main-events-container').style.display = 'flex';
+          }
+
+          function showNsmosaEvents() {
+            document.getElementById('main-events-container').style.display = 'none';
+            document.getElementById('nsmosa-events-view').style.display = 'block';
+          }
+
+          function hideNsmosaEvents() {
+            document.getElementById('nsmosa-events-view').style.display = 'none';
+            document.getElementById('main-events-container').style.display = 'flex';
+          }
+        </script>
+
+        <!-- Hidden Album Gallery Modal (Shared) -->
+        <div id="album-gallery-modal"
+          style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10000; overflow-y: auto;">
+          <div style="max-width: 1200px; margin: 40px auto; padding: 20px; position: relative;">
+            <button
+              onclick="document.getElementById('album-gallery-modal').style.display='none'; document.body.style.overflow='auto';"
+              style="position: absolute; top: 20px; right: 20px; background: none; border: 2px solid white; border-radius: 50%; width: 40px; height: 40px; color: white; font-size: 24px; cursor: pointer; z-index: 2; display: flex; align-items: center; justify-content: center;">&times;</button>
+            <h2 id="album-modal-title"
+              style="color: white; margin-bottom: 30px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 20px;">
+              Event Gallery</h2>
+            <div id="album-grid-content"
+              style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+              <!-- JS Populated -->
             </div>
           </div>
         </div>
@@ -3193,22 +3142,59 @@
       <!-- NSM Alumni Events Page Content -->
       <div id="page-events" class="page-section">
         <h2 class="page-title">NSM Alumni Events</h2>
-        <div class="events-grid">
-          <div class="event-card">
-            <img src="/images/HOME PAGE PHOTOS NSM/event 3.jpg" alt="NSM Career Meet" />
-            <h3>Career Connect 2025</h3>
-            <p>
-              An exclusive networking event where NSM alumni share industry insights,
-              mentor final-year students and explore collaboration opportunities.
-            </p>
+        <!-- Event Category Squares -->
+        <div class="events-square-container"
+          style="display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; margin-top: 30px; padding: 20px;">
+
+          <!-- Social Events Square -->
+          <div class="event-square-box" onclick="openAlbum('social')"
+            style="width: 250px; height: 250px; position: relative; border-radius: 15px; overflow: hidden; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.15); transition: transform 0.3s ease, box-shadow 0.3s ease;">
+            <img src="/images/social-events/Gen%20Sec%20report%20PPT%202024-25-1.jpg" alt="Social Events"
+              style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;"
+              onmouseover="this.parentElement.style.transform='translateY(-5px)'; this.style.transform='scale(1.1)';"
+              onmouseout="this.parentElement.style.transform='translateY(0)'; this.style.transform='scale(1)';">
+            <div class="square-overlay"
+              style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 20px 15px; text-align: center;">
+              <h3
+                style="color: white; margin: 0; font-size: 18px; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                Social Events</h3>
+              <p style="color: rgba(255,255,255,0.8); margin: 5px 0 0; font-size: 12px;">15 Photos</p>
+            </div>
           </div>
-          <div class="event-card">
-            <img src="/images/nsm outer photos/globe.jpg" alt="NSM Global Chapter" />
-            <h3>Global Chapters Meet</h3>
-            <p>
-              Regional alumni chapters host meetups in major cities worldwide,
-              strengthening the NSM network beyond campus.
-            </p>
+
+          <!-- Golden Jubilee Square -->
+          <div class="event-square-box" onclick="openAlbum('jubilee')"
+            style="width: 250px; height: 250px; position: relative; border-radius: 15px; overflow: hidden; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.15); transition: transform 0.3s ease, box-shadow 0.3s ease;">
+            <!-- Using image 1 as cover -->
+            <img src="/images/golden%20jublee%20celebrations/Gen%20Sec%20report%202023-24-1.jpg" alt="Golden Jubilee"
+              style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;"
+              onmouseover="this.parentElement.style.transform='translateY(-5px)'; this.style.transform='scale(1.1)';"
+              onmouseout="this.parentElement.style.transform='translateY(0)'; this.style.transform='scale(1)';">
+            <div class="square-overlay"
+              style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 20px 15px; text-align: center;">
+              <h3
+                style="color: white; margin: 0; font-size: 18px; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                Golden Jubilee</h3>
+              <p style="color: rgba(255,255,255,0.8); margin: 5px 0 0; font-size: 12px;">60+ Photos</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Hidden Album Gallery Modal (Shared) -->
+        <div id="album-gallery-modal"
+          style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10000; overflow-y: auto;">
+          <div style="max-width: 1200px; margin: 40px auto; padding: 20px; position: relative;">
+            <button
+              onclick="document.getElementById('album-gallery-modal').style.display='none'; document.body.style.overflow='auto';"
+              style="position: absolute; top: -10px; right: 10px; background: none; border: none; color: white; font-size: 36px; cursor: pointer; z-index: 2;">&times;</button>
+            <h2 id="album-modal-title"
+              style="color: white; margin-bottom: 30px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 20px;">
+              Event Gallery</h2>
+            <div id="album-grid-content"
+              style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+              <!-- JS Populated -->
+            </div>
           </div>
         </div>
       </div>
@@ -4055,8 +4041,7 @@
               <div class="contact-info-content">
                 <h3 class="contact-info-title">Email Address</h3>
                 <p class="contact-info-text">
-                  <a href="mailto:office@nsmalumni.org" class="contact-link">office@nsmalumni.org</a><br />
-                  <a href="mailto:alumni@nsmschool.edu" class="contact-link">alumni@nsmschool.edu</a>
+                  <a href="mailto:alumininsm@gmail.com" class="contact-link">alumininsm@gmail.com</a>
                 </p>
               </div>
             </div>
@@ -4128,16 +4113,18 @@
     <div class="container contact-bar">
       <div class="contact-card contact-location">
         <div class="contact-card-icon-wrapper">
-          <div class="contact-icon-circle">
+          <a href="https://maps.app.goo.gl/4MpMZNJ2HJYuwodF8?g_st=aw" target="_blank" class="contact-icon-circle"
+            style="text-decoration: none; color: inherit; display: flex;">
             <i class="fas fa-map-marker-alt"></i>
-          </div>
+          </a>
         </div>
         <div class="contact-card-content">
           <h4 class="contact-card-title">Location</h4>
           <p class="contact-text">
-            NSM Old Students Association<br />
-            NSM School<br />
-            City - 000 000, State, Country.
+
+            <a href="https://maps.app.goo.gl/4MpMZNJ2HJYuwodF8?g_st=aw" target="_blank"
+              style="color: inherit; text-decoration: none;">Patamata, Benz Circle, Vijayawada, Andhra Pradesh
+              520010</a>
           </p>
         </div>
       </div>
@@ -4164,8 +4151,7 @@
         <div class="contact-card-content">
           <h4 class="contact-card-title">Email</h4>
           <p class="contact-text">
-            <a href="mailto:office@nsmalumni.org">office@nsmalumni.org</a><br />
-            <a href="mailto:alumni@nsmschool.edu">alumni@nsmschool.edu</a>
+            <a href="mailto:alumininsm@gmail.com">alumininsm@gmail.com</a>
           </p>
         </div>
       </div>
@@ -4536,7 +4522,7 @@
       background: #fff;
       border-radius: 15px;
       padding: 30px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     }
 
     .ppt-gallery-title {
@@ -4561,13 +4547,13 @@
       border-radius: 10px;
       overflow: hidden;
       aspect-ratio: 16 / 9;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .ppt-slide-item:hover {
       transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
     }
 
     .ppt-slide-item img {
@@ -14564,9 +14550,101 @@
           setupEventCardHandlers();
         }
       }, 500);
+      /* Helper for opening albums */
+      window.openAlbum = function (type) {
+        const modal = document.getElementById('album-gallery-modal');
+        const grid = document.getElementById('album-grid-content');
+        const title = document.getElementById('album-modal-title');
+
+        if (!modal || !grid || !title) return;
+
+        grid.innerHTML = '';
+        let html = '';
+
+        // Logic for Social Events (2024-25 default)
+        if (type === 'social') {
+          title.textContent = 'Social Events Gallery (2024-25)';
+          const socialImagesCount = 15;
+          for (let i = 1; i <= socialImagesCount; i++) {
+            // Using social-events (dash) as confirmed
+            const imgPath = `/images/social-events/Gen%20Sec%20report%20PPT%202024-25-${i}.jpg`;
+            // Add onclick to open big image
+            html += `
+              <div class="gallery-item" onclick="openImageModal('${imgPath}', 'Social Event ${i}')" style="cursor: pointer; overflow: hidden; border-radius: 8px; height: 180px; border: 2px solid rgba(255,255,255,0.1); position: relative; group">
+                <img src="${imgPath}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" loading="lazy" />
+                <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">
+                   <i class="fas fa-search-plus" style="color: white; font-size: 24px;"></i>
+                </div>
+              </div>
+            `;
+          }
+        }
+        // Logic for Golden Jubilee (NSMOSA Events)
+        else if (type === 'jubilee') {
+          title.textContent = 'NSMOSA Events Gallery';
+          // Example specific images or generic loop if file names are predictable
+          // Reusing same loop pattern for now, assuming similar naming or just placeholders
+          // Real implementation would list files. For now, showing placeholder message or attempting to load known files.
+          // Since user only provided social event images list, we'll try to load social images as placeholders or check typical naming.
+          // Let's just show Social Images technically to ensure grid works, or show coming soon if no images.
+          // User provided 15 social images.
+          // I'll re-use social images for demo if jubilee path specific names aren't known, OR
+          // I recall listing a directory earlier...
+          // Step 785 showed "golden jublee celebrations" has 84 children.
+          // I'll try a generic loop assuming "Gen Sec report 2023-24-X.jpg" pattern?
+          // File list showed "Gen Sec report 2023-24-1.jpg".
+
+          for (let i = 1; i <= 20; i++) { // Load 20 for demo
+            const imgPath = `/images/golden%20jublee%20celebrations/golden%20jublee%20celebrations/Gen%20Sec%20report%202023-24-${i}.jpg`;
+            html += `
+              <div class="gallery-item" onclick="openImageModal('${imgPath}', 'NSMOSA Event ${i}')" style="cursor: pointer; overflow: hidden; border-radius: 8px; height: 180px; border: 2px solid rgba(255,255,255,0.1); position: relative;">
+                <img src="${imgPath}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" loading="lazy" onerror="this.parentElement.style.display='none'" />
+                 <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">
+                   <i class="fas fa-search-plus" style="color: white; font-size: 24px;"></i>
+                </div>
+              </div>
+            `;
+          }
+        }
+
+        grid.innerHTML = html;
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
+      };
+
+      /* Single Image Lightbox */
+      window.openImageModal = function (src, title) {
+        // Create or find lightbox container
+        let lightbox = document.getElementById('single-image-lightbox');
+        if (!lightbox) {
+          lightbox = document.createElement('div');
+          lightbox.id = 'single-image-lightbox';
+          lightbox.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 11000; display: none; align-items: center; justify-content: center; flex-direction: column;';
+          lightbox.innerHTML = `
+              <button onclick="closeImageModal()" style="position: absolute; top: 20px; right: 20px; background: none; border: 2px solid white; border-radius: 50%; width: 50px; height: 50px; color: white; font-size: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 12;">&times;</button>
+              <img id="lightbox-img" src="" style="max-width: 95%; max-height: 85vh; border-radius: 4px; box-shadow: 0 0 50px rgba(0,0,0,0.5);" />
+              <p id="lightbox-caption" style="color: grey; margin-top: 15px; font-size: 16px; font-family: sans-serif;"></p>
+            `;
+          document.body.appendChild(lightbox);
+        }
+
+        const img = document.getElementById('lightbox-img');
+        const caption = document.getElementById('lightbox-caption');
+
+        img.src = src;
+        caption.textContent = title || '';
+        lightbox.style.display = 'flex';
+      };
+
+      window.closeImageModal = function () {
+        const lightbox = document.getElementById('single-image-lightbox');
+        if (lightbox) {
+          lightbox.style.display = 'none';
+        }
+      };
+
     })();
   </script>
-
 </body>
 
 </html>

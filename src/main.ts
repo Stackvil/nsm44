@@ -495,6 +495,7 @@ async function loadAdminData(): Promise<void> {
     console.log('loadAdminData: Event photos found', eventPhotos.length);
     // Note: We might want to add these to the gallery dynamically, but for now we'll just expose them
     (window as any).adminEventPhotos = eventPhotos;
+    renderAdminEvents(eventPhotos);
 
     // Load Gallery Photos from IndexedDB
     const galleryPhotos = await DB.getGallery();
@@ -611,6 +612,152 @@ function renderNewsUpdates(updates: any[]): void {
   } else {
     console.error('renderNewsUpdates: Could not find target containers');
   }
+}
+
+// Static Event Data
+const staticEvents: Record<string, { title: string, photos: string[] }> = {
+  'golden-jubilee': {
+    title: 'Golden Jubilee Celebrations',
+    photos: [
+      '/images/golden-jubilee-celebrations/Gen%20Sec%20report%202023-24-1.jpg',
+      '/images/golden-jubilee-celebrations/Gen%20Sec%20report%202023-24-10.jpg',
+      '/images/golden-jubilee-celebrations/Gen%20Sec%20report%202023-24-11.jpg',
+      '/images/golden-jubilee-celebrations/Gen%20Sec%20report%202023-24-12.jpg',
+      '/images/golden-jubilee-celebrations/Gen%20Sec%20report%202023-24-13.jpg',
+      '/images/golden-jubilee-celebrations/Gen%20Sec%20report%202023-24-14.jpg',
+      '/images/golden-jubilee-celebrations/Gen%20Sec%20report%202023-24-15.jpg',
+      '/images/golden-jubilee-celebrations/Gen%20Sec%20report%202023-24-17.jpg',
+      '/images/golden-jubilee-celebrations/Gen%20Sec%20report%202023-24-18.jpg',
+      '/images/golden-jubilee-celebrations/Gen%20Sec%20report%202023-24-19.jpg',
+      '/images/golden-jubilee-celebrations/Gen%20Sec%20report%202023-24-20.jpg',
+      '/images/golden-jubilee-celebrations/Gen%20Sec%20report%202023-24-21.jpg'
+    ]
+  },
+  'social-events': {
+    title: 'NSMOSA Social Events',
+    photos: [
+      '/images/social-events/Gen%20Sec%20report%20PPT%202024-25-1.jpg',
+      '/images/social-events/Gen%20Sec%20report%20PPT%202024-25-10.jpg',
+      '/images/social-events/Gen%20Sec%20report%20PPT%202024-25-11.jpg',
+      '/images/social-events/Gen%20Sec%20report%20PPT%202024-25-12.jpg',
+      '/images/social-events/Gen%20Sec%20report%20PPT%202024-25-13.jpg',
+      '/images/social-events/Gen%20Sec%20report%20PPT%202024-25-14.jpg',
+      '/images/social-events/Gen%20Sec%20report%20PPT%202024-25-15.jpg',
+      '/images/social-events/Gen%20Sec%20report%20PPT%202024-25-2.jpg',
+      '/images/social-events/Gen%20Sec%20report%20PPT%202024-25-3.jpg',
+      '/images/social-events/Gen%20Sec%20report%20PPT%202024-25-4.jpg'
+    ]
+  }
+};
+
+(window as any).openStaticEventGallery = (eventId: string) => {
+  const eventData = staticEvents[eventId];
+  if (!eventData) {
+    console.error('Event not found:', eventId);
+    return;
+  }
+
+  const modal = document.getElementById('event-photos-modal');
+  const modalTitle = document.getElementById('event-photos-title');
+  const grid = document.getElementById('event-photos-grid');
+
+  if (modal && modalTitle && grid) {
+    modalTitle.textContent = eventData.title;
+    grid.innerHTML = '';
+
+    eventData.photos.forEach(photoUrl => {
+      const img = document.createElement('img');
+      img.src = photoUrl;
+      img.alt = 'Event Photo';
+      img.className = 'event-photo-item';
+      img.onclick = () => {
+        window.open(photoUrl, '_blank');
+      };
+      grid.appendChild(img);
+    });
+
+    modal.classList.add('active');
+  }
+};
+
+// Also expose a generic open gallery function for admin events
+(window as any).openAdminEventGallery = (eventName: string, photoUrls: string[]) => {
+  const modal = document.getElementById('event-photos-modal');
+  const modalTitle = document.getElementById('event-photos-title');
+  const grid = document.getElementById('event-photos-grid');
+
+  if (modal && modalTitle && grid) {
+    modalTitle.textContent = eventName;
+    grid.innerHTML = '';
+
+    photoUrls.forEach(url => {
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = 'Event Photo';
+      img.className = 'event-photo-item';
+
+      // Add error handling manually since these might be user uploaded
+      img.onerror = () => {
+        img.style.display = 'none';
+      };
+
+      grid.appendChild(img);
+    });
+
+    modal.classList.add('active');
+  }
+};
+
+function renderAdminEvents(events: any[]): void {
+  const container = document.getElementById('dynamic-admin-events-container');
+  if (!container) return;
+
+  // Clear container
+  container.innerHTML = '';
+
+  if (events.length === 0) return;
+
+  events.forEach((event) => {
+    // Use the first photo as cover if available
+    const coverImage = event.photos && event.photos.length > 0
+      ? event.photos[0].url
+      : '/images/HOME PAGE PHOTOS NSM/middel main box.jpg'; // Fallback
+
+    const eventDate = new Date(event.eventDate || event.createdAt || Date.now());
+    const day = eventDate.getDate();
+    const month = eventDate.toLocaleString('default', { month: 'short' });
+
+    const card = document.createElement('div');
+    card.className = 'modern-event-card admin-event-card';
+    // Ideally add an onclick handler to open the photos
+    card.onclick = () => {
+      const photoUrls = event.photos ? event.photos.map((p: any) => p.url) : [];
+      (window as any).openAdminEventGallery(event.eventName, photoUrls);
+    };
+
+    card.innerHTML = `
+      <div class="card-image-wrapper">
+        <img src="${coverImage}" alt="${event.eventName}" class="card-image" />
+        <div class="card-overlay">
+          <div class="card-date">
+            <span class="day">${day}</span>
+            <span class="month">${month}</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-content">
+        <div class="card-badge purple">New Event</div>
+        <h3>${event.eventName}</h3>
+        <p>
+          ${event.photos ? `${event.photos.length} photos added.` : 'New event added.'}
+        </p>
+        <div class="card-footer">
+          <span class="view-gallery-btn">View Photos <i class="fas fa-arrow-right"></i></span>
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
 }
 
 // NSM School photos - all images from public/images/NSM School folder
