@@ -155,47 +155,82 @@
 
 /* Mobile Styles */
 @media (max-width: 768px) {
-
-    .navbar-links,
-    .navbar-actions {
-        display: none;
+    .navbar-content {
+        flex-direction: column;
+        padding: 0;
+        align-items: flex-start;
     }
 
+    .navbar-logo {
+        padding: var(--space-4);
+        width: 100%;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    /* Hide standard mobile menu elements */
     .navbar-toggle {
-        display: block;
+        display: none !important;
     }
 
     .navbar-mobile {
-        display: flex;
-        flex-direction: column;
-        gap: var(--space-2);
+        display: none !important;
+    }
+
+    /* Show and style desktop links for mobile scrolling */
+    .navbar-links {
+        display: flex !important;
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding: 0 var(--space-4);
+        gap: var(--space-6);
+        background-color: var(--color-surface);
+        /* Hide scrollbar */
+        scrollbar-width: none;
+        /* Firefox */
+        -ms-overflow-style: none;
+        /* IE/Edge */
+    }
+
+    .navbar-links::-webkit-scrollbar {
+        display: none;
+        /* Chrome/Safari */
+    }
+
+    .navbar-link {
         padding: var(--space-4) 0;
-        border-top: 1px solid var(--color-border);
-        animation: slideDown 0.3s ease-out;
+        font-size: var(--text-sm);
+        border-bottom: 2px solid transparent;
+        border-radius: 0;
     }
 
-    .navbar-mobile-link {
-        padding: var(--space-3);
-        font-size: var(--text-base);
-        font-weight: var(--font-medium);
-        color: var(--color-text-secondary);
-        border-radius: var(--radius-md);
-        transition: all var(--transition-base);
+    /* Active state styling from user image */
+    .navbar-link.active::after {
+        bottom: 0;
+        height: 3px;
+        background-color: var(--color-accent);
+        box-shadow: 0 0 8px var(--color-accent);
     }
 
-    .navbar-mobile-link:hover,
-    .navbar-mobile-link.active {
-        background-color: var(--color-background);
-        color: var(--color-accent);
+    .navbar-dropdown-menu {
+        position: fixed;
+        width: 90%;
+        left: 5%;
+        top: 50%;
+        transform: translateY(-50%);
+        max-height: 80vh;
+        overflow-y: auto;
+        z-index: 1002;
     }
 
-    .navbar-mobile-actions {
-        display: flex;
-        flex-direction: column;
-        gap: var(--space-3);
-        margin-top: var(--space-4);
-        padding-top: var(--space-4);
-        border-top: 1px solid var(--color-border);
+    /* Hide actions (Login/Signup buttons) from the scroll strip if desired, 
+       or keep them. Based on image, it seems to be just nav links. 
+       Let's keep them hidden or move them elsewhere if needed. 
+       For now, we will hide the .navbar-actions in this strip to match the "Tabs" look 
+       and potential space constraints, or we can let them scroll too. 
+       Let's hide them for now as per typical tab UI, assuming they might exist elsewhere or user didn't ask for them specifically in the tab bar. */
+    .navbar-actions {
+        display: none !important;
     }
 }
 
