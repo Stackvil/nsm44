@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import Button from './Button';
 import './Navbar.css';
 
 const Navbar: React.FC = () => {
-    const [isOpen, setIsOpen] = useState(false);
+
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
     const location = useLocation();
 
@@ -62,7 +62,7 @@ const Navbar: React.FC = () => {
                         </Link>
 
                         {/* About NSMOSA Dropdown */}
-                        <div 
+                        <div
                             className="navbar-dropdown"
                             onMouseEnter={() => setOpenDropdown('about')}
                             onMouseLeave={() => setOpenDropdown(null)}
@@ -85,7 +85,7 @@ const Navbar: React.FC = () => {
                                             key={link.path}
                                             to={link.path}
                                             className={`navbar-dropdown-item ${isActive(link.path) ? 'active' : ''}`}
-                                            onClick={() => setIsOpen(false)}
+                                            onClick={() => { }}
                                         >
                                             {link.label}
                                         </Link>
@@ -95,7 +95,7 @@ const Navbar: React.FC = () => {
                         </div>
 
                         {/* NSMOSA Alumni Connect Dropdown */}
-                        <div 
+                        <div
                             className="navbar-dropdown"
                             onMouseEnter={() => setOpenDropdown('connect')}
                             onMouseLeave={() => setOpenDropdown(null)}
@@ -118,7 +118,7 @@ const Navbar: React.FC = () => {
                                             key={link.path}
                                             to={link.path}
                                             className={`navbar-dropdown-item ${isActive(link.path) ? 'active' : ''}`}
-                                            onClick={() => setIsOpen(false)}
+                                            onClick={() => { }}
                                         >
                                             {link.label}
                                         </Link>
@@ -135,7 +135,7 @@ const Navbar: React.FC = () => {
                         </Link>
 
                         {/* Re-Union Dropdown */}
-                        <div 
+                        <div
                             className="navbar-dropdown"
                             onMouseEnter={() => setOpenDropdown('reunion')}
                             onMouseLeave={() => setOpenDropdown(null)}
@@ -158,7 +158,7 @@ const Navbar: React.FC = () => {
                                             key={link.path}
                                             to={link.path}
                                             className={`navbar-dropdown-item ${isActive(link.path) ? 'active' : ''}`}
-                                            onClick={() => setIsOpen(false)}
+                                            onClick={() => { }}
                                         >
                                             {link.label}
                                         </Link>
@@ -168,7 +168,7 @@ const Navbar: React.FC = () => {
                         </div>
 
                         {/* Gallery Dropdown */}
-                        <div 
+                        <div
                             className="navbar-dropdown"
                             onMouseEnter={() => setOpenDropdown('gallery')}
                             onMouseLeave={() => setOpenDropdown(null)}
@@ -191,7 +191,7 @@ const Navbar: React.FC = () => {
                                             key={link.path}
                                             to={link.path}
                                             className={`navbar-dropdown-item ${isActive(link.path) ? 'active' : ''}`}
-                                            onClick={() => setIsOpen(false)}
+                                            onClick={() => { }}
                                         >
                                             {link.label}
                                         </Link>
@@ -236,9 +236,7 @@ const Navbar: React.FC = () => {
                         </Link>
                     </div>
 
-
-
-
+                </div>
             </div>
         </nav>
     );

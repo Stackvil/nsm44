@@ -47,11 +47,7 @@ const Gallery = lazy(() => import('./pages/gallery/Gallery'));
 const PhotoGallery = lazy(() => import('./pages/gallery/PhotoGallery'));
 const VideoGallery = lazy(() => import('./pages/gallery/VideoGallery'));
 
-// Admin Imports
-const AdminLayout = lazy(() => import('./layouts/AdminLayout'));
-const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'));
-const PageManager = lazy(() => import('./pages/admin/PageManager'));
-const PageEditor = lazy(() => import('./pages/admin/PageEditor'));
+
 
 // Loading component for Suspense fallback
 const PageLoader = () => (
@@ -83,66 +79,60 @@ function App() {
         <QueryClientProvider client={queryClient}>
             <AuthProvider>
                 <Router>
-                <Suspense fallback={<PageLoader />}>
-                <Routes>
-                    {/* Admin Routes - No Navbar/Footer, has its own Layout */}
-                    <Route path="/admin/login" element={<AdminLogin />} />
+                    <Suspense fallback={<PageLoader />}>
+                        <Routes>
 
-                    <Route path="/admin" element={<AdminLayout />}>
-                        <Route index element={<PageManager />} />
-                        <Route path="page/:slug" element={<PageEditor />} />
-                    </Route>
 
-                    {/* Public Routes - Wrapped in PublicLayout */}
-                    <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
-                    
-                    {/* About NSMOSA Routes */}
-                    <Route path="/about" element={<PublicLayout><About /></PublicLayout>} />
-                    <Route path="/about/overview" element={<PublicLayout><AboutOverview /></PublicLayout>} />
-                    <Route path="/about/president" element={<PublicLayout><PresidentsMessage /></PublicLayout>} />
-                    <Route path="/about/executive-committee" element={<PublicLayout><ExecutiveCommittee /></PublicLayout>} />
-                    <Route path="/about/chapters" element={<PublicLayout><AlumniChapters /></PublicLayout>} />
-                    <Route path="/about/benefits" element={<PublicLayout><AlumniBenefits /></PublicLayout>} />
-                    <Route path="/about/annual-reports" element={<PublicLayout><AnnualReports /></PublicLayout>} />
-                    
-                    {/* Connect Routes */}
-                    <Route path="/connect" element={<PublicLayout><Connect /></PublicLayout>} />
-                    <Route path="/connect/profile" element={<PublicLayout><MyProfile /></PublicLayout>} />
-                    <Route path="/connect/alumni-event" element={<PublicLayout><AlumniEvent /></PublicLayout>} />
-                    <Route path="/connect/alumni-directory" element={<PublicLayout><AlumniDirectoryConnect /></PublicLayout>} />
-                    <Route path="/connect/business-directory" element={<PublicLayout><BusinessDirectory /></PublicLayout>} />
-                    <Route path="/connect/how-to-give" element={<PublicLayout><HowToGive /></PublicLayout>} />
-                    <Route path="/connect/connect-us" element={<PublicLayout><ConnectWithUs /></PublicLayout>} />
-                    
-                    {/* Events Route */}
-                    <Route path="/events" element={<PublicLayout><Events /></PublicLayout>} />
-                    
-                    {/* Reunion Routes */}
-                    <Route path="/reunion" element={<PublicLayout><Reunion /></PublicLayout>} />
-                    <Route path="/reunion/about" element={<PublicLayout><AboutReunion /></PublicLayout>} />
-                    <Route path="/reunion/gallery" element={<PublicLayout><ReunionGallery /></PublicLayout>} />
-                    
-                    {/* Gallery Routes */}
-                    <Route path="/gallery" element={<PublicLayout><Gallery /></PublicLayout>} />
-                    <Route path="/gallery/photo" element={<PublicLayout><PhotoGallery /></PublicLayout>} />
-                    <Route path="/gallery/video" element={<PublicLayout><VideoGallery /></PublicLayout>} />
-                    
-                    {/* Other Routes */}
-                    <Route path="/faq" element={<PublicLayout><FAQ /></PublicLayout>} />
-                    <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
-                    <Route path="/member" element={<PublicLayout><Member /></PublicLayout>} />
-                    
-                    {/* Legacy Routes (keeping for compatibility) */}
-                    <Route path="/directory" element={<PublicLayout><AlumniDirectory /></PublicLayout>} />
-                    <Route path="/career" element={<PublicLayout><CareerHub /></PublicLayout>} />
-                    <Route path="/giving" element={<PublicLayout><Giving /></PublicLayout>} />
-                    <Route path="/store" element={<PublicLayout><Store /></PublicLayout>} />
-                    <Route path="/dashboard" element={<PublicLayout><Dashboard /></PublicLayout>} />
-                    <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
-                    <Route path="/register" element={<PublicLayout><Register /></PublicLayout>} />
-                </Routes>
-                </Suspense>
-            </Router>
+                            {/* Public Routes - Wrapped in PublicLayout */}
+                            <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
+
+                            {/* About NSMOSA Routes */}
+                            <Route path="/about" element={<PublicLayout><About /></PublicLayout>} />
+                            <Route path="/about/overview" element={<PublicLayout><AboutOverview /></PublicLayout>} />
+                            <Route path="/about/president" element={<PublicLayout><PresidentsMessage /></PublicLayout>} />
+                            <Route path="/about/executive-committee" element={<PublicLayout><ExecutiveCommittee /></PublicLayout>} />
+                            <Route path="/about/chapters" element={<PublicLayout><AlumniChapters /></PublicLayout>} />
+                            <Route path="/about/benefits" element={<PublicLayout><AlumniBenefits /></PublicLayout>} />
+                            <Route path="/about/annual-reports" element={<PublicLayout><AnnualReports /></PublicLayout>} />
+
+                            {/* Connect Routes */}
+                            <Route path="/connect" element={<PublicLayout><Connect /></PublicLayout>} />
+                            <Route path="/connect/profile" element={<PublicLayout><MyProfile /></PublicLayout>} />
+                            <Route path="/connect/alumni-event" element={<PublicLayout><AlumniEvent /></PublicLayout>} />
+                            <Route path="/connect/alumni-directory" element={<PublicLayout><AlumniDirectoryConnect /></PublicLayout>} />
+                            <Route path="/connect/business-directory" element={<PublicLayout><BusinessDirectory /></PublicLayout>} />
+                            <Route path="/connect/how-to-give" element={<PublicLayout><HowToGive /></PublicLayout>} />
+                            <Route path="/connect/connect-us" element={<PublicLayout><ConnectWithUs /></PublicLayout>} />
+
+                            {/* Events Route */}
+                            <Route path="/events" element={<PublicLayout><Events /></PublicLayout>} />
+
+                            {/* Reunion Routes */}
+                            <Route path="/reunion" element={<PublicLayout><Reunion /></PublicLayout>} />
+                            <Route path="/reunion/about" element={<PublicLayout><AboutReunion /></PublicLayout>} />
+                            <Route path="/reunion/gallery" element={<PublicLayout><ReunionGallery /></PublicLayout>} />
+
+                            {/* Gallery Routes */}
+                            <Route path="/gallery" element={<PublicLayout><Gallery /></PublicLayout>} />
+                            <Route path="/gallery/photo" element={<PublicLayout><PhotoGallery /></PublicLayout>} />
+                            <Route path="/gallery/video" element={<PublicLayout><VideoGallery /></PublicLayout>} />
+
+                            {/* Other Routes */}
+                            <Route path="/faq" element={<PublicLayout><FAQ /></PublicLayout>} />
+                            <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
+                            <Route path="/member" element={<PublicLayout><Member /></PublicLayout>} />
+
+                            {/* Legacy Routes (keeping for compatibility) */}
+                            <Route path="/directory" element={<PublicLayout><AlumniDirectory /></PublicLayout>} />
+                            <Route path="/career" element={<PublicLayout><CareerHub /></PublicLayout>} />
+                            <Route path="/giving" element={<PublicLayout><Giving /></PublicLayout>} />
+                            <Route path="/store" element={<PublicLayout><Store /></PublicLayout>} />
+                            <Route path="/dashboard" element={<PublicLayout><Dashboard /></PublicLayout>} />
+                            <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
+                            <Route path="/register" element={<PublicLayout><Register /></PublicLayout>} />
+                        </Routes>
+                    </Suspense>
+                </Router>
             </AuthProvider>
         </QueryClientProvider>
     );
