@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { DB, FinancialTransaction } from '../../db';
+import { DB } from '../../db';
 
 const AnnualReports: React.FC = () => {
     const [financials, setFinancials] = useState<{ total: number, donations: number, membership: number } | null>(null);

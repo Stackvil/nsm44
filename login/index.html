@@ -397,6 +397,11 @@
                             sessionStorage.setItem('nsm_user_name', userCredentials.displayName);
                             sessionStorage.setItem('nsm_is_logged_in', 'true');
 
+                            localStorage.setItem('nsm_user_role', userCredentials.role);
+                            localStorage.setItem('nsm_user_email', email);
+                            localStorage.setItem('nsm_user_name', userCredentials.displayName);
+                            localStorage.setItem('nsm_is_logged_in', 'true');
+
                             // Show success animation
                             submitBtn.innerHTML = '<span>Success!</span><i class="fas fa-check-circle"></i>';
                             submitBtn.style.background = 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)';

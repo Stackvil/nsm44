@@ -3698,8 +3698,8 @@
                 <i class="fas fa-user-shield"></i>
               </div>
               <div class="admin-info">
-                <h2 id="admin-welcome-name">Welcome, Super Admin</h2>
-                <p id="admin-role-badge" class="role-badge super-admin">Super Admin Access</p>
+                <h2 id="admin-welcome-name">Welcome, Administrator</h2>
+                <p id="admin-role-badge" class="role-badge">Loading Access...</p>
               </div>
             </div>
             <div class="admin-quick-stats">
@@ -13375,6 +13375,8 @@
 
             sessionStorage.setItem('nsm_user_role', role);
             sessionStorage.setItem('nsm_user_name', formattedName);
+            localStorage.setItem('nsm_user_role', role);
+            localStorage.setItem('nsm_user_name', formattedName);
 
             alert(`Welcome back! Redirecting to ${role.replace('-', ' ')} dashboard...`);
             closeLoginModal();
@@ -13386,7 +13388,19 @@
             // Navigate to dashboard
             const pageDashboard = document.getElementById('page-dashboard');
             if (pageDashboard) {
-              document.getElementById('admin-welcome-name').textContent = `Welcome, ${formattedName}`;
+              const welcomeMsg = document.getElementById('admin-welcome-name');
+              if (welcomeMsg) {
+                if (role === 'super-admin') {
+                  welcomeMsg.textContent = "Welcome to Super Admin";
+                } else if (role === 'admin') {
+                  welcomeMsg.textContent = "Welcome to Admin";
+                } else if (role === 'representative') {
+                  welcomeMsg.textContent = "Welcome to Representative Admin";
+                } else {
+                  welcomeMsg.textContent = `Welcome, ${formattedName}`;
+                }
+              }
+
               const roleBadge = document.getElementById('admin-role-badge');
               roleBadge.className = `role-badge ${role}`;
               roleBadge.textContent = role.replace('-', ' ') + ' Access';
@@ -16214,10 +16228,6 @@
               alert(`${memberName}'s application has been rejected.`);
               updateAdminStats();
             }
-          } else if (action === 'view') {
-            alert(`Viewing full details for ${memberName}... (Profile window would open)`);
-          } else if (action === 'edit') {
-            alert(`Opening edit form for ${memberName}...`);
           }
         });
       }
@@ -16352,6 +16362,193 @@
     </style>
   </div>
   <script>
+    // Aggressive Role-Based UI Update
+    (function () {
+      const updateRoleUI = () => {
+        const role = sessionStorage.getItem('nsm_user_role') || localStorage.getItem('nsm_user_role');
+        const welcomeMsg = document.getElementById('admin-welcome-name');
+        const roleBadge = document.getElementById('admin-role-badge');
+
+        if (welcomeMsg && role) {
+          if (role === 'super-admin') {
+            welcomeMsg.textContent = "Welcome to Super Admin";
+          } else if (role === 'admin') {
+            welcomeMsg.textContent = "Welcome to Admin";
+          } else if (role === 'representative') {
+            welcomeMsg.textContent = "Welcome to Representative Admin";
+          }
+        }
+
+        if (roleBadge && role) {
+          roleBadge.className = `role-badge ${role}`;
+          roleBadge.textContent = role.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) + " Access";
+        }
+      };
+
+      document.addEventListener('DOMContentLoaded', () => {
+        updateRoleUI();
+        let attempts = 0;
+        const interval = setInterval(() => {
+          updateRoleUI();
+          attempts++;
+          if (attempts > 15) clearInterval(interval);
+        }, 300);
+      });
+
+      window.addEventListener('load', updateRoleUI);
+      // Also catch any potential hash changes or history changes
+      window.addEventListener('popstate', updateRoleUI);
+    })();
+
+    /* --- Member Management Logic --- */
+    document.addEventListener('DOMContentLoaded', () => {
+      const memberTableBody = document.getElementById('admin-member-table-body');
+      const exportBtn = document.getElementById('admin-export-csv');
+      const addMemberBtn = document.getElementById('admin-add-member');
+
+      const addModal = document.getElementById('member-add-modal');
+      const addForm = document.getElementById('member-add-form');
+      const editModal = document.getElementById('member-edit-modal');
+      const editForm = document.getElementById('member-edit-form');
+      const viewModal = document.getElementById('member-view-modal');
+      const viewContent = document.getElementById('member-view-content');
+
+      // 1. Export CSV
+      if (exportBtn) {
+        exportBtn.addEventListener('click', () => {
+          let csv = [];
+          const rows = document.querySelectorAll("table.admin-table tr");
+          for (let i = 0; i < rows.length; i++) {
+            const row = [], cols = rows[i].querySelectorAll("td, th");
+            for (let j = 0; j < cols.length - 1; j++) {
+              let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").replace(/\s+/g, " ").trim();
+              row.push('"' + data + '"');
+            }
+            csv.push(row.join(","));
+          }
+          const csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
+          const downloadLink = document.createElement("a");
+          downloadLink.download = "nsm_members_" + new Date().toISOString().slice(0, 10) + ".csv";
+          downloadLink.href = window.URL.createObjectURL(csvFile);
+          downloadLink.style.display = "none";
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          document.body.removeChild(downloadLink);
+        });
+      }
+
+      // 2. Add Member
+      if (addMemberBtn) {
+        addMemberBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          addForm.reset();
+          addModal.style.display = 'flex';
+        });
+      }
+
+      if (addForm) {
+        addForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const name = document.getElementById('add-member-name').value;
+          const role = document.getElementById('add-member-role').value;
+          const batch = document.getElementById('add-member-batch').value;
+          const email = document.getElementById('add-member-email').value;
+          const status = document.getElementById('add-member-status').value;
+
+          const newRow = document.createElement('tr');
+          const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
+          newRow.innerHTML = `
+                    <td><div class="user-cell"><div class="user-initials">${initials}</div><span>${name}</span></div></td>
+                    <td><span class="role-badge ${role}">${role.charAt(0).toUpperCase() + role.slice(1).replace('-', ' ')}</span></td>
+                    <td>${batch}</td><td>${email}</td>
+                    <td><span class="status-badge ${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span></td>
+                    <td><div class="table-actions">
+                        <button class="action-btn view" title="View"><i class="fas fa-eye"></i></button>
+                        <button class="action-btn edit" title="Edit"><i class="fas fa-edit"></i></button>
+                    </div></td>
+                `;
+          memberTableBody.prepend(newRow);
+          addModal.style.display = 'none';
+          if (typeof updateAdminStats === 'function') updateAdminStats();
+          alert('Member added!');
+        });
+      }
+
+      // 3. Edit/View Delegation
+      if (memberTableBody) {
+        memberTableBody.addEventListener('click', (e) => {
+          const btn = e.target.closest('.action-btn');
+          if (!btn) return;
+          const row = btn.closest('tr');
+          const name = row.querySelector('.user-cell span').textContent;
+          const roleBadge = row.querySelector('.role-badge');
+          const role = roleBadge.classList[1];
+          const batch = row.cells[2].textContent;
+          const email = row.cells[3].textContent;
+          const statusBadge = row.querySelector('.status-badge');
+          const status = statusBadge.textContent.toLowerCase();
+
+          if (btn.classList.contains('view')) {
+            viewContent.innerHTML = `<h3>${name}</h3><p>Role: ${role}</p><p>Batch: ${batch}</p><p>Email: ${email}</p><p>Status: ${status}</p>`;
+            viewModal.style.display = 'flex';
+          } else if (btn.classList.contains('edit')) {
+            document.getElementById('edit-member-name').value = name;
+            document.getElementById('edit-member-role').value = role;
+            document.getElementById('edit-member-batch').value = batch;
+            document.getElementById('edit-member-email').value = email;
+            document.getElementById('edit-member-status').value = status;
+            editModal.style.display = 'flex';
+          }
+        });
+      }
+    });
+
+    // Permission Flow Logic
+    (function () {
+      const role = sessionStorage.getItem('nsm_user_role');
+      const overlay = document.getElementById('access-denied-overlay');
+      const requestBtn = document.getElementById('btn-request-access');
+      const pendingMsg = document.getElementById('request-pending-msg');
+
+      if (role === 'representative') {
+        if (localStorage.getItem('rep_dashboard_access') !== 'true') {
+          if (overlay) overlay.style.display = 'flex';
+          if (localStorage.getItem('rep_access_request') === 'pending') {
+            if (document.getElementById('request-actions')) document.getElementById('request-actions').style.display = 'none';
+            if (pendingMsg) pendingMsg.style.display = 'flex';
+          }
+        }
+      }
+
+      if (requestBtn) {
+        requestBtn.addEventListener('click', () => {
+          localStorage.setItem('rep_access_request', 'pending');
+          location.reload();
+        });
+      }
+
+      if (role === 'admin' || role === 'super-admin') {
+        const checkRequests = () => {
+          if (localStorage.getItem('rep_access_request') === 'pending') {
+            const toast = document.getElementById('admin-notification-toast');
+            if (toast) toast.style.display = 'block';
+          }
+        };
+        checkRequests();
+        setInterval(checkRequests, 5000);
+
+        const approveBtn = document.getElementById('btn-approve-req');
+        if (approveBtn) {
+          approveBtn.addEventListener('click', () => {
+            localStorage.setItem('rep_dashboard_access', 'true');
+            localStorage.setItem('rep_access_request', 'approved');
+            location.reload();
+          });
+        }
+      }
+    })();
+
     // Password Toggle for Registration Form
     window.toggleRegPassword = function (inputId, icon) {
       const input = document.getElementById(inputId);

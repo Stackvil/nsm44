@@ -3674,8 +3674,8 @@
                 <i class="fas fa-user-shield"></i>
               </div>
               <div class="admin-info">
-                <h2 id="admin-welcome-name">Welcome, Super Admin</h2>
-                <p id="admin-role-badge" class="role-badge super-admin">Super Admin Access</p>
+                <h2 id="admin-welcome-name">Welcome, Administrator</h2>
+                <p id="admin-role-badge" class="role-badge">Loading Access...</p>
               </div>
             </div>
             <div class="admin-quick-stats">
@@ -13345,6 +13345,8 @@
 
             sessionStorage.setItem('nsm_user_role', role);
             sessionStorage.setItem('nsm_user_name', formattedName);
+            localStorage.setItem('nsm_user_role', role);
+            localStorage.setItem('nsm_user_name', formattedName);
 
             alert(`Welcome back! Redirecting to ${role.replace('-', ' ')} dashboard...`);
             closeLoginModal();
@@ -13356,7 +13358,19 @@
             // Navigate to dashboard
             const pageDashboard = document.getElementById('page-dashboard');
             if (pageDashboard) {
-              document.getElementById('admin-welcome-name').textContent = `Welcome, ${formattedName}`;
+              const welcomeMsg = document.getElementById('admin-welcome-name');
+              if (welcomeMsg) {
+                if (role === 'super-admin') {
+                  welcomeMsg.textContent = "Welcome to Super Admin";
+                } else if (role === 'admin') {
+                  welcomeMsg.textContent = "Welcome to Admin";
+                } else if (role === 'representative') {
+                  welcomeMsg.textContent = "Welcome to Representative Admin";
+                } else {
+                  welcomeMsg.textContent = `Welcome, ${formattedName}`;
+                }
+              }
+
               const roleBadge = document.getElementById('admin-role-badge');
               roleBadge.className = `role-badge ${role}`;
               roleBadge.textContent = role.replace('-', ' ') + ' Access';
@@ -14015,7 +14029,6 @@
         const profileInputs = document.querySelectorAll('#user-profile-form .profile-input, #user-profile-form .profile-textarea');
         const saveBtn = document.querySelector('#user-profile-form .profile-save-btn');
         const cancelBtn = document.getElementById('profile-cancel-btn');
-        const pictureHint = document.querySelector('#user-profile-form .profile-picture-hint');
         const sectionSubtitle = document.querySelector('#profile-connect-section .page-text');
 
         const signinWrapper = document.getElementById('signin-wrapper');
@@ -14084,6 +14097,7 @@
             }
           }
         } else {
+
           // Update Header UI
           if (signinWrapper) signinWrapper.style.display = 'flex';
           if (userProfileArea) userProfileArea.style.display = 'none';
@@ -16598,31 +16612,70 @@
   </div>
   <script>
     // Force Dashboard View for Admin Page
-    document.addEventListener('DOMContentLoaded', () => {
-      const isLoggedIn = sessionStorage.getItem('nsm_is_logged_in');
+    // Force Dashboard View for Admin Page
+    // Aggressive Role-Based UI Update
+    (function () {
+      const updateRoleUI = () => {
+        const role = sessionStorage.getItem('nsm_user_role') || localStorage.getItem('nsm_user_role');
+        const welcomeMsg = document.getElementById('admin-welcome-name');
+        const roleBadge = document.getElementById('admin-role-badge');
 
-      if (isLoggedIn === 'true') {
-        setTimeout(() => {
-          // Hide all page sections
-          document.querySelectorAll('.page-section').forEach(el => el.classList.remove('visible'));
-
-          // Show dashboard
-          const dashboard = document.getElementById('page-dashboard');
-          if (dashboard) {
-            dashboard.classList.add('visible');
-            window.scrollTo(0, 0);
+        if (welcomeMsg && role) {
+          if (role === 'super-admin') {
+            welcomeMsg.textContent = "Welcome to Super Admin";
+          } else if (role === 'admin') {
+            welcomeMsg.textContent = "Welcome to Admin";
+          } else if (role === 'representative') {
+            welcomeMsg.textContent = "Welcome to Representative Admin";
           }
+        }
 
-          // Update Nav
-          document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-          const dashLink = document.querySelector('a[data-page="dashboard"]');
-          if (dashLink) dashLink.classList.add('active');
+        if (roleBadge && role) {
+          roleBadge.className = `role-badge ${role}`;
+          roleBadge.textContent = role.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) + " Access";
+        }
+      };
 
-        }, 50); // Small delay to override main.ts defaults
-      } else {
-        window.location.href = '../login/';
-      }
-    });
+      document.addEventListener('DOMContentLoaded', () => {
+        const isLoggedIn = sessionStorage.getItem('nsm_is_logged_in');
+
+        if (isLoggedIn === 'true') {
+          setTimeout(() => {
+            // Hide all page sections
+            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('visible'));
+
+            // Show dashboard
+            const dashboard = document.getElementById('page-dashboard');
+            if (dashboard) {
+              dashboard.classList.add('visible');
+              window.scrollTo(0, 0);
+            }
+
+            // Update Role UI
+            updateRoleUI();
+
+            // Interval to catch asynchronous overwrites or DOM ready delays
+            let attempts = 0;
+            const interval = setInterval(() => {
+              updateRoleUI();
+              attempts++;
+              if (attempts > 15) clearInterval(interval);
+            }, 300);
+
+            // Update Nav
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            const dashLink = document.querySelector('a[data-page="dashboard"]');
+            if (dashLink) dashLink.classList.add('active');
+
+          }, 50);
+        } else {
+          window.location.href = '../login/';
+        }
+      });
+
+      window.addEventListener('load', updateRoleUI);
+      window.addEventListener('popstate', updateRoleUI);
+    })();
   </script>
 
   <!-- Home Page Events Preview Modal - Appended for Upload Functionality -->
