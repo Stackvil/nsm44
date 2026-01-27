@@ -3731,8 +3731,9 @@
             <!-- Sidebar-like navigation for dashboard -->
             <div class="admin-sidebar">
               <ul class="admin-menu">
-                <li data-tab="home-page-content"><a href="#"><i class="fas fa-home"></i> Home Page</a></li>
-                <li class="active" data-tab="member-management"><a href="#"><i class="fas fa-users-cog"></i> Member
+                <li class="active" data-tab="home-page-content"><a href="#"><i class="fas fa-home"></i> Home Page</a>
+                </li>
+                <li data-tab="member-management"><a href="#"><i class="fas fa-users-cog"></i> Member
                     Management</a>
                 </li>
                 <li data-tab="event-management"><a href="#"><i class="fas fa-calendar-alt"></i> NSMOSA Events</a>
@@ -3750,10 +3751,14 @@
             <!-- Dashboard Content Area -->
             <div class="admin-content-card">
               <!-- Home Page Content Management Section -->
-              <div id="admin-home-page-content" class="admin-tab-content">
+              <div id="admin-home-page-content" class="admin-tab-content active">
                 <div class="admin-content-header">
                   <h3>Home Page Content Management</h3>
                 </div>
+                <!-- ... -->
+              </div>
+              <!-- Member Management Section (Active by default) -->
+              <div id="admin-member-management" class="admin-tab-content">
                 <div class="admin-home-filters"
                   style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 25px; padding: 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
                   <button class="btn-outline-admin" onclick="switchHomeSubTab('events')" id="home-btn-events"
@@ -3786,36 +3791,110 @@
                 </div>
 
                 <div id="home-sub-events" class="home-sub-content" style="display: none;">
-                  <div class="admin-placeholder-content">
+                  <div class="admin-placeholder-content" id="home-events-placeholder" style="display: flex;">
                     <i class="fas fa-calendar-alt"></i>
                     <h4>Home Page Events</h4>
                     <p>Manage events specifically for the Home Page.</p>
-                    <button class="btn-primary-admin" onclick="alert('Coming Soon: Home Events')">Manage Events</button>
+                    <button class="btn-primary-admin" onclick="document.getElementById('home-events-upload').click()">
+                      <i class="fas fa-upload"></i> Upload Image
+                    </button>
+                    <!-- Single File Input for this section -->
+                    <input type="file" id="home-events-upload" multiple accept="image/*" style="display: none;"
+                      onchange="handleHomeEventsUpload(this)">
+                  </div>
+
+                  <div id="home-events-content" style="display: none;">
+                    <div class="admin-table-controls"
+                      style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
+                      <div>
+                        <h4 style="margin: 0; color: #00274d;">Current Images</h4>
+                        <p style="margin: 5px 0 0; font-size: 13px; color: #64748b;">(Images will be displayed with
+                          sliding effects on home page)</p>
+                      </div>
+                      <button class="btn-primary-admin" onclick="document.getElementById('home-events-upload').click()">
+                        <i class="fas fa-upload"></i> Upload Image
+                      </button>
+                      <!-- Removed duplicate input, reusing 'home-events-upload' above -->
+                    </div>
+
+                    <div id="admin-home-events-grid"
+                      style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;">
+                      <!-- Images will be loaded here -->
+                    </div>
                   </div>
                 </div>
 
                 <div id="home-sub-middle-box" class="home-sub-content" style="display: none;">
-                  <div class="admin-placeholder-content">
-                    <i class="fas fa-image"></i>
+                  <div class="admin-placeholder-content" id="middle-box-placeholder" style="display: flex;">
+                    <i class="fas fa-layer-group"></i>
                     <h4>Home Page Middle Box Images</h4>
-                    <p>Upload and manage images for the middle box section.</p>
-                    <button class="btn-primary-admin" onclick="alert('Coming Soon: Middle Box Images')">Upload
-                      Image</button>
+                    <p>Manage images for the central sliding box on the Home Page.</p>
+                    <button class="btn-primary-admin"
+                      onclick="document.getElementById('middle-box-upload-input').click()">
+                      <i class="fas fa-upload"></i> Upload Image
+                    </button>
+                    <!-- Single File Input for this section -->
+                    <input type="file" id="middle-box-upload-input" multiple accept="image/*" style="display: none;"
+                      onchange="handleMiddleBoxUpload(this)">
+                  </div>
+
+                  <div id="middle-box-content" style="display: none;">
+                    <div class="admin-table-controls"
+                      style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
+                      <div>
+                        <h4 style="margin: 0; color: #00274d;">Current Images</h4>
+                        <p style="margin: 5px 0 0; font-size: 13px; color: #64748b;">(Images will cycle in the central
+                          slider)</p>
+                      </div>
+                      <button class="btn-primary-admin"
+                        onclick="document.getElementById('middle-box-upload-input').click()">
+                        <i class="fas fa-upload"></i> Upload Image
+                      </button>
+                    </div>
+
+                    <div id="admin-middle-box-grid"
+                      style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;">
+                      <!-- Images will be loaded here -->
+                    </div>
                   </div>
                 </div>
 
                 <div id="home-sub-gallery" class="home-sub-content" style="display: none;">
-                  <div class="admin-placeholder-content">
+                  <div class="admin-placeholder-content" id="home-gallery-placeholder" style="display: flex;">
                     <i class="fas fa-images"></i>
                     <h4>Home Page Photo Gallery</h4>
                     <p>Select photos to feature on the Home Page gallery.</p>
-                    <button class="btn-primary-admin" onclick="alert('Coming Soon: Home Gallery')">Select
-                      Photos</button>
+                    <button class="btn-primary-admin" onclick="document.getElementById('home-gallery-upload').click()">
+                      <i class="fas fa-upload"></i> Upload Image
+                    </button>
+                    <!-- Single File Input for this section -->
+                    <input type="file" id="home-gallery-upload" multiple accept="image/*" style="display: none;"
+                      onchange="handleHomeGalleryUpload(this)">
+                  </div>
+
+                  <div id="home-gallery-content" style="display: none;">
+                    <div class="admin-table-controls"
+                      style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
+                      <div>
+                        <h4 style="margin: 0; color: #00274d;">Current Gallery Images</h4>
+                        <p style="margin: 5px 0 0; font-size: 13px; color: #64748b;">(Images will be displayed in the
+                          gallery slider)</p>
+                      </div>
+                      <button class="btn-primary-admin"
+                        onclick="document.getElementById('home-gallery-upload').click()">
+                        <i class="fas fa-upload"></i> Upload Image
+                      </button>
+                    </div>
+
+                    <div id="admin-home-gallery-grid"
+                      style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;">
+                      <!-- Images will be loaded here -->
+                    </div>
                   </div>
                 </div>
               </div>
               <!-- Member Management Section (Active by default) -->
-              <div id="admin-member-management" class="admin-tab-content active">
+              <div id="admin-member-management" class="admin-tab-content">
                 <div class="admin-content-header">
                   <h3>Recent Member Registrations</h3>
                   <div class="header-actions">
@@ -15943,6 +16022,17 @@
           const activeBtn = document.getElementById(buttonIds[subTabName]);
           if (activeBtn) activeBtn.classList.add('active');
         }
+
+        // Load content if applicable
+        if (subTabName === 'events') {
+          if (typeof window.loadHomeEventsAdmin === 'function') {
+            window.loadHomeEventsAdmin();
+          }
+        } else if (subTabName === 'middle-box') {
+          if (typeof window.loadMiddleBoxAdmin === 'function') {
+            window.loadMiddleBoxAdmin();
+          }
+        }
       };
 
       // Quick Stat Card Navigation
@@ -16276,6 +16366,33 @@
       }
     }
   </script>
+  <!-- Home Page Events Preview Modal -->
+  <div id="home-events-preview-modal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10001; justify-content: center; align-items: center;">
+    <div
+      style="background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto;">
+      <h3
+        style="margin-top: 0; color: #00274d; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 20px;">
+        <i class="fas fa-images"></i> Preview Images
+      </h3>
+
+      <div id="home-events-preview-grid"
+        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-bottom: 20px;">
+        <!-- Preview images here -->
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button class="btn-outline-admin"
+          onclick="document.getElementById('home-events-preview-modal').style.display = 'none'; document.getElementById('home-events-upload').value = '';">
+          Cancel
+        </button>
+        <button class="btn-primary-admin" onclick="window.confirmSaveHomeImages()">
+          <i class="fas fa-save"></i> Save Images
+        </button>
+      </div>
+    </div>
+  </div>
+
 </body>
 
 </html>

@@ -1080,8 +1080,615 @@ async function loadCategoryEvents(category: 'social' | 'nsmosa') {
     }
 };
 
-// Auto-initialize when page loads
+// State for Home Page Drafts
+let pendingHomeImages: { url: string, file: File }[] = [];
+let pendingUploadCategory: 'home' | 'home-middle' | 'home-gallery' = 'home'; // Track which section we are uploading to
+
+// Handle Home Events Upload (Step 1: Preview)
+(window as any).handleHomeEventsUpload = async (input: HTMLInputElement) => {
+    if (!input.files || input.files.length === 0) return;
+    pendingUploadCategory = 'home';
+    await processFilesForPreview(input, 'Home Page Events');
+};
+
+// Handle Middle Box Upload (Step 1: Preview)
+(window as any).handleMiddleBoxUpload = async (input: HTMLInputElement) => {
+    if (!input.files || input.files.length === 0) return;
+    pendingUploadCategory = 'home-middle';
+    await processFilesForPreview(input, 'Middle Box Images');
+};
+
+// Shared Helper: Process Files & Show Modal
+async function processFilesForPreview(input: HTMLInputElement, title: string) {
+    pendingHomeImages = [];
+    const files = Array.from(input.files || []);
+
+    // Read all files
+    for (const file of files) {
+        const base64 = await new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target?.result as string);
+            reader.readAsDataURL(file);
+        });
+        pendingHomeImages.push({ url: base64, file });
+    }
+
+    // Show Preview Modal
+    const modal = document.getElementById('home-events-preview-modal');
+    const grid = document.getElementById('home-events-preview-grid');
+    const modalTitle = modal?.querySelector('h3');
+
+    if (modal && grid) {
+        if (modalTitle) modalTitle.innerHTML = `<i class="fas fa-images"></i> Preview: ${title}`;
+
+        grid.innerHTML = pendingHomeImages.map(img => `
+            <div style="border-radius: 8px; overflow: hidden; border: 1px solid #ddd; aspect-ratio: 1;">
+                <img src="${img.url}" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+        `).join('');
+        modal.style.display = 'flex';
+    }
+}
+
+// Confirm Save (Handles both based on pendingUploadCategory)
+(window as any).confirmSaveHomeImages = async () => {
+    if (pendingHomeImages.length === 0) return;
+
+    const btn = document.querySelector('#home-events-preview-modal .btn-primary-admin') as HTMLButtonElement;
+    if (btn) {
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        btn.disabled = true;
+    }
+
+    try {
+        const events = await DB.getEvents();
+
+        // Determine ID and Name based on category
+        let eventId = 'home-page-events-main';
+        let eventName = 'Home Page Events';
+
+        if (pendingUploadCategory === 'home-middle') {
+            eventId = 'home-page-middle-box-main';
+            eventName = 'Middle Box Images';
+        } else if (pendingUploadCategory === 'home-gallery') {
+            eventId = 'home-page-gallery-main';
+            eventName = 'Home Page Gallery';
+        }
+
+        let homeEvent = events.find(e => e.category === pendingUploadCategory && e.id === eventId);
+
+        const newPhotos: EventPhoto['photos'] = pendingHomeImages.map(p => ({
+            id: `${pendingUploadCategory}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            url: p.url,
+            name: p.file.name,
+            uploadedAt: Date.now()
+        }));
+
+        if (homeEvent) {
+            homeEvent.photos = [...homeEvent.photos, ...newPhotos];
+            await DB.saveEvent(homeEvent);
+        } else {
+            homeEvent = {
+                id: eventId,
+                eventName: eventName,
+                eventDate: new Date().toISOString(),
+                category: pendingUploadCategory,
+                year: new Date().getFullYear(),
+                photos: newPhotos,
+                createdAt: Date.now()
+            };
+            await DB.saveEvent(homeEvent);
+        }
+
+        alert('Images saved successfully!');
+
+        // Close modal and reset
+        const modal = document.getElementById('home-events-preview-modal');
+        if (modal) modal.style.display = 'none';
+        pendingHomeImages = [];
+
+        // Clear inputs
+        const input1 = document.getElementById('home-events-upload') as HTMLInputElement;
+        const input2 = document.getElementById('middle-box-upload-input') as HTMLInputElement;
+        const input3 = document.getElementById('home-gallery-upload') as HTMLInputElement;
+        if (input1) input1.value = '';
+        if (input2) input2.value = '';
+        if (input3) input3.value = '';
+
+        // Refresh correct section
+        if (pendingUploadCategory === 'home') (window as any).loadHomeEventsAdmin();
+        else if (pendingUploadCategory === 'home-middle') (window as any).loadMiddleBoxAdmin();
+        else (window as any).loadHomeGalleryAdmin();
+
+        (window as any).renderHomeEventsPublic(); // Refreshes both sections
+
+    } catch (error) {
+        console.error('Error saving images:', error);
+        alert('Failed to save images.');
+    } finally {
+        if (btn) {
+            btn.innerHTML = '<i class="fas fa-save"></i> Save Images';
+            btn.disabled = false;
+        }
+    }
+};
+
+// Generic Delete Function
+(window as any).deleteHomeSectionImage = async (photoId: string, category: 'home' | 'home-middle' | 'home-gallery') => {
+    if (!confirm('Are you sure you want to remove this image?')) return;
+
+    try {
+        const events = await DB.getEvents();
+        let eventId = 'home-page-events-main';
+        if (category === 'home-middle') eventId = 'home-page-middle-box-main';
+        else if (category === 'home-gallery') eventId = 'home-page-gallery-main';
+
+        const homeEvent = events.find(e => e.category === category && e.id === eventId);
+
+        if (homeEvent) {
+            homeEvent.photos = homeEvent.photos.filter(p => p.id !== photoId);
+            await DB.saveEvent(homeEvent);
+
+            if (category === 'home') (window as any).loadHomeEventsAdmin();
+            else if (category === 'home-middle') (window as any).loadMiddleBoxAdmin();
+            else (window as any).loadHomeGalleryAdmin();
+
+            (window as any).renderHomeEventsPublic();
+        }
+    } catch (error) {
+        console.error('Error deleting image:', error);
+        alert('Failed to delete image.');
+    }
+};
+
+// Original Delete Wrapper (for backward compatibility if needed in HTML)
+(window as any).deleteHomeImage = (id: string) => (window as any).deleteHomeSectionImage(id, 'home');
+// New Delete Wrapper
+(window as any).deleteMiddleBoxImage = (id: string) => (window as any).deleteHomeSectionImage(id, 'home-middle');
+
+
+// Load Home Events in Admin
+(window as any).loadHomeEventsAdmin = async () => {
+    const grid = document.getElementById('admin-home-events-grid');
+    const placeholder = document.getElementById('home-events-placeholder');
+    const content = document.getElementById('home-events-content');
+
+    if (!grid) return;
+
+    try {
+        const events = await DB.getEvents();
+        const homeEvent = events.find(e => e.category === 'home' && e.id === 'home-page-events-main');
+
+        if (!homeEvent || !homeEvent.photos || homeEvent.photos.length === 0) {
+            if (placeholder) placeholder.style.display = 'flex';
+            if (content) content.style.display = 'none';
+            return;
+        }
+
+        if (placeholder) placeholder.style.display = 'none';
+        if (content) content.style.display = 'block';
+
+        grid.innerHTML = homeEvent.photos.map(photo => `
+            <div style="position: relative; aspect-ratio: 4/3; border-radius: 8px; overflow: hidden; border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <img src="${photo.url}" style="width: 100%; height: 100%; object-fit: cover;">
+                <button onclick="window.deleteHomeSectionImage('${photo.id}', 'home')" 
+                    style="position: absolute; top: 5px; right: 5px; width: 24px; height: 24px; border-radius: 50%; background: white; border: 1px solid #ef4444; color: #ef4444; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0.9;"
+                    title="Delete Image">
+                    <i class="fas fa-trash" style="font-size: 10px;"></i>
+                </button>
+            </div>
+        `).join('');
+
+    } catch (error) {
+        console.error('Error loading home events admin:', error);
+        if (placeholder) placeholder.style.display = 'flex';
+        if (content) content.style.display = 'none';
+    }
+};
+
+
+// Load Middle Box Admin
+(window as any).loadMiddleBoxAdmin = async () => {
+    const grid = document.getElementById('admin-middle-box-grid');
+    const placeholder = document.getElementById('middle-box-placeholder');
+    const content = document.getElementById('middle-box-content');
+
+    if (!grid) return;
+
+    try {
+        const events = await DB.getEvents();
+        const homeEvent = events.find(e => e.category === 'home-middle' && e.id === 'home-page-middle-box-main');
+
+        if (!homeEvent || !homeEvent.photos || homeEvent.photos.length === 0) {
+            if (placeholder) placeholder.style.display = 'flex';
+            if (content) content.style.display = 'none';
+            return;
+        }
+
+        if (placeholder) placeholder.style.display = 'none';
+        if (content) content.style.display = 'block';
+
+        grid.innerHTML = homeEvent.photos.map(photo => `
+            <div style="position: relative; aspect-ratio: 4/3; border-radius: 8px; overflow: hidden; border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <img src="${photo.url}" style="width: 100%; height: 100%; object-fit: cover;">
+                <button onclick="window.deleteMiddleBoxImage('${photo.id}')" 
+                    style="position: absolute; top: 5px; right: 5px; width: 24px; height: 24px; border-radius: 50%; background: white; border: 1px solid #ef4444; color: #ef4444; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0.9;"
+                    title="Delete Image">
+                    <i class="fas fa-trash" style="font-size: 10px;"></i>
+                </button>
+            </div>
+        `).join('');
+
+    } catch (error) {
+        console.error('Error loading middle box admin:', error);
+        if (placeholder) placeholder.style.display = 'flex';
+        if (content) content.style.display = 'none';
+    }
+};
+
+// Render Home Events Public (Updated to render BOTH sections)
+(window as any).renderHomeEventsPublic = async () => {
+    // 1. Sidebar Events
+    const container = document.querySelector('.events-photos-container');
+
+    // 2. Middle Slider
+    const sliderWrapper = document.querySelector('.center-slider-wrapper');
+
+    try {
+        const events = await DB.getEvents();
+
+        // --- Sidebar ---
+        if (container) {
+            const homeEvent = events.find(e => e.category === 'home' && e.id === 'home-page-events-main');
+            const animations = ['slide-up-down', 'slide-down-up', 'slide-left-right', 'slide-right-left'];
+
+            let photosToDisplay: { url: string }[] = [];
+            if (homeEvent && homeEvent.photos.length > 0) {
+                photosToDisplay = homeEvent.photos;
+            } else {
+                photosToDisplay = [
+                    { url: '/images/HOME PAGE PHOTOS NSM/event.jpg' },
+                    { url: '/images/HOME PAGE PHOTOS NSM/event 1.jpg' },
+                    { url: '/images/HOME PAGE PHOTOS NSM/event2.jpg' },
+                    { url: '/images/HOME PAGE PHOTOS NSM/event 3.jpg' },
+                    { url: '/images/HOME PAGE PHOTOS NSM/event 4.jpg' },
+                    { url: '/images/HOME PAGE PHOTOS NSM/event 5.jpg' }
+                ];
+            }
+            container.innerHTML = photosToDisplay.map((photo, index) => `
+                <div class="event-photo-slide ${animations[index % animations.length]}">
+                  <img src="${photo.url}" alt="NSM Event" class="event-slide-img" loading="lazy" />
+                </div>
+            `).join('');
+        }
+
+        // --- Middle Box ---
+        if (sliderWrapper) {
+            const middleEvent = events.find(e => e.category === 'home-middle' && e.id === 'home-page-middle-box-main');
+
+            let sliderPhotos: { url: string }[] = [];
+            if (middleEvent && middleEvent.photos.length > 0) {
+                sliderPhotos = middleEvent.photos;
+            } else {
+                // Fallback
+                sliderPhotos = [
+                    { url: '/images/HOME PAGE PHOTOS NSM/middel main box.jpg' },
+                    { url: '/images/HOME PAGE PHOTOS NSM/middel main box 1.jpg' },
+                    { url: '/images/HOME PAGE PHOTOS NSM/middel main box 2.jpg' }
+                ];
+            }
+
+            // Assuming the existing slider CSS relies on .center-slide divs
+            // The original HTML had 'active' class on one. 
+            // We'll mimic the structure. The main.ts likely handles the rotation logic or CSS animation.
+            // If CSS animation, simple divs are enough. If JS, we might need to preserve structure.
+            // Checking original structure: <div class="center-slide active"><img...></div>
+
+            sliderWrapper.innerHTML = sliderPhotos.map((photo, index) => `
+                 <div class="center-slide ${index === 0 ? 'active' : ''}">
+                   <img src="${photo.url}" alt="NSM School" class="center-slide-image" loading="lazy" />
+                 </div>
+             `).join('');
+        }
+
+    } catch (error) {
+        console.error('Error rendering public home events:', error);
+    }
+};
+
+// Initialize public home events on load
 document.addEventListener('DOMContentLoaded', () => {
     (window as any).initVideoUploadListener();
     (window as any).loadVideos();
+    setTimeout(() => {
+        (window as any).renderHomeEventsPublic();
+    }, 500);
+});
+
+// Load Home Events in Admin
+(window as any).loadHomeEventsAdmin = async () => {
+    const grid = document.getElementById('admin-home-events-grid');
+    const placeholder = document.getElementById('home-events-placeholder');
+    const content = document.getElementById('home-events-content');
+
+    if (!grid) return;
+
+    try {
+        const events = await DB.getEvents();
+        const homeEvent = events.find(e => e.category === 'home' && e.id === 'home-page-events-main');
+
+        // Check if we have photos
+        if (!homeEvent || !homeEvent.photos || homeEvent.photos.length === 0) {
+            // No photos: Show placeholder, hide content
+            if (placeholder) placeholder.style.display = 'flex';
+            if (content) content.style.display = 'none';
+            return;
+        }
+
+        // Has photos: Show content, hide placeholder
+        if (placeholder) placeholder.style.display = 'none';
+        if (content) content.style.display = 'block';
+
+        grid.innerHTML = homeEvent.photos.map(photo => `
+            <div style="position: relative; aspect-ratio: 4/3; border-radius: 8px; overflow: hidden; border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <img src="${photo.url}" style="width: 100%; height: 100%; object-fit: cover;">
+                <button onclick="window.deleteHomeSectionImage('${photo.id}', 'home')" 
+                    style="position: absolute; top: 5px; right: 5px; width: 24px; height: 24px; border-radius: 50%; background: white; border: 1px solid #ef4444; color: #ef4444; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0.9;"
+                    title="Delete Image">
+                    <i class="fas fa-trash" style="font-size: 10px;"></i>
+                </button>
+            </div>
+        `).join('');
+
+    } catch (error) {
+        console.error('Error loading home events admin:', error);
+        // Fallback to placeholder on error
+        if (placeholder) placeholder.style.display = 'flex';
+        if (content) content.style.display = 'none';
+    }
+};
+
+// Delete Home Image
+(window as any).deleteHomeImage = async (photoId: string) => {
+    if (!confirm('Are you sure you want to remove this image?')) return;
+
+    try {
+        const events = await DB.getEvents();
+        const homeEvent = events.find(e => e.category === 'home' && e.id === 'home-page-events-main');
+
+        if (homeEvent) {
+            homeEvent.photos = homeEvent.photos.filter(p => p.id !== photoId);
+            await DB.saveEvent(homeEvent);
+            (window as any).loadHomeEventsAdmin();
+            (window as any).renderHomeEventsPublic();
+        }
+    } catch (error) {
+        console.error('Error deleting home image:', error);
+        alert('Failed to delete image.');
+    }
+};
+
+// Render Home Events Public (Sliding Effect)
+(window as any).renderHomeEventsPublic = async () => {
+    const container = document.querySelector('.events-photos-container');
+    if (!container) return;
+
+    try {
+        const events = await DB.getEvents();
+        const homeEvent = events.find(e => e.category === 'home' && e.id === 'home-page-events-main');
+
+        // Animation classes to rotate through
+        const animations = ['slide-up-down', 'slide-down-up', 'slide-left-right', 'slide-right-left'];
+
+        let photosToDisplay: { url: string }[] = [];
+
+        if (homeEvent && homeEvent.photos.length > 0) {
+            photosToDisplay = homeEvent.photos;
+        } else {
+            // Fallback to default hardcoded images if no DB images
+            // This preserves the original look if nothing is uploaded
+            photosToDisplay = [
+                { url: '/images/HOME PAGE PHOTOS NSM/event.jpg' },
+                { url: '/images/HOME PAGE PHOTOS NSM/event 1.jpg' },
+                { url: '/images/HOME PAGE PHOTOS NSM/event2.jpg' },
+                { url: '/images/HOME PAGE PHOTOS NSM/event 3.jpg' },
+                { url: '/images/HOME PAGE PHOTOS NSM/event 4.jpg' },
+                { url: '/images/HOME PAGE PHOTOS NSM/event 5.jpg' }
+            ];
+        }
+
+        // Limit to 6 or repeat to fill 6 slots for the grid effect if needed
+        // The original CSS grid seems loose, but let's generate divs
+
+        container.innerHTML = photosToDisplay.map((photo, index) => {
+            const animationClass = animations[index % animations.length];
+            // Add some random delay for natural look
+            // const delay = (Math.random() * 2).toFixed(1); 
+
+            return `
+                <div class="event-photo-slide ${animationClass}">
+                  <img src="${photo.url}" alt="NSM Event" class="event-slide-img" loading="lazy" />
+                </div>
+            `;
+        }).join('');
+
+    } catch (error) {
+        console.error('Error rendering public home events:', error);
+    }
+};
+
+// Initialize public home events on load
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        (window as any).renderHomeEventsPublic();
+    }, 500);
+});
+// --- Home Page Gallery Implementation ---
+
+// 1. Upload Handler
+(window as any).handleHomeGalleryUpload = async (input: HTMLInputElement) => {
+    pendingUploadCategory = 'home-gallery';
+    await processFilesForPreview(input, 'Home Page Gallery');
+};
+
+// 2. Load Gallery Admin
+(window as any).loadHomeGalleryAdmin = async () => {
+    const grid = document.getElementById('admin-home-gallery-grid');
+    const placeholder = document.getElementById('home-gallery-placeholder');
+    const content = document.getElementById('home-gallery-content');
+
+    if (!grid) return;
+
+    try {
+        const events = await DB.getEvents();
+        const homeEvent = events.find(e => e.category === 'home-gallery' && e.id === 'home-page-gallery-main');
+
+        if (!homeEvent || !homeEvent.photos || homeEvent.photos.length === 0) {
+            if (placeholder) placeholder.style.display = 'flex';
+            if (content) content.style.display = 'none';
+            return;
+        }
+
+        if (placeholder) placeholder.style.display = 'none';
+        if (content) content.style.display = 'block';
+
+        grid.innerHTML = homeEvent.photos.map(photo => `
+            <div style="position: relative; aspect-ratio: 4/3; border-radius: 8px; overflow: hidden; border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <img src="${photo.url}" style="width: 100%; height: 100%; object-fit: cover;">
+                <button onclick="window.deleteHomeGalleryImage('${photo.id}')" 
+                    style="position: absolute; top: 5px; right: 5px; width: 24px; height: 24px; border-radius: 50%; background: white; border: 1px solid #ef4444; color: #ef4444; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0.9;"
+                    title="Delete Image">
+                    <i class="fas fa-trash" style="font-size: 10px;"></i>
+                </button>
+            </div>
+        `).join('');
+
+    } catch (error) {
+        console.error('Error loading home gallery admin:', error);
+        if (placeholder) placeholder.style.display = 'flex';
+        if (content) content.style.display = 'none';
+    }
+};
+
+// 3. Delete Wrapper
+(window as any).deleteHomeGalleryImage = (id: string) => (window as any).deleteHomeSectionImage(id, 'home-gallery');
+
+// 4. Update Render Function (Overwrite previous one to include Gallery and Dots)
+(window as any).renderHomeEventsPublic = async () => {
+    // 1. Sidebar Events
+    const container = document.querySelector('.events-photos-container');
+
+    // 2. Middle Slider
+    const sliderWrapper = document.querySelector('.center-slider-wrapper');
+    const sliderDots = document.querySelector('.center-slider-dots');
+
+    // 3. Gallery Slider
+    const galleryWrapper = document.querySelector('.gallery-slider-wrapper');
+    const galleryDots = document.querySelector('.gallery-slider-dots');
+
+    try {
+        const events = await DB.getEvents();
+
+        // --- Sidebar ---
+        if (container) {
+            const homeEvent = events.find(e => e.category === 'home' && e.id === 'home-page-events-main');
+            const animations = ['slide-up-down', 'slide-down-up', 'slide-left-right', 'slide-right-left'];
+
+            let photosToDisplay: { url: string }[] = [];
+            if (homeEvent && homeEvent.photos.length > 0) {
+                photosToDisplay = homeEvent.photos;
+            } else {
+                photosToDisplay = [
+                    { url: '/images/HOME PAGE PHOTOS NSM/event.jpg' },
+                    { url: '/images/HOME PAGE PHOTOS NSM/event 1.jpg' },
+                    { url: '/images/HOME PAGE PHOTOS NSM/event2.jpg' },
+                    { url: '/images/HOME PAGE PHOTOS NSM/event 3.jpg' },
+                    { url: '/images/HOME PAGE PHOTOS NSM/event 4.jpg' },
+                    { url: '/images/HOME PAGE PHOTOS NSM/event 5.jpg' }
+                ];
+            }
+            container.innerHTML = photosToDisplay.map((photo, index) => `
+                <div class="event-photo-slide ${animations[index % animations.length]}">
+                  <img src="${photo.url}" alt="NSM Event" class="event-slide-img" loading="lazy" />
+                </div>
+            `).join('');
+        }
+
+        // --- Middle Box ---
+        if (sliderWrapper) {
+            const middleEvent = events.find(e => e.category === 'home-middle' && e.id === 'home-page-middle-box-main');
+
+            let sliderPhotos: { url: string }[] = [];
+            if (middleEvent && middleEvent.photos.length > 0) {
+                sliderPhotos = middleEvent.photos;
+            } else {
+                // Fallback
+                sliderPhotos = [
+                    { url: '/images/HOME PAGE PHOTOS NSM/middel main box.jpg' },
+                    { url: '/images/HOME PAGE PHOTOS NSM/middel main box 1.jpg' },
+                    { url: '/images/HOME PAGE PHOTOS NSM/middel main box 2.jpg' }
+                ];
+            }
+
+            sliderWrapper.innerHTML = sliderPhotos.map((photo, index) => `
+                 <div class="center-slide ${index === 0 ? 'active' : ''}">
+                   <img src="${photo.url}" alt="NSM School" class="center-slide-image" loading="lazy" />
+                 </div>
+             `).join('');
+
+            // Update Dots
+            if (sliderDots) {
+                sliderDots.innerHTML = sliderPhotos.map((_, index) => `
+                     <span class="center-dot ${index === 0 ? 'active' : ''}" data-slide="${index}"></span>
+                 `).join('');
+            }
+        }
+
+        // --- Gallery Slider ---
+        if (galleryWrapper) {
+            const galleryEvent = events.find(e => e.category === 'home-gallery' && e.id === 'home-page-gallery-main');
+
+            let galleryPhotos: { url: string }[] = [];
+            if (galleryEvent && galleryEvent.photos.length > 0) {
+                galleryPhotos = galleryEvent.photos;
+            } else {
+                // Fallback
+                galleryPhotos = [
+                    { url: '/images/HOME PAGE PHOTOS NSM/photo gallery.jpg' },
+                    { url: '/images/HOME PAGE PHOTOS NSM/photo gallery1.jpg' },
+                    { url: '/images/HOME PAGE PHOTOS NSM/photo gallery 2.jpg' },
+                    { url: '/images/HOME PAGE PHOTOS NSM/photo gallery 3.jpg' },
+                    { url: '/images/HOME PAGE PHOTOS NSM/photo gallery 4.jpg' }
+                ];
+            }
+
+            galleryWrapper.innerHTML = galleryPhotos.map((photo, index) => `
+                 <div class="gallery-slide ${index === 0 ? 'active' : ''}">
+                   <img src="${photo.url}" alt="NSM Photo Gallery" class="gallery-slide-img" loading="lazy" />
+                 </div>
+             `).join('');
+
+            // Update Gallery Dots
+            if (galleryDots) {
+                galleryDots.innerHTML = galleryPhotos.map((_, index) => `
+                     <span class="gallery-dot ${index === 0 ? 'active' : ''}" data-slide="${index}"></span>
+                 `).join('');
+            }
+        }
+
+        // Re-attach listeners is handled by global delegation or mutation observers in main.ts
+        // But if main.ts attaches once on load, we might need to manually re-trigger.
+        // Assuming main.ts uses delegation for dots, but maybe valid for intervals.
+
+    } catch (error) {
+        console.error('Error rendering public home events:', error);
+    }
+};
+
+// Initial Render
+document.addEventListener('DOMContentLoaded', () => {
+    // Small delay to ensure DB is ready
+    setTimeout(() => {
+        (window as any).renderHomeEventsPublic();
+    }, 100);
 });

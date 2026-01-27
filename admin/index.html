@@ -3762,31 +3762,104 @@
                 </div>
 
                 <div id="home-sub-events" class="home-sub-content" style="display: none;">
-                  <div class="admin-placeholder-content">
+                  <div class="admin-placeholder-content" id="home-events-placeholder" style="display: flex;">
                     <i class="fas fa-calendar-alt"></i>
                     <h4>Home Page Events</h4>
                     <p>Manage events specifically for the Home Page.</p>
-                    <button class="btn-primary-admin" onclick="alert('Coming Soon: Home Events')">Manage Events</button>
+                    <button class="btn-primary-admin" onclick="document.getElementById('home-events-upload').click()">
+                      <i class="fas fa-upload"></i> Upload Image
+                    </button>
+                    <!-- Single File Input for this section -->
+                    <input type="file" id="home-events-upload" multiple accept="image/*" style="display: none;"
+                      onchange="handleHomeEventsUpload(this)">
+                  </div>
+
+                  <div id="home-events-content" style="display: none;">
+                    <div class="admin-table-controls"
+                      style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
+                      <div>
+                        <h4 style="margin: 0; color: #00274d;">Current Images</h4>
+                        <p style="margin: 5px 0 0; font-size: 13px; color: #64748b;">(Images will be displayed with
+                          sliding effects on home page)</p>
+                      </div>
+                      <button class="btn-primary-admin" onclick="document.getElementById('home-events-upload').click()">
+                        <i class="fas fa-upload"></i> Upload Image
+                      </button>
+                    </div>
+
+                    <div id="admin-home-events-grid"
+                      style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;">
+                      <!-- Images will be loaded here -->
+                    </div>
                   </div>
                 </div>
 
                 <div id="home-sub-middle-box" class="home-sub-content" style="display: none;">
-                  <div class="admin-placeholder-content">
+                  <div class="admin-placeholder-content" id="middle-box-placeholder" style="display: flex;">
                     <i class="fas fa-image"></i>
                     <h4>Home Page Middle Box Images</h4>
-                    <p>Upload and manage images for the middle box section.</p>
-                    <button class="btn-primary-admin" onclick="alert('Coming Soon: Middle Box Images')">Upload
-                      Image</button>
+                    <p>Manage images for the central sliding box on the Home Page.</p>
+                    <button class="btn-primary-admin"
+                      onclick="document.getElementById('middle-box-upload-input').click()">
+                      <i class="fas fa-upload"></i> Upload Image
+                    </button>
+                    <!-- Single File Input for this section -->
+                    <input type="file" id="middle-box-upload-input" multiple accept="image/*" style="display: none;"
+                      onchange="handleMiddleBoxUpload(this)">
+                  </div>
+
+                  <div id="middle-box-content" style="display: none;">
+                    <div class="admin-table-controls"
+                      style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
+                      <div>
+                        <h4 style="margin: 0; color: #00274d;">Current Images</h4>
+                        <p style="margin: 5px 0 0; font-size: 13px; color: #64748b;">(Images will cycle in the central
+                          slider)</p>
+                      </div>
+                      <button class="btn-primary-admin"
+                        onclick="document.getElementById('middle-box-upload-input').click()">
+                        <i class="fas fa-upload"></i> Upload Image
+                      </button>
+                    </div>
+
+                    <div id="admin-middle-box-grid"
+                      style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;">
+                      <!-- Images will be loaded here -->
+                    </div>
                   </div>
                 </div>
 
                 <div id="home-sub-gallery" class="home-sub-content" style="display: none;">
-                  <div class="admin-placeholder-content">
+                  <div class="admin-placeholder-content" id="home-gallery-placeholder" style="display: flex;">
                     <i class="fas fa-images"></i>
                     <h4>Home Page Photo Gallery</h4>
                     <p>Select photos to feature on the Home Page gallery.</p>
-                    <button class="btn-primary-admin" onclick="alert('Coming Soon: Home Gallery')">Select
-                      Photos</button>
+                    <button class="btn-primary-admin" onclick="document.getElementById('home-gallery-upload').click()">
+                      <i class="fas fa-upload"></i> Upload Image
+                    </button>
+                    <!-- Single File Input for this section -->
+                    <input type="file" id="home-gallery-upload" multiple accept="image/*" style="display: none;"
+                      onchange="handleHomeGalleryUpload(this)">
+                  </div>
+
+                  <div id="home-gallery-content" style="display: none;">
+                    <div class="admin-table-controls"
+                      style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
+                      <div>
+                        <h4 style="margin: 0; color: #00274d;">Current Gallery Images</h4>
+                        <p style="margin: 5px 0 0; font-size: 13px; color: #64748b;">(Images will be displayed in the
+                          gallery slider)</p>
+                      </div>
+                      <button class="btn-primary-admin"
+                        onclick="document.getElementById('home-gallery-upload').click()">
+                        <i class="fas fa-upload"></i> Upload Image
+                      </button>
+                    </div>
+
+                    <div id="admin-home-gallery-grid"
+                      style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;">
+                      <!-- Images will be loaded here -->
+                    </div>
                   </div>
                 </div>
               </div>
@@ -15092,6 +15165,292 @@
         }
       };
 
+      /* --- Member Management Logic --- */
+      document.addEventListener('DOMContentLoaded', () => {
+        const memberTableBody = document.getElementById('admin-member-table-body');
+        const exportBtn = document.getElementById('admin-export-csv');
+        const addMemberBtn = document.getElementById('admin-add-member');
+
+        // Add Member Modal
+        const addModal = document.getElementById('member-add-modal');
+        const addForm = document.getElementById('member-add-form');
+
+        // Edit Member Modal
+        const editModal = document.getElementById('member-edit-modal');
+        const editForm = document.getElementById('member-edit-form');
+
+        // View Member Modal
+        const viewModal = document.getElementById('member-view-modal');
+        const viewContent = document.getElementById('member-view-content');
+
+        // 1. Export CSV
+        if (exportBtn) {
+          exportBtn.addEventListener('click', () => {
+            let csv = [];
+            const rows = document.querySelectorAll("table.admin-table tr");
+
+            for (let i = 0; i < rows.length; i++) {
+              const row = [], cols = rows[i].querySelectorAll("td, th");
+
+              for (let j = 0; j < cols.length - 1; j++) { // Skip Actions column
+                // Clean text (remove newlines, extra spaces)
+                let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").replace(/\s+/g, " ").trim();
+                row.push('"' + data + '"');
+              }
+              csv.push(row.join(","));
+            }
+
+            const csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
+            const downloadLink = document.createElement("a");
+            downloadLink.download = "nsm_members_" + new Date().toISOString().slice(0, 10) + ".csv";
+            downloadLink.href = window.URL.createObjectURL(csvFile);
+            downloadLink.style.display = "none";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+          });
+        }
+
+        // 2. Add Member Button
+        if (addMemberBtn) {
+          addMemberBtn.addEventListener('click', () => {
+            addForm.reset();
+            addModal.style.display = 'flex';
+          });
+        }
+
+        // 3. Add Member Form Submit
+        if (addForm) {
+          addForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('add-member-name').value;
+            const role = document.getElementById('add-member-role').value;
+            const batch = document.getElementById('add-member-batch').value;
+            const email = document.getElementById('add-member-email').value;
+            const status = document.getElementById('add-member-status').value;
+
+            // Create new row
+            const newRow = document.createElement('tr');
+            newRow.dataset.memberId = Date.now().toString(); // Temporary ID
+
+            // Determine badges
+            const roleClass = role === 'representative' ? 'representative' : role === 'super-admin' ? 'super-admin' : role;
+            const roleLabel = role === 'representative' ? 'Representative Admin' : role.charAt(0).toUpperCase() + role.slice(1).replace('-', ' ');
+
+            const statusClass = status;
+            conststatusLabel = status.charAt(0).toUpperCase() + status.slice(1);
+
+            // Initials
+            const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
+            // Actions Button Logic
+            let actionsHtml = '';
+            if (status === 'pending') {
+              actionsHtml = `
+                        <button class="action-btn approve" title="Approve"><i class="fas fa-check"></i></button>
+                        <button class="action-btn reject" title="Reject"><i class="fas fa-times"></i></button>
+                    `;
+            } else {
+              actionsHtml = `
+                        <button class="action-btn view" title="View"><i class="fas fa-eye"></i></button>
+                        <button class="action-btn edit" title="Edit"><i class="fas fa-edit"></i></button>
+                    `;
+            }
+
+            newRow.innerHTML = `
+                    <td>
+                        <div class="user-cell">
+                        <div class="user-initials">${initials}</div>
+                        <span>${name}</span>
+                        </div>
+                    </td>
+                    <td><span class="role-badge ${roleClass}">${roleLabel}</span></td>
+                    <td>${batch}</td>
+                    <td>${email}</td>
+                    <td><span class="status-badge ${statusClass}">${status.charAt(0).toUpperCase() + status.slice(1)}</span></td>
+                    <td>
+                        <div class="table-actions">
+                            ${actionsHtml}
+                        </div>
+                    </td>
+                `;
+
+            memberTableBody.prepend(newRow); // Add to top
+            addModal.style.display = 'none';
+
+            // Refresh listeners (or rely on delegation)
+            // Since updateAdminStats counts rows, we should call it
+            if (typeof updateAdminStats === 'function') updateAdminStats();
+
+            alert('Member added successfully!');
+          });
+        }
+
+        // 4. Edit Member Form Submit
+        if (editForm) {
+          editForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('edit-member-id').value;
+            const row = document.querySelector(`tr[data-member-id="${id}"]`);
+
+            if (row) {
+              const name = document.getElementById('edit-member-name').value;
+              const role = document.getElementById('edit-member-role').value;
+              const batch = document.getElementById('edit-member-batch').value;
+              const email = document.getElementById('edit-member-email').value;
+              const status = document.getElementById('edit-member-status').value;
+
+              // Update Name & Initials
+              const nameSpan = row.querySelector('.user-cell span');
+              const initialsDiv = row.querySelector('.user-initials');
+              if (nameSpan) nameSpan.textContent = name;
+              if (initialsDiv) initialsDiv.textContent = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
+              // Update Role
+              const roleBadge = row.querySelector('.role-badge');
+              if (roleBadge) {
+                roleBadge.className = `role-badge ${role === 'representative' ? 'representative' : role === 'super-admin' ? 'super-admin' : role}`;
+                roleBadge.textContent = role === 'representative' ? 'Representative Admin' : role.charAt(0).toUpperCase() + role.slice(1).replace('-', ' ');
+              }
+
+              // Update Batch & Email
+              row.cells[2].textContent = batch;
+              row.cells[3].textContent = email;
+
+              // Update Status
+              const statusBadge = row.querySelector('.status-badge');
+              if (statusBadge) {
+                statusBadge.className = `status-badge ${status}`;
+                statusBadge.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+              }
+
+              // Update actions if status changed to/from pending
+              const actionsDiv = row.querySelector('.table-actions');
+              if (status === 'pending') {
+                actionsDiv.innerHTML = `
+                            <button class="action-btn approve" title="Approve"><i class="fas fa-check"></i></button>
+                            <button class="action-btn reject" title="Reject"><i class="fas fa-times"></i></button>
+                        `;
+              } else {
+                actionsDiv.innerHTML = `
+                            <button class="action-btn view" title="View"><i class="fas fa-eye"></i></button>
+                            <button class="action-btn edit" title="Edit"><i class="fas fa-edit"></i></button>
+                        `;
+              }
+            }
+
+            editModal.style.display = 'none';
+            if (typeof updateAdminStats === 'function') updateAdminStats();
+            alert('Member details updated!');
+          });
+        }
+
+        // 5. Event Delegation for Table Actions
+        if (memberTableBody) {
+          memberTableBody.addEventListener('click', (e) => {
+            const target = e.target;
+            const btn = target.closest('.action-btn');
+            if (!btn) return;
+
+            const row = btn.closest('tr');
+            const memberId = row.dataset.memberId;
+
+            // Get row data
+            const name = row.querySelector('.user-cell span').textContent;
+            const roleBadge = row.querySelector('.role-badge');
+            // Extract role value from class list roughly
+            let role = 'member';
+            if (roleBadge.classList.contains('super-admin')) role = 'super-admin';
+            else if (roleBadge.classList.contains('admin')) role = 'admin';
+            else if (roleBadge.classList.contains('representative')) role = 'representative';
+            else if (roleBadge.classList.contains('user')) role = 'user';
+
+            const batch = row.cells[2].textContent;
+            const email = row.cells[3].textContent;
+            const statusBadge = row.querySelector('.status-badge');
+            const status = statusBadge.textContent.toLowerCase();
+
+            // VIEW
+            if (btn.classList.contains('view')) {
+              viewContent.innerHTML = `
+                        <div style="display: flex; gap: 20px; align-items: center;">
+                            <div style="width: 80px; height: 80px; background: #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: #64748b;">
+                                ${name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                            </div>
+                            <div>
+                                <h2 style="margin: 0; color: #00274d;">${name}</h2>
+                                <span class="role-badge ${role === 'representative' ? 'representative' : role === 'super-admin' ? 'super-admin' : role}" style="margin-top: 5px;">${roleBadge.textContent}</span>
+                            </div>
+                        </div>
+                        <div style="background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                <div>
+                                    <label style="font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700;">Email</label>
+                                    <div style="font-weight: 500; color: #334155;">${email}</div>
+                                </div>
+                                <div>
+                                    <label style="font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700;">Batch</label>
+                                    <div style="font-weight: 500; color: #334155;">${batch}</div>
+                                </div>
+                                <div>
+                                    <label style="font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700;">Status</label>
+                                    <div style="font-weight: 500; color: #334155;">${statusBadge.textContent}</div>
+                                </div>
+                                <div>
+                                    <label style="font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700;">Joined</label>
+                                    <div style="font-weight: 500; color: #334155;">Oct 24, 2023</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+              viewModal.style.display = 'flex';
+            }
+
+            // EDIT
+            else if (btn.classList.contains('edit')) {
+              document.getElementById('edit-member-id').value = memberId;
+              document.getElementById('edit-member-name').value = name;
+              document.getElementById('edit-member-role').value = role;
+              document.getElementById('edit-member-batch').value = batch;
+              document.getElementById('edit-member-email').value = email;
+              document.getElementById('edit-member-status').value = status;
+
+              editModal.style.display = 'flex';
+            }
+
+            // APPROVE
+            else if (btn.classList.contains('approve')) {
+              if (confirm(`Approve membership for ${name}?`)) {
+                statusBadge.className = 'status-badge approved';
+                statusBadge.textContent = 'Approved';
+
+                // Change actions to View/Edit
+                const actionsDiv = row.querySelector('.table-actions');
+                actionsDiv.innerHTML = `
+                            <button class="action-btn view" title="View"><i class="fas fa-eye"></i></button>
+                            <button class="action-btn edit" title="Edit"><i class="fas fa-edit"></i></button>
+                        `;
+
+                // Move to top or sort? For now just Visual update.
+                if (typeof updateAdminStats === 'function') updateAdminStats();
+              }
+            }
+
+            // REJECT
+            else if (btn.classList.contains('reject')) {
+              if (confirm(`Reject membership for ${name}?`)) {
+                statusBadge.className = 'status-badge rejected';
+                statusBadge.textContent = 'Rejected';
+                // Maybe delete row or keep as rejected?
+                // Usually rejected stays but actions might change.
+                // For now keep visible.
+              }
+            }
+          });
+        }
+      });
+
     })();
   </script>
   <style>
@@ -16265,6 +16624,168 @@
       }
     });
   </script>
+
+  <!-- Home Page Events Preview Modal - Appended for Upload Functionality -->
+  <div id="home-events-preview-modal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10001; justify-content: center; align-items: center;">
+    <div
+      style="background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto;">
+      <h3
+        style="margin-top: 0; color: #00274d; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 20px;">
+        <i class="fas fa-images"></i> Preview Images
+      </h3>
+
+      <div id="home-events-preview-grid"
+        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-bottom: 20px;">
+        <!-- Preview images here -->
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button class="btn-outline-admin"
+          onclick="document.getElementById('home-events-preview-modal').style.display = 'none'; document.getElementById('home-events-upload').value = '';">
+          Cancel
+        </button>
+        <button class="btn-primary-admin" onclick="window.confirmSaveHomeImages()">
+          <i class="fas fa-save"></i> Save Images
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- Member Details View Modal -->
+  <div id="member-view-modal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10002; justify-content: center; align-items: center;">
+    <div
+      style="background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="margin: 0; color: #00274d; display: flex; align-items: center; gap: 10px;">
+          <i class="fas fa-user-circle"></i> Member Details
+        </h3>
+        <button onclick="document.getElementById('member-view-modal').style.display='none'"
+          style="background: none; border: none; font-size: 20px; cursor: pointer; color: #64748b;">&times;</button>
+      </div>
+      <div id="member-view-content" style="display: grid; gap: 15px;">
+        <!-- Content populated by JS -->
+      </div>
+      <div style="margin-top: 25px; display: flex; justify-content: flex-end;">
+        <button class="btn-primary-admin"
+          onclick="document.getElementById('member-view-modal').style.display='none'">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Member Edit Modal -->
+  <div id="member-edit-modal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10003; justify-content: center; align-items: center;">
+    <div
+      style="background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="margin: 0; color: #00274d; display: flex; align-items: center; gap: 10px;">
+          <i class="fas fa-user-edit"></i> Edit Member
+        </h3>
+        <button onclick="document.getElementById('member-edit-modal').style.display='none'"
+          style="background: none; border: none; font-size: 20px; cursor: pointer; color: #64748b;">&times;</button>
+      </div>
+      <form id="member-edit-form" style="display: grid; gap: 15px;">
+        <input type="hidden" id="edit-member-id">
+        <div>
+          <label style="display: block; font-size: 13px; color: #64748b; margin-bottom: 5px;">Full Name</label>
+          <input type="text" id="edit-member-name" required
+            style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
+        </div>
+        <div>
+          <label style="display: block; font-size: 13px; color: #64748b; margin-bottom: 5px;">Role</label>
+          <select id="edit-member-role"
+            style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
+            <option value="super-admin">Super Admin</option>
+            <option value="admin">Admin</option>
+            <option value="representative">Representative Admin</option>
+            <option value="member">Member</option>
+            <option value="user">User</option>
+          </select>
+        </div>
+        <div>
+          <label style="display: block; font-size: 13px; color: #64748b; margin-bottom: 5px;">Batch / Year</label>
+          <input type="number" id="edit-member-batch" required
+            style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
+        </div>
+        <div>
+          <label style="display: block; font-size: 13px; color: #64748b; margin-bottom: 5px;">Email Address</label>
+          <input type="email" id="edit-member-email" required
+            style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
+        </div>
+        <div>
+          <label style="display: block; font-size: 13px; color: #64748b; margin-bottom: 5px;">Status</label>
+          <select id="edit-member-status"
+            style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
+            <option value="approved">Approved</option>
+            <option value="pending">Pending</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+        <div style="margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn-outline-admin"
+            onclick="document.getElementById('member-edit-modal').style.display='none'">Cancel</button>
+          <button type="submit" class="btn-primary-admin">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Member Modal -->
+  <div id="member-add-modal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10003; justify-content: center; align-items: center;">
+    <div
+      style="background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="margin: 0; color: #00274d; display: flex; align-items: center; gap: 10px;">
+          <i class="fas fa-user-plus"></i> Add New Member
+        </h3>
+        <button onclick="document.getElementById('member-add-modal').style.display='none'"
+          style="background: none; border: none; font-size: 20px; cursor: pointer; color: #64748b;">&times;</button>
+      </div>
+      <form id="member-add-form" style="display: grid; gap: 15px;">
+        <div>
+          <label style="display: block; font-size: 13px; color: #64748b; margin-bottom: 5px;">Full Name</label>
+          <input type="text" id="add-member-name" required placeholder="John Doe"
+            style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
+        </div>
+        <div>
+          <label style="display: block; font-size: 13px; color: #64748b; margin-bottom: 5px;">Role</label>
+          <select id="add-member-role"
+            style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
+            <option value="member" selected>Member</option>
+            <option value="super-admin">Super Admin</option>
+            <option value="admin">Admin</option>
+            <option value="representative">Representative Admin</option>
+            <option value="user">User</option>
+          </select>
+        </div>
+        <div>
+          <label style="display: block; font-size: 13px; color: #64748b; margin-bottom: 5px;">Batch / Year</label>
+          <input type="number" id="add-member-batch" required placeholder="2015"
+            style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
+        </div>
+        <div>
+          <label style="display: block; font-size: 13px; color: #64748b; margin-bottom: 5px;">Email Address</label>
+          <input type="email" id="add-member-email" required placeholder="john@example.com"
+            style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
+        </div>
+        <div>
+          <label style="display: block; font-size: 13px; color: #64748b; margin-bottom: 5px;">Initial Status</label>
+          <select id="add-member-status"
+            style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
+            <option value="approved">Approved</option>
+            <option value="pending" selected>Pending</option>
+          </select>
+        </div>
+        <div style="margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn-outline-admin"
+            onclick="document.getElementById('member-add-modal').style.display='none'">Cancel</button>
+          <button type="submit" class="btn-primary-admin">Add Member</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </body>
 
 </html>

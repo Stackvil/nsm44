@@ -10,7 +10,7 @@ export interface EventPhoto {
     id: string;
     eventName: string;
     eventDate: string;
-    category: 'social' | 'nsmosa' | 'gallery';
+    category: 'social' | 'nsmosa' | 'gallery' | 'home' | 'home-middle' | 'home-gallery';
     year: number;
     photos: PhotoItem[];
     createdAt: number;

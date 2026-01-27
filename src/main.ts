@@ -634,6 +634,17 @@ function initAdminDashboard(): void {
   const adminTabs = document.querySelectorAll<HTMLLIElement>('.admin-sidebar li[data-tab]');
   const adminSections = document.querySelectorAll<HTMLElement>('.admin-tab-content');
 
+  // explicit-force-home-default: Ensure Home Page is active on init
+  const homeTab = document.querySelector('.admin-sidebar li[data-tab="home-page-content"]');
+  const homeSection = document.getElementById('admin-home-page-content');
+
+  if (homeTab && homeSection) {
+    adminTabs.forEach(t => t.classList.remove('active'));
+    adminSections.forEach(s => s.classList.remove('active'));
+    homeTab.classList.add('active');
+    homeSection.classList.add('active');
+  }
+
   // Handle tab switching
   adminTabs.forEach(tab => {
     tab.addEventListener('click', (e) => {
@@ -1055,83 +1066,115 @@ function initImageSliders(): void {
   }
 
   // Center slider (middle box)
-  const centerSlides = document.querySelectorAll<HTMLElement>('.center-slide');
-  const centerDots = document.querySelectorAll<HTMLElement>('.center-dot');
-  const prevCenter = document.querySelector<HTMLElement>('.prev-center');
-  const nextCenter = document.querySelector<HTMLElement>('.next-center');
+  function initCenterSlider(): void {
+    const centerSlides = document.querySelectorAll<HTMLElement>('.center-slide');
+    const centerDots = document.querySelectorAll<HTMLElement>('.center-dot');
+    const prevCenter = document.querySelector<HTMLElement>('.prev-center');
+    const nextCenter = document.querySelector<HTMLElement>('.next-center');
 
-  if (centerSlides.length > 0) {
-    let centerSliderInterval: number | null = null;
-    let centerSlideIndex = 0;
+    // Use a stable container to attach the interval property
+    const sliderWrapper = document.querySelector('.center-slider-wrapper')?.parentElement || document.body;
 
-    // Clear any existing interval
-    if (centerSliderInterval !== null) {
-      clearInterval(centerSliderInterval);
-    }
+    if (centerSlides.length > 0) {
 
-    const totalCenterSlides = centerSlides.length;
-
-    function showCenterSlide(index: number): void {
-      centerSlides.forEach((slide) => slide.classList.remove('active'));
-      centerDots.forEach((dot) => dot.classList.remove('active'));
-
-      if (centerSlides[index]) {
-        centerSlides[index].classList.add('active');
+      // Cleanup existing interval
+      if ((sliderWrapper as any)._centerSliderInterval) {
+        clearInterval((sliderWrapper as any)._centerSliderInterval);
       }
-      if (centerDots[index]) {
-        centerDots[index].classList.add('active');
+
+      let centerSliderInterval: number | null = null;
+      let centerSlideIndex = 0;
+
+      const totalCenterSlides = centerSlides.length;
+
+      function showCenterSlide(index: number): void {
+        centerSlides.forEach((slide) => slide.classList.remove('active'));
+        centerDots.forEach((dot) => dot.classList.remove('active'));
+
+        if (centerSlides[index]) {
+          centerSlides[index].classList.add('active');
+        }
+        if (centerDots[index]) {
+          centerDots[index].classList.add('active');
+        }
       }
-    }
 
-    function nextCenterSlide(): void {
-      centerSlideIndex = (centerSlideIndex + 1) % totalCenterSlides;
-      showCenterSlide(centerSlideIndex);
-    }
-
-    function prevCenterSlide(): void {
-      centerSlideIndex = (centerSlideIndex - 1 + totalCenterSlides) % totalCenterSlides;
-      showCenterSlide(centerSlideIndex);
-    }
-
-    // Show first slide
-    showCenterSlide(0);
-
-    // Auto-advance slider every 4 seconds
-    centerSliderInterval = window.setInterval(nextCenterSlide, 4000);
-
-    // Add click handlers for dots
-    centerDots.forEach((dot, index) => {
-      dot.addEventListener('click', () => {
-        centerSlideIndex = index;
+      function nextCenterSlide(): void {
+        centerSlideIndex = (centerSlideIndex + 1) % totalCenterSlides;
         showCenterSlide(centerSlideIndex);
-        if (centerSliderInterval !== null) {
-          clearInterval(centerSliderInterval);
-        }
-        centerSliderInterval = window.setInterval(nextCenterSlide, 4000);
-      });
-    });
+      }
 
-    // Add click handlers for navigation arrows
-    if (nextCenter) {
-      nextCenter.addEventListener('click', () => {
-        nextCenterSlide();
-        if (centerSliderInterval !== null) {
-          clearInterval(centerSliderInterval);
-        }
-        centerSliderInterval = window.setInterval(nextCenterSlide, 4000);
-      });
-    }
+      function prevCenterSlide(): void {
+        centerSlideIndex = (centerSlideIndex - 1 + totalCenterSlides) % totalCenterSlides;
+        showCenterSlide(centerSlideIndex);
+      }
 
-    if (prevCenter) {
-      prevCenter.addEventListener('click', () => {
-        prevCenterSlide();
-        if (centerSliderInterval !== null) {
-          clearInterval(centerSliderInterval);
-        }
+      function startCenterAuto(): void {
+        if (centerSliderInterval) clearInterval(centerSliderInterval);
         centerSliderInterval = window.setInterval(nextCenterSlide, 4000);
+        (sliderWrapper as any)._centerSliderInterval = centerSliderInterval;
+      }
+
+      function stopCenterAuto(): void {
+        if (centerSliderInterval) {
+          clearInterval(centerSliderInterval);
+          centerSliderInterval = null;
+        }
+      }
+
+      // Show first slide
+      showCenterSlide(0);
+
+      // Auto-advance slider
+      startCenterAuto();
+
+      // Add click handlers for dots
+      centerDots.forEach((dot, index) => {
+        // Use replacement or simple ensure single listener?
+        // Since dots are replaced by renderHomeEventsPublic, new listeners are fine.
+        dot.addEventListener('click', () => {
+          centerSlideIndex = index;
+          showCenterSlide(centerSlideIndex);
+          stopCenterAuto();
+          startCenterAuto();
+        });
       });
+
+      // Add click handlers for navigation arrows
+      if (nextCenter) {
+        // Clone to remove old listeners
+        const newNext = nextCenter.cloneNode(true);
+        if (nextCenter.parentNode) nextCenter.parentNode.replaceChild(newNext, nextCenter);
+        newNext.addEventListener('click', () => {
+          nextCenterSlide();
+          stopCenterAuto();
+          startCenterAuto();
+        });
+      }
+
+      if (prevCenter) {
+        const newPrev = prevCenter.cloneNode(true);
+        if (prevCenter.parentNode) prevCenter.parentNode.replaceChild(newPrev, prevCenter);
+        newPrev.addEventListener('click', () => {
+          prevCenterSlide();
+          stopCenterAuto();
+          startCenterAuto();
+        });
+      }
+
+      // Hover pause using on... properties
+      const container = document.querySelector('.center-slider-container') as HTMLElement;
+      if (container) {
+        container.onmouseenter = stopCenterAuto;
+        container.onmouseleave = startCenterAuto;
+      }
     }
   }
+
+  // Expose globally
+  (window as any).initCenterSlider = initCenterSlider;
+  initCenterSlider(); // Run once locally
+
 
   // Modern slider
   const sliderContainerModern = document.querySelector('.slider-container-modern');
@@ -2983,6 +3026,16 @@ function initHomeGallerySlider(): void {
 
   if (!galleryWrapper || gallerySlides.length === 0) return;
 
+  // Clear existing listeners/intervals if re-initialized
+  if ((galleryContainer as any)._sliderInterval) {
+    clearInterval((galleryContainer as any)._sliderInterval);
+  }
+
+  // Clone container to remove old event listeners (simplest way to reset)
+  // modifying DOM might be drastic. simpler to just re-query.
+  // Actually, since we replaced innerHTML in event-management, the old elements are gone.
+  // We just need to attach listeners to the NEW elements.
+
   let currentSlide = 0;
   let sliderInterval: number | null = null;
 
@@ -3020,6 +3073,8 @@ function initHomeGallerySlider(): void {
       clearInterval(sliderInterval);
     }
     sliderInterval = window.setInterval(nextSlide, 4000);
+    // Store interval on container for cleanup
+    (galleryContainer as any)._sliderInterval = sliderInterval;
   }
 
   function stopAutoSlide(): void {
@@ -3029,13 +3084,16 @@ function initHomeGallerySlider(): void {
     }
   }
 
-  // Initialize first slide
+  // Initialize first slide (force reset state)
   showSlide(0);
   startAutoSlide();
 
   // Navigation buttons
   if (nextBtn) {
-    nextBtn.addEventListener('click', () => {
+    // Clone to remove old listeners if any (though replaced DOM handles this)
+    const newNextBtn = nextBtn.cloneNode(true);
+    if (nextBtn.parentNode) nextBtn.parentNode.replaceChild(newNextBtn, nextBtn);
+    newNextBtn.addEventListener('click', () => {
       nextSlide();
       stopAutoSlide();
       startAutoSlide();
@@ -3043,7 +3101,9 @@ function initHomeGallerySlider(): void {
   }
 
   if (prevBtn) {
-    prevBtn.addEventListener('click', () => {
+    const newPrevBtn = prevBtn.cloneNode(true);
+    if (prevBtn.parentNode) prevBtn.parentNode.replaceChild(newPrevBtn, prevBtn);
+    newPrevBtn.addEventListener('click', () => {
       prevSlide();
       stopAutoSlide();
       startAutoSlide();
@@ -3052,6 +3112,9 @@ function initHomeGallerySlider(): void {
 
   // Dot navigation
   galleryDots.forEach((dot, index) => {
+    // Cloning dots is tricky if we just replaced them. Assuming new DOM.
+    // If re-using old DOM, we might double-attach.
+    // Since renderHomeEventsPublic replaces innerHTML, these are NEW dots.
     dot.addEventListener('click', () => {
       showSlide(index);
       stopAutoSlide();
@@ -3060,9 +3123,13 @@ function initHomeGallerySlider(): void {
   });
 
   // Pause on hover
-  galleryContainer.addEventListener('mouseenter', stopAutoSlide);
-  galleryContainer.addEventListener('mouseleave', startAutoSlide);
+  // Use 'onmouseenter' property assignment to avoid duplicate listeners
+  (galleryContainer as HTMLElement).onmouseenter = stopAutoSlide;
+  (galleryContainer as HTMLElement).onmouseleave = startAutoSlide;
 }
+
+// Expose globally
+(window as any).initHomeGallerySlider = initHomeGallerySlider;
 
 // Initialize Member Page
 function initMemberPage(): void {
