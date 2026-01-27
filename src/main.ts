@@ -1,6 +1,9 @@
 import './styles.css';
+import './lightbox-override.css';
+import './event-management';
 import type { PageKey } from './types';
 import { mountFAQ } from './mount-faq';
+import { DB, ReunionPhoto, PhotoItem, VideoItem } from './db';
 
 // Type guard to check if a string is a valid PageKey
 function isValidPageKey(key: string | undefined): key is PageKey {
@@ -15,17 +18,35 @@ function isValidPageKey(key: string | undefined): key is PageKey {
     'contact',
     'member',
     'home',
+    'dashboard',
   ];
   return key !== undefined && validKeys.includes(key as PageKey);
 }
+// Global state for uploads
+let currentReunionUpload: File[] = [];
+let currentEditingReunionId: string | null = null;
+let currentReunionExistingPhotos: PhotoItem[] = [];
 
 // Initialize the application
 function initApp(): void {
   // Mount React components
   mountFAQ();
 
+  // Expose DB methods to global scope
+  (window as any).db = {
+    getGallery: DB.getGallery.bind(DB),
+    saveGallery: DB.saveGallery.bind(DB),
+    deleteGallery: DB.deleteGallery.bind(DB),
+    getEvents: DB.getEvents.bind(DB),
+    saveEvent: DB.saveEvent.bind(DB),
+    deleteEvent: DB.deleteEvent.bind(DB),
+    getVideos: DB.getVideos.bind(DB),
+    saveVideo: DB.saveVideo.bind(DB),
+    deleteVideo: DB.deleteVideo.bind(DB),
+  };
+
   const navLinks = document.querySelectorAll<HTMLAnchorElement>(
-    '.nav-item > a[data-page]',
+    '.nav-item > a[data-page], .user-dropdown a[data-page]',
   );
   const heroTitle = document.getElementById('hero-title') as HTMLHeadingElement | null;
   const sidebarLinks = document.querySelectorAll<HTMLAnchorElement>('.sidebar-link');
@@ -41,6 +62,7 @@ function initApp(): void {
     faq: document.getElementById('page-faq'),
     contact: document.getElementById('page-contact'),
     member: document.getElementById('page-member'),
+    dashboard: document.getElementById('page-dashboard'),
   };
 
   const heroTitles: Record<PageKey, string> = {
@@ -54,6 +76,7 @@ function initApp(): void {
     contact: 'CONTACT US',
     member: 'BECOME A MEMBER',
     home: 'NSMOSA',
+    dashboard: 'ADMIN DASHBOARD',
   };
 
   function setActivePage(pageKey: PageKey, category?: string): void {
@@ -85,6 +108,20 @@ function initApp(): void {
     (Object.entries(pageSections) as [PageKey, HTMLElement | null][]).forEach(
       ([key, el]) => {
         if (!el) return;
+
+        // Security check for dashboard access
+        if (key === 'dashboard') {
+          const role = sessionStorage.getItem('nsm_user_role') || 'member';
+          if (role === 'member') {
+            el.classList.remove('visible');
+            // If they are specifically trying to view the dashboard page, kick them to home
+            if (pageKey === 'dashboard') {
+              setTimeout(() => setActivePage('home'), 10);
+            }
+            return;
+          }
+        }
+
         el.classList.toggle('visible', key === pageKey);
       },
     );
@@ -121,6 +158,15 @@ function initApp(): void {
               faqSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
           }, 300);
+        }
+      }, 100);
+    }
+    // If navigating to Reunion page, check if we need to load gallery
+    if (pageKey === 'reunion') {
+      setTimeout(() => {
+        const gallerySection = document.getElementById('reunion-gallery-section');
+        if (gallerySection && gallerySection.classList.contains('active')) {
+          loadPublicReunions();
         }
       }, 100);
     }
@@ -199,7 +245,13 @@ function initApp(): void {
                 else if (subpage === 'shop-gallery') galleryType = 'shop';
 
                 if (galleryType) {
+                  // Refresh the gallery content from DB
+                  if ((window as any).updatePublicEventsPage) {
+                    (window as any).updatePublicEventsPage();
+                  }
+
                   const galleryTabs = document.querySelectorAll<HTMLButtonElement>('.gallery-tab');
+
                   const gallerySections = document.querySelectorAll<HTMLElement>('.gallery-section');
 
                   // Update active tab
@@ -220,9 +272,10 @@ function initApp(): void {
                     // If video gallery, populate videos
                     if (galleryType === 'video') {
                       setTimeout(() => {
-                        populateVideoGallery();
+                        if ((window as any).loadVideos) (window as any).loadVideos();
                       }, 100);
                     }
+
                   }
                 }
               }, 100);
@@ -259,6 +312,9 @@ function initApp(): void {
                   const targetSection = document.getElementById(targetSectionId);
                   if (targetSection) {
                     targetSection.classList.add('active');
+                    if (reunionType === 'gallery') {
+                      loadPublicReunions();
+                    }
                   }
                 }
               }, 100);
@@ -472,15 +528,306 @@ function initApp(): void {
     });
   });
 
-  // Initialize with 'about' page
-  setActivePage('home');
-
   // Load admin data
 
+  // Mobile Menu Logic
+  const mobileToggle = document.getElementById('mobile-menu-toggle');
+  const mobileClose = document.getElementById('mobile-menu-close');
+  const mobileOverlay = document.getElementById('mobile-menu-overlay');
+  const mobileDrawer = document.getElementById('mobile-menu-drawer');
+  const mobileDropdownToggles = document.querySelectorAll('.mobile-dropdown-toggle');
+  const mobileNavLinks = document.querySelectorAll<HTMLAnchorElement>('.mobile-nav-list a[data-page]');
+
+  function closeMobileMenu() {
+    mobileDrawer?.classList.remove('active');
+    mobileOverlay?.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function openMobileMenu() {
+    mobileDrawer?.classList.add('active');
+    mobileOverlay?.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  mobileToggle?.addEventListener('click', openMobileMenu);
+  mobileClose?.addEventListener('click', closeMobileMenu);
+  mobileOverlay?.addEventListener('click', closeMobileMenu);
+
+  mobileDropdownToggles.forEach(toggle => {
+    toggle.addEventListener('click', () => {
+      const parent = toggle.parentElement;
+      const list = parent?.querySelector('.mobile-dropdown-list');
+
+      // Close other dropdowns
+      document.querySelectorAll('.mobile-nav-has-dropdown').forEach(item => {
+        if (item !== parent) {
+          item.classList.remove('active');
+          item.querySelector('.mobile-dropdown-list')?.classList.remove('active');
+        }
+      });
+
+      parent?.classList.toggle('active');
+      list?.classList.toggle('active');
+    });
+  });
+
+  mobileNavLinks.forEach(link => {
+    link.addEventListener('click', (e: MouseEvent) => {
+      e.preventDefault();
+      const pageKey = link.dataset.page;
+      const subpage = link.dataset.subpage;
+      const connectSubpage = link.dataset.connectSubpage;
+
+      if (isValidPageKey(pageKey)) {
+        setActivePage(pageKey);
+
+        // Handle subpages (similar to footer logic)
+        if (subpage) {
+          // Add logic to trigger subpage click if needed
+          const dropdownLink = document.querySelector<HTMLAnchorElement>(`.dropdown-item[data-subpage="${subpage}"]`);
+          dropdownLink?.click();
+        }
+
+        if (connectSubpage) {
+          const connectLink = document.querySelector<HTMLAnchorElement>(`.dropdown-item[data-connect-subpage="${connectSubpage}"]`);
+          connectLink?.click();
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        closeMobileMenu();
+
+        // Update active state in mobile nav
+        mobileNavLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  });
+
+  // Initialize gallery tabs and logic
+  initReunionTabs();
+  initConnectTabs();
+  initChapterTabs();
+  initYearPhotoGallery();
+  initYearReunionGallery();
+  initYearShopGallery();
+  initYearNostalgiaGallery();
+  initPPTGallery();
+
+  // Initialize Admin Dashboard logic
+  // Initialize Admin Dashboard logic
+  initAdminDashboard();
+
+  // Load public events (Social, etc.)
+  if ((window as any).updatePublicEventsPage) {
+    (window as any).updatePublicEventsPage();
+  }
+
+  // Initialize with 'home' page
+  setActivePage('home');
 }
 
 // Load data from admin dashboard
-// Load data from admin dashboard
+
+// Admin Dashboard Login
+function initAdminDashboard(): void {
+  const adminTabs = document.querySelectorAll<HTMLLIElement>('.admin-sidebar li[data-tab]');
+  const adminSections = document.querySelectorAll<HTMLElement>('.admin-tab-content');
+
+  // Handle tab switching
+  adminTabs.forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      e.preventDefault();
+      const tabId = tab.dataset.tab;
+
+      // Update sidebar active state
+      adminTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      // Update content active state
+      adminSections.forEach(section => {
+        section.classList.remove('active');
+        if (section.id === `admin-${tabId}`) {
+          section.classList.add('active');
+        }
+      });
+
+      if (tabId === 'reunion-management') {
+        loadReunions();
+      } else if (tabId === 'gallery-management') {
+        (window as any).loadAdminGalleries();
+      } else if (tabId === 'video-management') {
+        (window as any).loadAdminVideos();
+      }
+
+      // Update sidebar active state
+      adminTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      // Show content
+      adminSections.forEach(section => {
+        section.classList.remove('active');
+        // IDs are like admin-financials, admin-member-management, etc.
+        // But I need to check index.html IDs again.
+        // It was id="admin-financials" and data-tab="financials".
+        if (section.id === `admin-${tabId}`) {
+          section.classList.add('active');
+        }
+      });
+
+      if (tabId === 'financials') {
+        loadFinancialReports();
+      } else if (tabId === 'reunion-management') {
+        loadReunions();
+      } else if (tabId === 'gallery-management') {
+        (window as any).loadAdminGalleries();
+      } else if (tabId === 'video-management') {
+        (window as any).loadAdminVideos();
+      }
+    });
+
+    // If this tab is already active (by default), load its content
+    if (tab.classList.contains('active')) {
+      if (tab.dataset.tab === 'financials') loadFinancialReports();
+      if (tab.dataset.tab === 'reunion-management') loadReunions();
+      if (tab.dataset.tab === 'gallery-management') (window as any).loadAdminGalleries();
+      if (tab.dataset.tab === 'video-management') (window as any).loadAdminVideos();
+    }
+  });
+}
+
+function loadFinancialReports(): void {
+  const container = document.querySelector('#admin-financials .admin-placeholder-content');
+  if (!container) return;
+
+  // Keep the header/icon but replace the p/button or append below
+  // Actually the placeholder content had a specific structure.
+  // Let's clear and rebuild appropriately, or just append.
+  // The placeholder had: icon, h4, p, button.
+
+  container.innerHTML = `
+        <div style="text-align: center; padding: 40px;">
+            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--loyola-blue);"></i>
+            <p style="margin-top: 10px;">Loading financial data...</p>
+        </div>
+    `;
+
+  DB.getFinancials().then((transactions) => {
+    // Calculate totals
+    const donations = transactions
+      .filter(t => t.type === 'donation')
+      .reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+
+    const membership = transactions
+      .filter(t => t.type === 'membership')
+      .reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+
+    const total = donations + membership + transactions
+      .filter(t => t.type !== 'donation' && t.type !== 'membership')
+      .reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+
+    // Render UI
+    container.innerHTML = `
+            <div class="financial-reports-container" style="text-align: left; width: 100%;">
+                <div class="admin-content-header" style="margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #eee;">
+                    <h3>Financial Reports</h3>
+                    <button class="btn-primary-admin" onclick="alert('Export functionality coming soon')">
+                        <i class="fas fa-download"></i> Export CSV
+                    </button>
+                </div>
+
+                <div class="financial-overview-cards" style="display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap;">
+                    <div class="financial-card total" style="background: #fff; padding: 24px; border-radius: 12px; flex: 1; min-width: 250px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 5px solid #00274d;">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                            <h3 style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; color: #666; margin: 0;">Total Collections</h3>
+                            <div style="background: rgba(0, 39, 77, 0.1); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #00274d;">
+                                <i class="fas fa-university"></i>
+                            </div>
+                        </div>
+                        <p class="amount" style="font-size: 28px; font-weight: 700; color: #333; margin: 0;">₹${total.toLocaleString('en-IN')}</p>
+                        <p style="font-size: 12px; color: #28a745; margin-top: 8px; display: flex; align-items: center;">
+                            <i class="fas fa-arrow-up" style="margin-right: 4px;"></i> Total collected to date
+                        </p>
+                    </div>
+
+                    <div class="financial-card donation" style="background: #fff; padding: 24px; border-radius: 12px; flex: 1; min-width: 250px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 5px solid #28a745;">
+                         <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                            <h3 style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; color: #666; margin: 0;">Donations</h3>
+                            <div style="background: rgba(40, 167, 69, 0.1); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #28a745;">
+                                <i class="fas fa-hand-holding-heart"></i>
+                            </div>
+                        </div>
+                        <p class="amount" style="font-size: 28px; font-weight: 700; color: #333; margin: 0;">₹${donations.toLocaleString('en-IN')}</p>
+                        <p style="font-size: 12px; color: #666; margin-top: 8px;">From alumni contributions</p>
+                    </div>
+
+                     <div class="financial-card membership" style="background: #fff; padding: 24px; border-radius: 12px; flex: 1; min-width: 250px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 5px solid #17a2b8;">
+                         <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                            <h3 style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; color: #666; margin: 0;">Membership Fees</h3>
+                            <div style="background: rgba(23, 162, 184, 0.1); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #17a2b8;">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                        <p class="amount" style="font-size: 28px; font-weight: 700; color: #333; margin: 0;">₹${membership.toLocaleString('en-IN')}</p>
+                         <p style="font-size: 12px; color: #666; margin-top: 8px;">From registration fees</p>
+                    </div>
+                </div>
+
+                <div class="transactions-list" style="background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="margin: 0; color: #00274d; font-size: 18px;">Recent Transactions</h3>
+                        <div class="filter-actions">
+                            <!-- Add filters if needed -->
+                        </div>
+                    </div>
+                    
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: separate; border-spacing: 0;">
+                            <thead>
+                                <tr style="background: #f8f9fa;">
+                                    <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: #555; border-bottom: 2px solid #eee; border-radius: 8px 0 0 8px;">Date</th>
+                                    <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: #555; border-bottom: 2px solid #eee;">Payer Name</th>
+                                    <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: #555; border-bottom: 2px solid #eee;">Type</th>
+                                    <th style="padding: 12px 16px; text-align: center; font-weight: 600; color: #555; border-bottom: 2px solid #eee;">Status</th>
+                                    <th style="padding: 12px 16px; text-align: right; font-weight: 600; color: #555; border-bottom: 2px solid #eee; border-radius: 0 8px 8px 0;">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${transactions.length === 0 ? `
+                                    <tr>
+                                        <td colspan="5" style="padding: 40px; text-align: center; color: #888;">
+                                            <i class="fas fa-inbox" style="font-size: 24px; margin-bottom: 10px; display: block;"></i>
+                                            No transactions found yet.
+                                        </td>
+                                    </tr>
+                                ` : transactions.slice(0, 10).map(t => `
+                                    <tr style="transition: background 0.2s;">
+                                        <td style="padding: 16px; border-bottom: 1px solid #f1f1f1; color: #444;">${new Date(t.date).toLocaleDateString()}</td>
+                                        <td style="padding: 16px; border-bottom: 1px solid #f1f1f1;">
+                                            <div style="font-weight: 500; color: #00274d;">${t.payerName || 'Anonymous'}</div>
+                                        </td>
+                                        <td style="padding: 16px; border-bottom: 1px solid #f1f1f1;">
+                                            <span style="padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; background: ${t.type === 'donation' ? '#e6f4ea' : '#e0f7fa'}; color: ${t.type === 'donation' ? '#1e7e34' : '#006064'}; text-transform: capitalize;">
+                                                ${t.type}
+                                            </span>
+                                        </td>
+                                        <td style="padding: 16px; border-bottom: 1px solid #f1f1f1; text-align: center;">
+                                            <i class="fas fa-check-circle" style="color: #28a745;"></i>
+                                        </td>
+                                        <td style="padding: 16px; border-bottom: 1px solid #f1f1f1; text-align: right; font-weight: 600; color: #333;">
+                                            ₹${(Number(t.amount) || 0).toLocaleString('en-IN')}
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        `;
+  });
+}
+
 
 
 
@@ -1011,20 +1358,9 @@ function initReunionTabs(): void {
       if (targetSection) {
         targetSection.classList.add('active');
 
-        // Force images to load when gallery section is shown
+        // Load dynamic reunion galleries
         if (reunionType === 'gallery') {
-          setTimeout(() => {
-            const images = targetSection.querySelectorAll<HTMLImageElement>('.reunion-year-image');
-            images.forEach((img) => {
-              if (img.dataset.src) {
-                img.src = img.dataset.src;
-              }
-              // Force image reload
-              const src = img.src;
-              img.src = '';
-              img.src = src;
-            });
-          }, 100);
+          loadPublicReunions();
         }
       }
     });
@@ -1844,6 +2180,9 @@ function openPhotoLightbox(photos: string[], currentIndex: number): void {
 
   document.addEventListener('keydown', lightboxKeyboardHandler, { once: false });
 }
+
+// Expose to window for onclick handlers
+(window as any).openPhotoLightbox = openPhotoLightbox;
 
 // Year Shop@1925 Gallery Functionality
 function initYearShopGallery(): void {
@@ -3059,6 +3398,600 @@ function initFAQPage(): void {
     });
   });
 }
+
+// ==========================================
+// Reunion Management Logic
+// ==========================================
+// Global state managed at top of file
+
+(window as any).openCreateReunionModal = () => {
+  const modal = document.getElementById('create-reunion-modal');
+  if (modal) {
+    modal.style.display = 'block';
+    currentReunionUpload = [];
+    currentReunionExistingPhotos = [];
+    currentEditingReunionId = null;
+
+    const nameInput = document.getElementById('reunion-name') as HTMLInputElement;
+    const yearInput = document.getElementById('reunion-year') as HTMLInputElement;
+    const modalTitle = modal.querySelector('h3');
+    const submitBtn = modal.querySelector('button[type="submit"]');
+
+    if (nameInput) nameInput.value = '';
+    if (yearInput) yearInput.value = '';
+    if (modalTitle) modalTitle.innerHTML = '<i class="fas fa-handshake" style="color: #004e92; margin-right: 10px;"></i> Create New Event Gallery';
+    if (submitBtn) submitBtn.innerHTML = '<i class="fas fa-check"></i> Create Event';
+
+    const uploadArea = document.getElementById('reunion-upload-area');
+    const preview = document.getElementById('reunion-image-preview');
+    const imgInput = document.getElementById('reunion-images') as HTMLInputElement;
+
+    if (uploadArea) {
+      uploadArea.innerHTML = `
+        <i class="fas fa-cloud-upload-alt" style="font-size: 48px; color: #94a3b8; margin-bottom: 15px;"></i>
+        <p style="margin: 0; color: #64748b; font-size: 14px;">Click to upload images or drag and drop</p>
+        <p style="margin: 5px 0 0; color: #94a3b8; font-size: 12px;">PNG, JPG up to 10MB (Multiple files allowed)</p>
+      `;
+    }
+    if (preview) preview.innerHTML = '';
+    if (imgInput) imgInput.value = '';
+  }
+};
+
+(window as any).closeCreateReunionModal = () => {
+  const modal = document.getElementById('create-reunion-modal');
+  if (modal) modal.style.display = 'none';
+};
+
+// Handle file selection for Reunion
+document.addEventListener('DOMContentLoaded', () => {
+  const reunionInput = document.getElementById('reunion-images') as HTMLInputElement;
+  if (reunionInput) {
+    reunionInput.addEventListener('change', () => {
+      if (reunionInput.files) {
+        Array.from(reunionInput.files).forEach(file => currentReunionUpload.push(file));
+        updateReunionPreview();
+      }
+    });
+  }
+
+  const reunionForm = document.getElementById('create-reunion-form');
+  if (reunionForm) {
+    reunionForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await saveReunion();
+    });
+  }
+
+  const backBtn = document.getElementById('back-to-reunion-list-btn');
+  if (backBtn) {
+    backBtn.addEventListener('click', () => {
+      const mainView = document.getElementById('admin-reunion-main-view');
+      const detailView = document.getElementById('admin-reunion-images-view');
+      if (mainView && detailView) {
+        mainView.style.display = 'block';
+        detailView.style.display = 'none';
+        mainView.classList.add('active');
+        detailView.classList.remove('active');
+      }
+    });
+  }
+});
+
+function updateReunionPreview() {
+  const preview = document.getElementById('reunion-image-preview');
+  if (!preview) return;
+  preview.innerHTML = '';
+
+  // Show existing photos
+  currentReunionExistingPhotos.forEach((photo, index) => {
+    const div = document.createElement('div');
+    div.style.position = 'relative';
+    div.innerHTML = `
+      <img src="${photo.url}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;">
+      <button type="button" onclick="window.removeExistingReunionPhoto(${index})" style="position: absolute; top: -5px; right: -5px; background: red; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer;">&times;</button>
+      <span style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.5); color: white; font-size: 9px; text-align: center; border-radius: 0 0 8px 8px;">Existing</span>
+    `;
+    preview.appendChild(div);
+  });
+
+  // Show new uploads
+  currentReunionUpload.forEach((file, index) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const div = document.createElement('div');
+      div.style.position = 'relative';
+      div.innerHTML = `
+        <img src="${e.target?.result}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;">
+        <button type="button" onclick="window.removeReunionImage(${index})" style="position: absolute; top: -5px; right: -5px; background: red; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer;">&times;</button>
+      `;
+      preview.appendChild(div);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+(window as any).removeReunionImage = (index: number) => {
+  currentReunionUpload.splice(index, 1);
+  updateReunionPreview();
+};
+
+(window as any).removeExistingReunionPhoto = (index: number) => {
+  currentReunionExistingPhotos.splice(index, 1);
+  updateReunionPreview();
+};
+
+async function saveReunion() {
+  const nameInput = document.getElementById('reunion-name') as HTMLInputElement;
+  const yearInput = document.getElementById('reunion-year') as HTMLInputElement;
+  const btn = document.querySelector('#create-reunion-form button[type="submit"]') as HTMLButtonElement;
+
+  if (!nameInput.value || !yearInput.value) {
+    alert('Please fill all required fields');
+    return;
+  }
+
+  if (currentReunionUpload.length === 0 && currentReunionExistingPhotos.length === 0) {
+    alert('Please upload at least one image');
+    return;
+  }
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+  }
+
+  try {
+    const processedPhotos: PhotoItem[] = [...currentReunionExistingPhotos];
+    for (const file of currentReunionUpload) {
+      const base64 = await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target?.result as string);
+        reader.readAsDataURL(file);
+      });
+      processedPhotos.push({
+        id: crypto.randomUUID(),
+        url: base64,
+        name: file.name,
+        uploadedAt: Date.now()
+      });
+    }
+
+    const reunionData: ReunionPhoto = {
+      id: currentEditingReunionId || crypto.randomUUID(),
+      name: nameInput.value,
+      year: parseInt(yearInput.value) || new Date().getFullYear(),
+      photos: processedPhotos,
+      createdAt: Date.now()
+    };
+
+    await DB.saveReunion(reunionData);
+    alert(`Reunion gallery ${currentEditingReunionId ? 'updated' : 'created'} successfully!`);
+
+    (window as any).closeCreateReunionModal();
+    loadReunions();
+
+  } catch (error) {
+    console.error('Error saving reunion:', error);
+    alert('Failed to save reunion.');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-check"></i> Create Reunion';
+    }
+  }
+}
+
+function loadReunions() {
+  const container = document.getElementById('admin-reunion-list-container');
+  if (!container) return;
+
+  const placeholder = container.querySelector('.admin-placeholder-content') as HTMLElement;
+
+  DB.getReunion().then(reunions => {
+    container.querySelectorAll('.event-year-card').forEach(el => el.remove());
+
+    if (reunions.length === 0) {
+      if (placeholder) placeholder.style.display = 'flex';
+      return;
+    }
+
+    if (placeholder) placeholder.style.display = 'none';
+    reunions.sort((a, b) => b.year - a.year);
+
+    reunions.forEach(r => {
+      const card = document.createElement('div');
+      card.className = 'event-year-card';
+      card.style.cssText = 'background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border: 1px solid #eee; transition: transform 0.3s ease; cursor: pointer;';
+
+      const coverImg = r.photos.length > 0 ? r.photos[0].url : '';
+      card.innerHTML = `
+        <div style="position: relative; aspect-ratio: 4/3; overflow: hidden; background: #f8fafc;">
+          ${coverImg ? `<img src="${coverImg}" style="width: 100%; height: 100%; object-fit: cover;">` : '<div style="height:100%; display:flex; align-items:center; justify-content:center;"><i class="fas fa-image" style="color:#cbd5e1; font-size:32px;"></i></div>'}
+          <div style="position: absolute; top: 10px; right: 10px; display: flex; gap: 8px;">
+            <button onclick="event.stopPropagation(); window.editReunion('${r.id}')" style="width: 32px; height: 32px; border-radius: 6px; background: white; border: none; color: #004e92; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"><i class="fas fa-edit"></i></button>
+            <button onclick="event.stopPropagation(); window.deleteReunion('${r.id}')" style="width: 32px; height: 32px; border-radius: 6px; background: white; border: none; color: #ef4444; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"><i class="fas fa-trash"></i></button>
+          </div>
+        </div>
+        <div style="padding: 15px; text-align: center;">
+          <h5 style="margin: 0 0 5px 0; font-size: 1.1rem; font-weight: 700; color: #00274d;">${r.name}</h5>
+          <p style="margin: 0 0 10px 0; font-size: 0.9rem; font-weight: 600; color: #004e92;">${r.year}</p>
+          <span style="display: block; font-size: 0.85rem; color: #64748b;">${r.photos.length} Photos</span>
+        </div>
+      `;
+      card.onclick = () => (window as any).viewReunionImages(r.id);
+      container.appendChild(card);
+    });
+  });
+}
+
+(window as any).editReunion = async (id: string) => {
+  const reunions = await DB.getReunion();
+  const reunion = reunions.find(r => r.id === id);
+  if (!reunion) return;
+
+  (window as any).openCreateReunionModal();
+  currentEditingReunionId = id;
+  currentReunionExistingPhotos = [...reunion.photos];
+
+  const nameInput = document.getElementById('reunion-name') as HTMLInputElement;
+  const yearInput = document.getElementById('reunion-year') as HTMLInputElement;
+  const modal = document.getElementById('create-reunion-modal');
+  if (modal) {
+    const title = modal.querySelector('h3');
+    const btn = modal.querySelector('button[type="submit"]');
+    if (title) title.innerHTML = '<i class="fas fa-edit"></i> Edit Event Gallery';
+    if (btn) btn.innerHTML = '<i class="fas fa-check"></i> Update Event';
+  }
+  if (nameInput) nameInput.value = reunion.name;
+  if (yearInput) yearInput.value = reunion.year.toString();
+  updateReunionPreview();
+};
+
+
+(window as any).deleteReunion = async (id: string) => {
+  if (confirm('Are you sure you want to delete this reunion gallery?')) {
+    await DB.deleteReunion(id);
+    loadReunions();
+  }
+};
+
+(window as any).viewReunionImages = async (id: string) => {
+  const reunions = await DB.getReunion();
+  const reunion = reunions.find(r => r.id === id);
+  if (!reunion) return;
+
+  const mainView = document.getElementById('admin-reunion-main-view');
+  const detailView = document.getElementById('admin-reunion-images-view');
+  const nameDisplay = document.getElementById('reunion-current-name-display');
+  const yearDisplay = document.getElementById('reunion-current-year-display');
+  const grid = document.getElementById('reunion-images-grid');
+
+  if (nameDisplay) nameDisplay.textContent = reunion.name;
+  if (yearDisplay) yearDisplay.textContent = `Year: ${reunion.year} `;
+
+  if (grid) {
+    grid.innerHTML = reunion.photos.map(p => `
+      <div class="gallery-image-card" style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <img src="${p.url}" style="width: 100%; height: 200px; object-fit: cover;">
+        <div style="padding: 10px;">
+          <p style="margin: 0; font-size: 12px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${p.name}</p>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  if (mainView && detailView) {
+    mainView.style.display = 'none';
+    detailView.style.display = 'block';
+    mainView.classList.remove('active');
+    detailView.classList.add('active');
+  }
+};
+
+// Public Reunion Gallery Logic
+// Public Reunion Gallery Logic
+async function loadPublicReunions() {
+  const grid = document.querySelector('.reunion-gallery-grid');
+  if (!grid) {
+    console.error('Reunion gallery grid not found');
+    return;
+  }
+
+  // debugging
+  console.log('Loading public reunions...');
+  grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px;"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading gallery...</p></div>';
+
+  try {
+    const reunions = await DB.getReunion();
+    console.log('Reunions fetched:', reunions);
+
+    if (reunions.length === 0) {
+      grid.innerHTML = '<p class="no-photos-msg" style="text-align:center; width:100%; grid-column:1/-1; padding: 40px; color: #666; font-size: 1.1rem;">No reunion galleries available yet.</p>';
+      return;
+    }
+
+    reunions.sort((a, b) => b.year - a.year);
+
+    grid.innerHTML = reunions.map(r => `
+      <div class="reunion-year-card" onclick="openPublicReunionModal('${r.id}')" style="cursor: pointer; transition: transform 0.3s ease; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+        <div style="position: relative; aspect-ratio: 1; overflow: hidden;">
+          <img src="${r.photos.length > 0 ? r.photos[0].url : ''}" 
+               alt="Reunion ${r.name || r.year}" 
+               style="width: 100%; height: 100%; object-fit: cover;"
+               loading="lazy" />
+          
+          <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%); padding: 20px 15px 15px;">
+            <div style="color: white; font-size: 28px; font-weight: 700; margin-bottom: 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">${r.year}</div>
+            <div style="color: rgba(255,255,255,0.9); font-size: 13px; margin-bottom: 6px;">${r.photos.length} Photos</div>
+            <div style="display: inline-block; background: rgba(0,78,146,0.8); color: white; padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 500; text-transform: lowercase;">${r.name || 'reunion'}</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+  } catch (e) {
+    console.error('Error loading public reunions:', e);
+    grid.innerHTML = '<p style="text-align:center; color:red; grid-column:1/-1;">Error loading gallery. Please modify request.</p>';
+  }
+}
+
+// Expose to window for manual triggering if needed
+(window as any).loadPublicReunions = loadPublicReunions;
+
+(window as any).openPublicReunionModal = async (id: string) => {
+  const reunions = await DB.getReunion();
+  const reunion = reunions.find(r => r.id === id);
+  if (!reunion) return;
+
+  const modal = document.getElementById('year-reunion-modal');
+  const modalYear = document.getElementById('modal-reunion-year');
+  const photosGrid = document.getElementById('year-reunion-photos-grid');
+  const closeBtn = document.getElementById('modal-reunion-close-btn');
+  const prevBtn = document.getElementById('prev-reunion-year-btn');
+  const nextBtn = document.getElementById('next-reunion-year-btn');
+
+  if (modal && modalYear && photosGrid) {
+    modalYear.textContent = `${reunion.year} - ${reunion.name || ''} `;
+    photosGrid.innerHTML = reunion.photos.map((p, index) => `
+      <div class="year-photo-item" onclick="openPhotoLightbox(currentReunionPhotos, ${index})">
+        <img src="${p.url}" alt="${p.name}" loading="lazy">
+      </div>
+    `).join('');
+
+    // Store current photos for lightbox
+    (window as any).currentReunionPhotos = reunion.photos.map(p => p.url);
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    if (closeBtn) {
+      closeBtn.onclick = () => {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+      };
+    }
+
+    // Basic overlay close
+    const overlay = modal.querySelector('.modal-overlay');
+    if (overlay) {
+      (overlay as HTMLElement).onclick = () => {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    }
+
+    // Find prev/next reunion
+    reunions.sort((a, b) => b.year - a.year);
+    const currentIndex = reunions.findIndex(r => r.id === id);
+
+    if (prevBtn) {
+      const prevReunion = reunions[currentIndex + 1]; // Older
+      if (prevReunion) {
+        prevBtn.style.visibility = 'visible';
+        prevBtn.onclick = (e) => { e.stopPropagation(); (window as any).openPublicReunionModal(prevReunion.id); };
+      } else {
+        prevBtn.style.visibility = 'hidden';
+      }
+    }
+    if (nextBtn) {
+      const nextReunion = reunions[currentIndex - 1]; // Newer
+      if (nextReunion) {
+        nextBtn.style.visibility = 'visible';
+        nextBtn.onclick = (e) => { e.stopPropagation(); (window as any).openPublicReunionModal(nextReunion.id); };
+
+        // ==========================================
+        // Admin Gallery & Video Management
+        // ==========================================
+
+        (window as any).loadAdminGalleries = async () => {
+          const grid = document.getElementById('admin-all-galleries-grid');
+          if (!grid) return;
+
+          grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px;"><i class="fas fa-spinner fa-spin fa-2x"></i><p style="margin-top:15px;">Loading galleries...</p></div>';
+
+          try {
+            const uploadedEvents = await DB.getEvents();
+
+            // System defaults that are hardcoded on the main page
+            const systemDefaults = [
+              {
+                id: 'sys-agm-2024',
+                eventName: 'Annual General Body Meeting',
+                category: 'social',
+                year: 2024,
+                displayYear: '2024-25',
+                photosCount: 15,
+                isStatic: true,
+                cover: '/images/social-events/Gen%20Sec%20report%20PPT%202024-25-1.jpg'
+              },
+              {
+                id: 'sys-jubilee-2023',
+                eventName: 'Golden Jubilee Celebrations',
+                category: 'nsmosa',
+                year: 2023,
+                displayYear: '2023-24',
+                photosCount: 60,
+                isStatic: true,
+                cover: '/images/golden%20jublee%20celebrations/golden%20jublee%20celebrations/Gen%20Sec%20report%202023-24-1.jpg'
+              }
+            ];
+
+            // Coming soon placeholders from main page
+            const placeholders = [
+              { id: 'pla-social-2023', eventName: 'Coming Soon', category: 'social', year: 2023, displayYear: '2023-24', isPlaceholder: true },
+              { id: 'pla-social-2022', eventName: 'Coming Soon', category: 'social', year: 2022, displayYear: '2022-23', isPlaceholder: true }
+            ];
+
+            let html = '';
+
+            // Render Uploaded First
+            uploadedEvents.sort((a, b) => b.createdAt - a.createdAt);
+            uploadedEvents.forEach(event => {
+              const coverImage = event.photos.length > 0 ? event.photos[0].url : '';
+              html += `
+        <div class="event-year-card" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border: 1px solid #eee;">
+          <div style="position: relative; aspect-ratio: 16/9; overflow: hidden; background: #f8fafc;">
+            ${coverImage ? `<img src="${coverImage}" style="width: 100%; height: 100%; object-fit: cover;">` : '<div style="height:100%; display:flex; align-items:center; justify-content:center;"><i class="fas fa-image" style="color:#cbd5e1; font-size:32px;"></i></div>'}
+            <div style="position: absolute; top: 10px; right: 10px; display: flex; gap: 8px;">
+               <button onclick="window.editEvent('${event.id}')" title="Edit" style="width:32px; height:32px; border-radius:6px; background:white; border:none; color:#004e92; cursor:pointer;"><i class="fas fa-edit"></i></button>
+               <button onclick="window.deleteEvent('${event.id}'); window.loadAdminGalleries();" title="Delete" style="width:32px; height:32px; border-radius:6px; background:white; border:none; color:#ef4444; cursor:pointer;"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+          <div style="padding: 15px;">
+            <div style="display:flex; justify-content:space-between; align-items:start;">
+              <h5 style="margin:0; font-size:1.1rem; font-weight:700; color:#00274d;">${event.eventName}</h5>
+              <span style="font-size:10px; padding:2px 8px; border-radius:4px; background:${event.category === 'social' ? '#e0f2fe' : '#fef3c7'}; color:${event.category === 'social' ? '#0369a1' : '#b45309'}; text-transform:uppercase;">${event.category}</span>
+            </div>
+            <p style="margin:5px 0 0; color:#64748b; font-size:0.9rem;">${event.year} • ${event.photos.length} Photos</p>
+          </div>
+        </div>
+      `;
+            });
+
+            // Render System Defaults
+            systemDefaults.forEach(sys => {
+              html += `
+        <div class="event-year-card" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; opacity: 0.9;">
+          <div style="position: relative; aspect-ratio: 16/9; overflow: hidden;">
+            <img src="${sys.cover}" style="width: 100%; height: 100%; object-fit: cover; filter: grayscale(20%);">
+            <div style="position: absolute; top: 10px; left: 10px; background: rgba(0,39,77,0.8); color: white; padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 600;">SYSTEM DEFAULT</div>
+          </div>
+          <div style="padding: 15px;">
+            <div style="display:flex; justify-content:space-between; align-items:start;">
+              <h5 style="margin:0; font-size:1.1rem; font-weight:700; color:#00274d;">${sys.eventName}</h5>
+              <span style="font-size:10px; padding:2px 8px; border-radius:4px; background:#f1f5f9; color:#64748b; text-transform:uppercase;">${sys.category}</span>
+            </div>
+            <p style="margin:5px 0 0; color:#64748b; font-size:0.9rem;">${sys.displayYear} • ${sys.photosCount} Photos</p>
+          </div>
+        </div>
+      `;
+            });
+
+            // Render Placeholders
+            placeholders.forEach(p => {
+              html += `
+        <div class="event-year-card" style="background: #f8fafc; border-radius: 12px; overflow: hidden; border: 2px dashed #e2e8f0; display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:220px; text-align:center; padding:20px;">
+          <i class="fas fa-clock" style="font-size:32px; color:#cbd5e1; margin-bottom:15px;"></i>
+          <h5 style="margin:0 0 5px 0; color:#94a3b8; font-weight:600;">${p.displayYear}</h5>
+          <p style="margin:0; color:#cbd5e1; font-size:0.85rem;">COMING SOON</p>
+          <span style="margin-top:10px; font-size:10px; color:#94a3b8; text-transform:uppercase;">${p.category} placeholder</span>
+        </div>
+      `;
+            });
+
+            grid.innerHTML = html;
+
+          } catch (error) {
+            console.error('Error loading admin galleries:', error);
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: #ef4444;">Error loading events.</div>';
+          }
+        };
+
+        (window as any).loadAdminVideos = async () => {
+          const section = document.getElementById('admin-video-management');
+          if (!section) return;
+
+          let grid = document.getElementById('admin-videos-grid');
+          if (!grid) {
+            grid = document.createElement('div');
+            grid.id = 'admin-videos-grid';
+            grid.className = 'event-years-grid';
+            grid.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; margin-top: 30px;';
+            section.appendChild(grid);
+          }
+
+          const placeholder = section.querySelector('.admin-placeholder-content') as HTMLElement;
+          grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px;"><i class="fas fa-spinner fa-spin fa-2x"></i></div>';
+
+          try {
+            const videos = await DB.getVideos();
+
+            if (videos.length === 0) {
+              if (placeholder) placeholder.style.display = 'flex';
+              grid.innerHTML = '';
+              return;
+            }
+
+            if (placeholder) placeholder.style.display = 'none';
+            videos.sort((a, b) => b.createdAt - a.createdAt);
+
+            grid.innerHTML = videos.map(video => `
+      <div class="event-year-card" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border: 1px solid #eee;">
+        <div style="position: relative; aspect-ratio: 16/9; background: #000; display: flex; align-items: center; justify-content: center;">
+          <i class="fas fa-play-circle" style="color: white; font-size: 54px; opacity: 0.6;"></i>
+          <div style="position: absolute; top: 10px; right: 10px; z-index: 10;">
+             <button onclick="window.deleteVideo('${video.id}')" title="Delete" style="width: 32px; height: 32px; border-radius: 6px; background: white; border: none; color: #ef4444; cursor: pointer;"><i class="fas fa-trash"></i></button>
+          </div>
+        </div>
+        <div style="padding: 15px;">
+          <h5 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: #00274d;">${video.name}</h5>
+          <p style="margin: 5px 0 0; font-size: 0.9rem; color: #64748b;">Year: ${video.year}</p>
+        </div>
+      </div>
+    `).join('');
+
+          } catch (error) {
+            console.error('Error loading admin videos:', error);
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: red;">Error loading videos.</div>';
+          }
+        };
+
+        (window as any).deleteVideo = async (id: string) => {
+          if (confirm('Are you sure you want to delete this video?')) {
+            await DB.deleteVideo(id);
+            (window as any).loadAdminVideos();
+          }
+        };
+
+        (window as any).openCreateVideoModal = () => {
+          const modal = document.getElementById('create-video-modal');
+          if (modal) modal.style.display = 'block';
+        };
+
+        (window as any).closeCreateVideoModal = () => {
+          const modal = document.getElementById('create-video-modal');
+          if (modal) modal.style.display = 'none';
+        };
+
+      }
+    }
+  }
+};
+
+// Ensure all video saving operations in main.ts include the required eventName property
+(window as any).saveVideoWithEventName = async (name: string, eventName: string, year: string, file: File) => {
+  const newVideo: VideoItem = {
+    id: `vid-${Date.now()}`,
+    name,
+    eventName, // Fixed missing property
+    year,
+    blob: file,
+    type: file.type,
+    createdAt: Date.now()
+  };
+  await DB.saveVideo(newVideo);
+};
 
 
 

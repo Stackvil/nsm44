@@ -1,0 +1,35 @@
+/* Lightbox Image Sizing - Force images to be MUCH larger */
+.photo-lightbox .lightbox-container {
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.photo-lightbox .lightbox-image-wrapper,
+.lightbox-image-wrapper {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    padding: 60px !important;
+}
+
+.photo-lightbox #lightbox-image,
+#lightbox-image {
+    max-width: calc(100vw - 120px) !important;
+    max-height: calc(100vh - 120px) !important;
+    min-width: 70vw !important;
+    min-height: 70vh !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+    border-radius: 8px !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+}

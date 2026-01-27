@@ -8,7 +8,8 @@ export type PageKey =
   | 'faq'
   | 'contact'
   | 'member'
-  | 'home';
+  | 'home'
+  | 'dashboard';
 
 export interface PageSection {
   element: HTMLElement | null;

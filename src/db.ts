@@ -10,6 +10,8 @@ export interface EventPhoto {
     id: string;
     eventName: string;
     eventDate: string;
+    category: 'social' | 'nsmosa' | 'gallery';
+    year: number;
     photos: PhotoItem[];
     createdAt: number;
 }
@@ -24,6 +26,7 @@ export interface GalleryPhoto {
 export interface ReunionPhoto {
     id: string;
     year: number;
+    name: string;
     photos: PhotoItem[];
     createdAt: number;
 }
@@ -34,7 +37,29 @@ const STORES = {
     EVENTS: 'nsm_event_photos',
     GALLERY: 'nsm_gallery_photos',
     REUNION: 'nsm_reunion_photos',
+    VIDEOS: 'nsm_videos',
+    FINANCIALS: 'nsm_financials',
 };
+
+export interface VideoItem {
+    id: string;
+    name: string;
+    eventName: string;
+    year: string;
+    blob: Blob | string; // Store file blob or URL
+    type: string;
+    createdAt: number;
+}
+
+export interface FinancialTransaction {
+    id: string;
+    type: 'donation' | 'membership' | 'expense' | 'other';
+    amount: number;
+    description: string;
+    date: string;
+    payerName?: string;
+    createdAt: number;
+}
 
 export class DB {
     private static db: IDBDatabase | null = null;
@@ -43,7 +68,7 @@ export class DB {
         if (this.db) return this.db;
 
         return new Promise((resolve, reject) => {
-            const request = indexedDB.open(DB_NAME, DB_VERSION);
+            const request = indexedDB.open(DB_NAME, DB_VERSION + 1); // Increment version to trigger upgrade
 
             request.onupgradeneeded = (event) => {
                 const db = (event.target as IDBOpenDBRequest).result;
@@ -55,6 +80,12 @@ export class DB {
                 }
                 if (!db.objectStoreNames.contains(STORES.REUNION)) {
                     db.createObjectStore(STORES.REUNION, { keyPath: 'id' });
+                }
+                if (!db.objectStoreNames.contains(STORES.VIDEOS)) {
+                    db.createObjectStore(STORES.VIDEOS, { keyPath: 'id' });
+                }
+                if (!db.objectStoreNames.contains(STORES.FINANCIALS)) {
+                    db.createObjectStore(STORES.FINANCIALS, { keyPath: 'id' });
                 }
             };
 
@@ -84,8 +115,6 @@ export class DB {
             request.onerror = () => reject(request.error);
         });
     }
-
-
 
     private static async put<T>(storeName: string, item: T): Promise<void> {
         const store = await this.getStore(storeName, 'readwrite');
@@ -144,5 +173,31 @@ export class DB {
 
     public static async deleteReunion(id: string): Promise<void> {
         return this.delete(STORES.REUNION, id);
+    }
+
+    // Videos
+    public static async getVideos(): Promise<VideoItem[]> {
+        return this.getAll<VideoItem>(STORES.VIDEOS);
+    }
+
+    public static async saveVideo(video: VideoItem): Promise<void> {
+        return this.put(STORES.VIDEOS, video);
+    }
+
+    public static async deleteVideo(id: string): Promise<void> {
+        return this.delete(STORES.VIDEOS, id);
+    }
+
+    // Financials
+    public static async getFinancials(): Promise<FinancialTransaction[]> {
+        return this.getAll<FinancialTransaction>(STORES.FINANCIALS);
+    }
+
+    public static async saveFinancial(financial: FinancialTransaction): Promise<void> {
+        return this.put(STORES.FINANCIALS, financial);
+    }
+
+    public static async deleteFinancial(id: string): Promise<void> {
+        return this.delete(STORES.FINANCIALS, id);
     }
 }

@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Menu, X } from 'lucide-react';
 import Button from './Button';
 import './Navbar.css';
 
 const Navbar: React.FC = () => {
 
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const location = useLocation();
 
     const isActive = (path: string) => location.pathname === path;
     const isActiveParent = (paths: string[]) => paths.some(path => location.pathname.startsWith(path));
+
+    const toggleMenu = () => {
+        setIsMenuOpen(!isMenuOpen);
+        setOpenDropdown(null);
+    };
 
     const toggleDropdown = (dropdown: string) => {
         setOpenDropdown(openDropdown === dropdown ? null : dropdown);
@@ -236,6 +242,106 @@ const Navbar: React.FC = () => {
                         </Link>
                     </div>
 
+                    {/* Mobile Toggle Button */}
+                    <button className="navbar-toggle" onClick={toggleMenu} aria-label="Toggle Menu">
+                        {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                    </button>
+
+                </div>
+            </div>
+
+            {/* Mobile Menu */}
+            <div className={`navbar-mobile-overlay ${isMenuOpen ? 'open' : ''}`} onClick={toggleMenu} />
+            <div className={`navbar-mobile-menu ${isMenuOpen ? 'open' : ''}`}>
+                <div className="mobile-menu-header">
+                    <Link to="/" onClick={toggleMenu}><h2>NSMOSA</h2></Link>
+                    <button onClick={toggleMenu}><X size={24} /></button>
+                </div>
+                <div className="mobile-menu-links">
+                    <Link to="/" className="mobile-menu-item" onClick={toggleMenu}>
+                        HOME
+                    </Link>
+
+                    <div className="mobile-menu-dropdown">
+                        <button className="mobile-menu-item" onClick={(e) => { e.stopPropagation(); toggleDropdown('about'); }}>
+                            ABOUT NSMOSA
+                            <ChevronDown size={20} className={openDropdown === 'about' ? 'rotate' : ''} />
+                        </button>
+                        <div className={`mobile-dropdown-content ${openDropdown === 'about' ? 'open' : ''}`}>
+                            {aboutLinks.map(link => (
+                                <Link key={link.path} to={link.path} className="mobile-dropdown-item" onClick={toggleMenu}>
+                                    {link.label}
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="mobile-menu-dropdown">
+                        <button className="mobile-menu-item" onClick={(e) => { e.stopPropagation(); toggleDropdown('connect'); }}>
+                            ALUMNI CONNECT
+                            <ChevronDown size={20} className={openDropdown === 'connect' ? 'rotate' : ''} />
+                        </button>
+                        <div className={`mobile-dropdown-content ${openDropdown === 'connect' ? 'open' : ''}`}>
+                            {connectLinks.map(link => (
+                                <Link key={link.path} to={link.path} className="mobile-dropdown-item" onClick={toggleMenu}>
+                                    {link.label}
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+
+                    <Link to="/events" className="mobile-menu-item" onClick={toggleMenu}>
+                        ALUMNI EVENTS
+                    </Link>
+
+                    <div className="mobile-menu-dropdown">
+                        <button className="mobile-menu-item" onClick={(e) => { e.stopPropagation(); toggleDropdown('reunion'); }}>
+                            RE-UNION
+                            <ChevronDown size={20} className={openDropdown === 'reunion' ? 'rotate' : ''} />
+                        </button>
+                        <div className={`mobile-dropdown-content ${openDropdown === 'reunion' ? 'open' : ''}`}>
+                            {reunionLinks.map(link => (
+                                <Link key={link.path} to={link.path} className="mobile-dropdown-item" onClick={toggleMenu}>
+                                    {link.label}
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="mobile-menu-dropdown">
+                        <button className="mobile-menu-item" onClick={(e) => { e.stopPropagation(); toggleDropdown('gallery'); }}>
+                            GALLERY
+                            <ChevronDown size={20} className={openDropdown === 'gallery' ? 'rotate' : ''} />
+                        </button>
+                        <div className={`mobile-dropdown-content ${openDropdown === 'gallery' ? 'open' : ''}`}>
+                            {galleryLinks.map(link => (
+                                <Link key={link.path} to={link.path} className="mobile-dropdown-item" onClick={toggleMenu}>
+                                    {link.label}
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+
+                    <Link to="/faq" className="mobile-menu-item" onClick={toggleMenu}>
+                        FAQ's
+                    </Link>
+
+                    <Link to="/member" className="mobile-menu-item donate" onClick={toggleMenu}>
+                        BECOME A MEMBER
+                    </Link>
+
+                    <Link to="/contact" className="mobile-menu-item" onClick={toggleMenu}>
+                        CONTACT US
+                    </Link>
+
+                    <div className="mobile-menu-actions">
+                        <Link to="/login" onClick={toggleMenu}>
+                            <Button variant="outline" fullWidth>Login</Button>
+                        </Link>
+                        <Link to="/register" onClick={toggleMenu}>
+                            <Button variant="primary" fullWidth>Join Network</Button>
+                        </Link>
+                    </div>
                 </div>
             </div>
         </nav>
