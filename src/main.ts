@@ -3141,11 +3141,25 @@ function initMemberPage(): void {
     const memberForm = document.getElementById('member-registration-form') as HTMLFormElement | null;
     let memberName = 'Member';
     let memberEmail = '';
+    let memberPassword = '';
 
     if (memberForm) {
       const formData = new FormData(memberForm);
       memberName = (formData.get('name') || 'Member').toString();
       memberEmail = (formData.get('email') || '').toString();
+      memberPassword = (formData.get('password') || '').toString();
+    }
+
+    // Save Credential for Login
+    if (memberEmail && memberPassword) {
+      const registeredUsers = JSON.parse(localStorage.getItem('nsm_registered_users') || '{}');
+      registeredUsers[memberEmail] = {
+        password: memberPassword,
+        role: 'member',
+        displayName: memberName,
+        email: memberEmail
+      };
+      localStorage.setItem('nsm_registered_users', JSON.stringify(registeredUsers));
     }
 
     const memberships = JSON.parse(localStorage.getItem('nsm_memberships') || '[]');

@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login - NSMOSA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --loyola-blue: #00274d;
+            --accent-color: #17a2b8;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            position: relative;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .nsm-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+        }
+
+        .nsm-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+
+        .login-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--loyola-blue);
+            margin-bottom: 10px;
+        }
+
+        .login-subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .error-message.show {
+            display: flex;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-group label i {
+            color: var(--loyola-blue);
+            font-size: 14px;
+        }
+
+        .required {
+            color: #e74c3c;
+            font-weight: 700;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: #ffffff;
+            color: #333;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--loyola-blue);
+            box-shadow: 0 0 0 4px rgba(0, 39, 77, 0.1);
+        }
+
+        .password-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-input-wrapper .form-input {
+            padding-right: 45px;
+        }
+
+        .password-toggle-btn {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            color: #718096;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: color 0.2s;
+        }
+
+        .password-toggle-btn:hover {
+            color: var(--loyola-blue);
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: #555;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            cursor: pointer;
+        }
+
+        .forgot-password-link {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .forgot-password-link:hover {
+            text-decoration: underline;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .back-to-home {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .back-to-home a {
+            color: var(--loyola-blue);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .back-to-home a:hover {
+            color: var(--accent-color);
+            transform: translateX(-5px);
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+
+            .login-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="nsm-logo">
+                <img src="/images/HOME PAGE PHOTOS NSM/NSM LOGO 1.jpeg" alt="NSMOSA Logo" />
+            </div>
+            <h1 class="login-title">Login</h1>
+            <p class="login-subtitle">Sign in to your account</p>
+        </div>
+
+        <div class="error-message" id="error-message">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="error-text"></span>
+        </div>
+
+        <form id="login-form">
+            <div class="form-group">
+                <label for="login-email">
+                    <i class="fas fa-envelope"></i> Email Address <span class="required">*</span>
+                </label>
+                <input type="email" id="login-email" name="email" class="form-input" placeholder="Enter your email"
+                    required autofocus />
+            </div>
+
+            <div class="form-group">
+                <label for="login-password">
+                    <i class="fas fa-lock"></i> Password <span class="required">*</span>
+                </label>
+                <div class="password-input-wrapper">
+                    <input type="password" id="login-password" name="password" class="form-input"
+                        placeholder="Enter your password" required />
+                    <button type="button" class="password-toggle-btn" id="toggle-password">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-options">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="remember" />
+                    <span>Remember me</span>
+                </label>
+                <a href="#" class="forgot-password-link">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submit-btn">
+                <span>Sign In</span>
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </form>
+
+        <div class="back-to-home">
+            <a href="/">
+                <i class="fas fa-arrow-left"></i>
+                Back to Home
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Hardcoded admin credentials
+        const ADMIN_CREDENTIALS = {
+            'admin@gmail.com': {
+                password: 'admin1234',
+                role: 'admin',
+                displayName: 'Admin'
+            },
+            'superadmin@gmail.com': {
+                password: 'admin1234',
+                role: 'super-admin',
+                displayName: 'Super Admin'
+            },
+            'reprasentativeadmin@gmail.com': {
+                password: 'admin1234',
+                role: 'representative',
+                displayName: 'Representative Admin'
+            },
+            'member@gmail.com': {
+                password: 'member1234',
+                role: 'member',
+                displayName: 'John Doe'
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const loginForm = document.getElementById('login-form');
+            const errorMessage = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+            const submitBtn = document.getElementById('submit-btn');
+            const togglePassword = document.getElementById('toggle-password');
+            const passwordInput = document.getElementById('login-password');
+
+            // Password visibility toggle
+            togglePassword.addEventListener('click', function () {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.querySelector('i').classList.toggle('fa-eye');
+                this.querySelector('i').classList.toggle('fa-eye-slash');
+            });
+
+            // Handle form submission
+            loginForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                // Hide any previous error
+                errorMessage.classList.remove('show');
+
+                // Get form values
+                const email = document.getElementById('login-email').value.trim().toLowerCase();
+                const password = document.getElementById('login-password').value;
+
+                // Disable submit button
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span>Signing in...</span><i class="fas fa-spinner fa-spin"></i>';
+
+                // Simulate network delay for better UX
+                setTimeout(() => {
+                    // Validate credentials
+                    let userCredentials = ADMIN_CREDENTIALS[email];
+
+                    // Check local storage if not in hardcoded admin list
+                    if (!userCredentials) {
+                        try {
+                            const registeredUsers = JSON.parse(localStorage.getItem('nsm_registered_users') || '{}');
+                            userCredentials = registeredUsers[email];
+                        } catch (e) {
+                            console.error('Error reading registered users', e);
+                        }
+                    }
+
+                    if (userCredentials) {
+
+                        if (userCredentials.password === password) {
+                            // Successful login
+                            sessionStorage.setItem('nsm_user_role', userCredentials.role);
+                            sessionStorage.setItem('nsm_user_email', email);
+                            sessionStorage.setItem('nsm_user_name', userCredentials.displayName);
+                            sessionStorage.setItem('nsm_is_logged_in', 'true');
+
+                            // Show success animation
+                            submitBtn.innerHTML = '<span>Success!</span><i class="fas fa-check-circle"></i>';
+                            submitBtn.style.background = 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)';
+
+                            // Redirect based on role
+                            setTimeout(() => {
+                                const adminRoles = ['admin', 'super-admin', 'representative'];
+                                if (adminRoles.includes(userCredentials.role)) {
+                                    window.location.href = '/admin/';
+                                } else {
+                                    // Regular members go to Home
+                                    window.location.href = '/';
+                                }
+                            }, 1000);
+                        } else {
+                            // Invalid password
+                            showError('Invalid password. Please try again.');
+                            resetSubmitButton();
+                        }
+                    } else {
+                        // Email not found in admin credentials
+                        showError('Invalid email address. Account not found.');
+                        resetSubmitButton();
+                    }
+                }, 800);
+            });
+
+            function showError(message) {
+                errorText.textContent = message;
+                errorMessage.classList.add('show');
+            }
+
+            function resetSubmitButton() {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span>Sign In</span><i class="fas fa-arrow-right"></i>';
+                submitBtn.style.background = '';
+            }
+
+            // Check if already logged in
+            const isLoggedIn = sessionStorage.getItem('nsm_is_logged_in');
+            if (isLoggedIn === 'true') {
+                // Already logged in, redirect to dashboard
+                window.location.href = '/admin/';
+            }
+        });
+    </script>
+</body>
+
+</html>

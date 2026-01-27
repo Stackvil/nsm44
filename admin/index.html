@@ -256,7 +256,8 @@
           </a>
         </div>
         <div class="signin-wrapper" id="signin-wrapper">
-          <a href="/login/" class="btn-signin" id="btn-signin" onclick="window.location.href='/login/'; return false;">
+          <a href="login.html" class="btn-signin" id="btn-signin"
+            onclick="window.location.href='login.html'; return false;">
             <i class="far fa-user"></i>
             <span>Sign In</span>
           </a>
@@ -3416,30 +3417,6 @@
                         placeholder="e.g., 2020" maxlength="4" pattern="[0-9]{4}" />
                     </div>
                   </div>
-
-                  <div class="member-form-group">
-                    <label for="member-password" class="member-label">
-                      Password <span class="required-star">*</span>
-                    </label>
-                    <div class="member-input-wrapper password-wrapper-reg">
-                      <i class="fas fa-lock input-icon"></i>
-                      <input type="password" id="member-password" name="password" class="member-input"
-                        placeholder="Create a password" required minlength="6" />
-                      <i class="fas fa-eye password-toggle-reg" onclick="toggleRegPassword('member-password', this)"
-                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #999;"></i>
-                    </div>
-                  </div>
-
-                  <div class="member-form-group">
-                    <label for="member-confirm-password" class="member-label">
-                      Confirm Password <span class="required-star">*</span>
-                    </label>
-                    <div class="member-input-wrapper password-wrapper-reg">
-                      <i class="fas fa-lock input-icon"></i>
-                      <input type="password" id="member-confirm-password" name="confirm-password" class="member-input"
-                        placeholder="Confirm your password" required minlength="6" />
-                    </div>
-                  </div>
                 </div>
               </div>
 
@@ -3559,9 +3536,8 @@
                 <i class="fas fa-check-circle"></i>
               </div>
               <h3 class="payment-success-title">Payment Successfully Completed!</h3>
-              <p class="payment-success-text" style="font-weight: 500; color: #00274d;">
-                Your account is created. Please login with your credentials that you entered during registration.
-              </p>
+              <p class="payment-success-text">Your membership registration has been processed successfully. Welcome to
+                NSMOSA!</p>
               <div class="payment-success-info">
                 <div class="success-info-item">
                   <span class="success-info-label">Transaction ID:</span>
@@ -16262,19 +16238,32 @@
     </style>
   </div>
   <script>
-    // Password Toggle for Registration Form
-    window.toggleRegPassword = function (inputId, icon) {
-      const input = document.getElementById(inputId);
-      if (input.type === 'password') {
-        input.type = 'text';
-        icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash');
+    // Force Dashboard View for Admin Page
+    document.addEventListener('DOMContentLoaded', () => {
+      const isLoggedIn = sessionStorage.getItem('nsm_is_logged_in');
+
+      if (isLoggedIn === 'true') {
+        setTimeout(() => {
+          // Hide all page sections
+          document.querySelectorAll('.page-section').forEach(el => el.classList.remove('visible'));
+
+          // Show dashboard
+          const dashboard = document.getElementById('page-dashboard');
+          if (dashboard) {
+            dashboard.classList.add('visible');
+            window.scrollTo(0, 0);
+          }
+
+          // Update Nav
+          document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+          const dashLink = document.querySelector('a[data-page="dashboard"]');
+          if (dashLink) dashLink.classList.add('active');
+
+        }, 50); // Small delay to override main.ts defaults
       } else {
-        input.type = 'password';
-        icon.classList.remove('fa-eye-slash');
-        icon.classList.add('fa-eye');
+        window.location.href = '../login/';
       }
-    }
+    });
   </script>
 </body>
 
