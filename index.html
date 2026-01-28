@@ -276,8 +276,8 @@
             <!-- For admins, show dashboard link; for members, show profile link (optional, hidden here to match image) -->
             <a href="#" id="header-profile-link" data-page="connect" data-connect-subpage="profile"
               style="display: none;"><i class="fas fa-user-circle"></i> My Profile</a>
-            <a href="/admin/index.html" id="header-dashboard-link" style="display: none;"><i
-                class="fas fa-tachometer-alt"></i> Admin Dashboard</a>
+            <a href="/admin/" id="header-dashboard-link" style="display: none;"><i class="fas fa-tachometer-alt"></i>
+              Admin Dashboard</a>
             <a href="#" id="logout-btn" class="dropdown-logout-item"><i class="fas fa-sign-out-alt"></i> Logout</a>
           </div>
         </div>
@@ -13903,7 +13903,8 @@
     }
 
     function checkLoginStatus() {
-      const getVal = (key) => sessionStorage.getItem(key) || localStorage.getItem(key);
+      // Force session-only check to satisfy "ask sign in" requirement
+      const getVal = (key) => sessionStorage.getItem(key);
       const role = getVal('nsm_user_role');
       const isAdmin = ['admin', 'super-admin', 'representative'].includes(role || '');
       return window.isUserLoggedIn ||
@@ -16245,7 +16246,8 @@
     // Aggressive Role-Based UI Update
     (function () {
       const updateRoleUI = () => {
-        const role = sessionStorage.getItem('nsm_user_role') || localStorage.getItem('nsm_user_role');
+        // Session only - avoid partial/invalid state from localStorage
+        const role = sessionStorage.getItem('nsm_user_role');
         const welcomeMsg = document.getElementById('admin-welcome-name');
         const roleBadge = document.getElementById('admin-role-badge');
 
@@ -16517,10 +16519,68 @@
       }
     };
 
+    // --- Load Alumni Events from Admin ---
+    window.renderAlumniEvents = function () {
+      const eventsContainer = document.querySelector('#alumni-event-connect-section .events-grid');
+      if (!eventsContainer) return;
+
+      const events = JSON.parse(localStorage.getItem('nsm_alumni_events') || '[]');
+
+      // If no events, show default or empty (optional, here we just keep default if empty for now, or clear)
+      // Let's clear and show only dynamic events if they exist.
+      if (events.length > 0) {
+        eventsContainer.innerHTML = '';
+        events.forEach(event => {
+          const dateObj = new Date(event.date);
+          const day = dateObj.getDate().toString().padStart(2, '0');
+          const month = dateObj.toLocaleString('default', { month: 'short' }).toUpperCase();
+
+          // Default image if none provided
+          const imageSrc = event.image || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=90&auto=format&fit=crop';
+
+          const eventCard = `
+               <div class="event-card">
+                 <div class="event-image-wrapper">
+                   <img src="${imageSrc}" alt="${event.name}" class="event-image" />
+                   <div class="event-date-badge">
+                     <span class="event-day">${day}</span>
+                     <span class="event-month">${month}</span>
+                   </div>
+                 </div>
+                 <div class="event-content">
+                   <h4 class="event-title">${event.name}</h4>
+                   <p class="event-time"><i class="fas fa-clock"></i> ${event.time}</p>
+                   <p class="event-description">${event.content}</p>
+                   <a href="#" class="event-btn">Register Now</a>
+                 </div>
+               </div>
+             `;
+          eventsContainer.insertAdjacentHTML('beforeend', eventCard);
+        });
+
+        // Re-attach listeners for new buttons
+        if (typeof setupEventRegisterButtons === 'function') {
+          setupEventRegisterButtons();
+        }
+      }
+    };
+
     // Initial load
     document.addEventListener('DOMContentLoaded', () => {
       // Small delay to ensure DB is initialized
       setTimeout(window.refreshPublicContactInfo, 500);
+
+      // Attempt to render events immediately and after a short delay to handle any dynamic page transitions
+      window.renderAlumniEvents();
+      setTimeout(window.renderAlumniEvents, 1000);
+    });
+
+    // Also re-render when clicking the "Alumni Event" nav link in "Alumni Connect"
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('[data-connect-subpage="alumni-event"]');
+      if (link) {
+        setTimeout(window.renderAlumniEvents, 200);
+      }
     });
   </script>
 </body>

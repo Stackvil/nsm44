@@ -592,6 +592,134 @@ function initApp(): void {
     });
   });
 
+  // User Profile Dropdown Logic
+  const userProfileTrigger = document.getElementById('user-profile-trigger');
+  const userProfileDropdown = document.getElementById('user-header-dropdown');
+
+  if (userProfileTrigger && userProfileDropdown) {
+    userProfileTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const role = sessionStorage.getItem('nsm_user_role');
+      const adminRoles = ['admin', 'super-admin', 'representative'];
+
+      // Only toggle dropdown for admin roles
+      if (role && adminRoles.includes(role)) {
+        userProfileDropdown.classList.toggle('active');
+        userProfileTrigger.classList.toggle('active');
+      }
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!userProfileTrigger.contains(e.target as Node) && !userProfileDropdown.contains(e.target as Node)) {
+        userProfileDropdown.classList.remove('active');
+        userProfileTrigger.classList.remove('active');
+      }
+    });
+  }
+
+  // Handle header profile link specifically (for admin pages or where it's not caught by .nav-item logic)
+  const headerProfileLink = document.getElementById('header-profile-link');
+  if (headerProfileLink) {
+    headerProfileLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      const pageKey = headerProfileLink.dataset.page; // 'connect'
+      const connectSubpage = headerProfileLink.dataset.connectSubpage; // 'profile'
+
+      if (isValidPageKey(pageKey)) {
+        setActivePage(pageKey);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        if (connectSubpage === 'profile') {
+          // Simulate click on connect tab or manually set it
+          setTimeout(() => {
+            const connectTabs = document.querySelectorAll<HTMLButtonElement>('.gallery-tab[data-connect-type]');
+            const connectSections = document.querySelectorAll<HTMLElement>('.connect-section');
+
+            connectTabs.forEach((tab) => {
+              if (tab.dataset.connectType === 'profile') {
+                tab.classList.add('active');
+              } else {
+                tab.classList.remove('active');
+              }
+            });
+
+            connectSections.forEach((section) => section.classList.remove('active'));
+            const targetSection = document.getElementById('profile-connect-section');
+            if (targetSection) {
+              targetSection.classList.add('active');
+            }
+          }, 100);
+        }
+      } else {
+        // Fallback if we are on a page where 'connect' is not a valid key (e.g. standalone admin page)
+        // Redirect to main index with params
+        window.location.href = '/?page=connect&subpage=profile';
+      }
+    });
+  }
+
+  // Update Header User State - Re-added for persistence
+  const updateHeaderUserState = () => {
+    const role = sessionStorage.getItem('nsm_user_role');
+    const userStr = sessionStorage.getItem('nsm_user_data');
+    const userProfileArea = document.getElementById('user-profile-area');
+    const signinWrapper = document.getElementById('signin-wrapper');
+    const headerUserName = document.getElementById('header-user-name');
+    const headerDashboardLink = document.getElementById('header-dashboard-link');
+    const headerProfileLink = document.getElementById('header-profile-link');
+
+    const isAdminPage = window.location.pathname.includes('/admin') || window.location.href.includes('admin');
+
+    // Validate role to prevent ghost sessions
+    const validRoles = ['admin', 'super-admin', 'representative', 'member'];
+    const isValidRole = role && validRoles.includes(role);
+
+    // Logic: If logged in OR on admin page, show profile area
+    if (isValidRole || isAdminPage) {
+      if (signinWrapper) signinWrapper.style.display = 'none';
+      if (userProfileArea) userProfileArea.style.display = 'block';
+
+      if (headerUserName) {
+        let name = 'User';
+        if (role === 'admin') name = 'Admin';
+        else if (userStr) {
+          try {
+            const u = JSON.parse(userStr);
+            if (u.firstName) name = u.firstName;
+            else if (u.name) name = u.name;
+          } catch (e) { }
+        }
+        headerUserName.textContent = name;
+      }
+
+      // Show/Hide Dashboard Link
+      if (role === 'admin' || isAdminPage) {
+        if (headerDashboardLink) headerDashboardLink.style.display = 'flex';
+      } else {
+        if (headerDashboardLink) headerDashboardLink.style.display = 'none';
+      }
+      if (headerProfileLink) headerProfileLink.style.display = 'flex';
+    } else {
+      // Force "Sign In" to display if no valid session
+      if (signinWrapper) signinWrapper.style.display = 'flex';
+      if (userProfileArea) userProfileArea.style.display = 'none';
+    }
+  };
+
+  updateHeaderUserState();
+
+  // Handle Logout
+  const logoutBtn = document.getElementById('logout-btn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      sessionStorage.clear();
+      localStorage.removeItem('nsm_user_role');
+      window.location.href = '/login/';
+    });
+  }
+
   // Initialize gallery tabs and logic
   initReunionTabs();
   initConnectTabs();
