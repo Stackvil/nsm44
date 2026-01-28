@@ -6,8 +6,12 @@ const MyProfile: React.FC = () => {
 
     useEffect(() => {
         const checkLogin = () => {
-            const loggedIn = sessionStorage.getItem('nsm_user_logged_in') === 'true' || 
-                           (window as any).isUserLoggedIn === true;
+            const role = sessionStorage.getItem('nsm_user_role');
+            const isAdmin = ['admin', 'super-admin', 'representative'].includes(role || '');
+            const loggedIn = sessionStorage.getItem('nsm_user_logged_in') === 'true' ||
+                sessionStorage.getItem('nsm_is_logged_in') === 'true' ||
+                (window as any).isUserLoggedIn === true ||
+                isAdmin;
             setIsLoggedIn(loggedIn);
         };
         checkLogin();

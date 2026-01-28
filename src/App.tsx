@@ -45,7 +45,6 @@ const ReunionGallery = lazy(() => import('./pages/reunion/ReunionGallery'));
 // Gallery Pages
 const Gallery = lazy(() => import('./pages/gallery/Gallery'));
 const PhotoGallery = lazy(() => import('./pages/gallery/PhotoGallery'));
-const VideoGallery = lazy(() => import('./pages/gallery/VideoGallery'));
 
 
 
@@ -115,7 +114,6 @@ function App() {
                             {/* Gallery Routes */}
                             <Route path="/gallery" element={<PublicLayout><Gallery /></PublicLayout>} />
                             <Route path="/gallery/photo" element={<PublicLayout><PhotoGallery /></PublicLayout>} />
-                            <Route path="/gallery/video" element={<PublicLayout><VideoGallery /></PublicLayout>} />
 
                             {/* Other Routes */}
                             <Route path="/faq" element={<PublicLayout><FAQ /></PublicLayout>} />

@@ -43,6 +43,8 @@ function initApp(): void {
     getVideos: DB.getVideos.bind(DB),
     saveVideo: DB.saveVideo.bind(DB),
     deleteVideo: DB.deleteVideo.bind(DB),
+    getSettings: DB.getSettings.bind(DB),
+    saveSettings: DB.saveSettings.bind(DB),
   };
 
   const navLinks = document.querySelectorAll<HTMLAnchorElement>(
@@ -239,7 +241,6 @@ function initApp(): void {
                 // Map subpage to gallery type
                 let galleryType = '';
                 if (subpage === 'photo-gallery') galleryType = 'photo';
-                else if (subpage === 'video-gallery') galleryType = 'video';
                 else if (subpage === 'chapter-gallery') galleryType = 'chapter';
                 else if (subpage === 'nostalgia-gallery') galleryType = 'nostalgia';
                 else if (subpage === 'shop-gallery') galleryType = 'shop';
@@ -269,12 +270,6 @@ function initApp(): void {
                   if (targetSection) {
                     targetSection.classList.add('active');
 
-                    // If video gallery, populate videos
-                    if (galleryType === 'video') {
-                      setTimeout(() => {
-                        if ((window as any).loadVideos) (window as any).loadVideos();
-                      }, 100);
-                    }
 
                   }
                 }
@@ -429,7 +424,6 @@ function initApp(): void {
             // Map subpage to gallery type
             let galleryType = '';
             if (subpage === 'photo-gallery') galleryType = 'photo';
-            else if (subpage === 'video-gallery') galleryType = 'video';
             else if (subpage === 'chapter-gallery') galleryType = 'chapter';
 
             if (galleryType) {
@@ -458,12 +452,6 @@ function initApp(): void {
               if (targetSection) {
                 targetSection.classList.add('active');
 
-                // If video gallery is activated, populate videos
-                if (galleryType === 'video') {
-                  setTimeout(() => {
-                    populateVideoGallery();
-                  }, 100);
-                }
               }
             }
           }, 100);
@@ -1365,12 +1353,6 @@ function initGalleryTabs(): void {
       if (targetSection) {
         targetSection.classList.add('active');
 
-        // If video gallery is activated, populate videos
-        if (galleryType === 'video') {
-          setTimeout(() => {
-            populateVideoGallery();
-          }, 100);
-        }
       }
     });
   });
@@ -1444,8 +1426,10 @@ function initConnectTabs(): void {
       // Check membership for restricted sections
       const memberOnlySections = ['alumni-event', 'alumni-directory', 'business-directory'];
       if (memberOnlySections.includes(connectType || '')) {
-        if (!isUserMember()) {
-          // User is not a member - navigate to member page
+        const role = sessionStorage.getItem('nsm_user_role');
+        const isAdmin = ['admin', 'super-admin', 'representative'].includes(role || '');
+        if (!isUserMember() && !isAdmin) {
+          // User is not a member and not an admin - navigate to member page
           navigateToMemberPage();
           return; // Don't show the section
         }
@@ -1665,57 +1649,6 @@ function initYearPhotoGallery(): void {
   });
 }
 
-// Video Gallery - Direct Display Functionality
-function populateVideoGallery(): void {
-  const videosGrid = document.getElementById('videos-direct-grid');
-  if (!videosGrid) return;
-
-  // Don't populate if already populated
-  if (videosGrid.children.length > 0) return;
-
-  // Different YouTube video IDs for variety
-  const allVideos = [
-    'dQw4w9WgXcQ', // Rick Astley - Never Gonna Give You Up
-    'jNQXAC9IVRw', // Me at the zoo
-    'kJQP7kiw5Fk', // PSY - GANGNAM STYLE
-    '9bZkp7q19f0', // PSY - GENTLEMAN
-    'L_jWHffIx5E', // Smosh - Food Battle 2010
-    'fJ9rUzIMcZQ', // Evolution of Dance
-    'ZbZSe6N_BXs', // Charlie bit my finger
-    'a1Y73sPHKxw', // The Gummy Bear Song
-    'OPf0YbXqDm0', // Mark Ronson - Uptown Funk
-    'kXYiU_JCYtU', // Linkin Park - Numb
-    'YQHsXMglC9A', // Adele - Hello
-    '9bZkp7q19f0', // PSY - GENTLEMAN
-    'dQw4w9WgXcQ', // Rick Astley
-    'jNQXAC9IVRw', // Me at the zoo
-    'kJQP7kiw5Fk', // PSY - GANGNAM STYLE
-    'L_jWHffIx5E', // Smosh
-    'fJ9rUzIMcZQ', // Evolution of Dance
-    'ZbZSe6N_BXs', // Charlie bit my finger
-  ];
-
-  // Add all videos to grid
-  allVideos.forEach((videoId, index) => {
-    const videoItem = document.createElement('div');
-    videoItem.className = 'video-direct-item';
-    videoItem.innerHTML = `
-      <iframe 
-        src="https://www.youtube.com/embed/${videoId}" 
-        title="NSM Video ${index + 1}"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen
-        loading="lazy">
-      </iframe>
-    `;
-    videosGrid.appendChild(videoItem);
-  });
-}
-
-// Legacy function name for compatibility
-function initYearVideoGallery(): void {
-  populateVideoGallery();
-}
 
 // Year Chapter Gallery Functionality
 function initYearChapterGallery(): void {
@@ -2955,7 +2888,6 @@ if (document.readyState === 'loading') {
     initConnectTabs();
     initChapterTabs();
     initYearPhotoGallery();
-    initYearVideoGallery();
     initYearChapterGallery();
     initYearNostalgiaGallery();
     initYearShopGallery();
@@ -2973,7 +2905,6 @@ if (document.readyState === 'loading') {
   initConnectTabs();
   initChapterTabs();
   initYearPhotoGallery();
-  initYearVideoGallery();
   initYearChapterGallery();
   initYearNostalgiaGallery();
   initYearShopGallery();

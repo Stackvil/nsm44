@@ -47,7 +47,6 @@ const Navbar: React.FC = () => {
 
     const galleryLinks = [
         { path: '/gallery/photo', label: 'Photo Gallery' },
-        { path: '/gallery/video', label: 'Video Gallery' },
     ];
 
     return (

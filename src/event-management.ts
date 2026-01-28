@@ -1692,3 +1692,57 @@ document.addEventListener('DOMContentLoaded', () => {
         (window as any).renderHomeEventsPublic();
     }, 100);
 });
+
+// --- Contact Info Management ---
+const loadContactSettings = async () => {
+    const settings = await DB.getSettings<{
+        id: string;
+        address: string;
+        phone1: string;
+        phone2: string;
+        email: string;
+    }>('contact_info');
+
+    if (settings) {
+        const addressEl = document.getElementById('contact-office-address') as HTMLTextAreaElement;
+        const phone1El = document.getElementById('contact-phone-1') as HTMLInputElement;
+        const phone2El = document.getElementById('contact-phone-2') as HTMLInputElement;
+        const emailEl = document.getElementById('contact-email-addr') as HTMLInputElement;
+
+        if (addressEl) addressEl.value = settings.address || '';
+        if (phone1El) phone1El.value = settings.phone1 || '';
+        if (phone2El) phone2El.value = settings.phone2 || '';
+        if (emailEl) emailEl.value = settings.email || '';
+    }
+};
+
+(window as any).loadContactSettings = loadContactSettings;
+
+const initContactManagement = () => {
+    const contactForm = document.getElementById('admin-contact-info-form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const address = (document.getElementById('contact-office-address') as HTMLTextAreaElement).value;
+            const phone1 = (document.getElementById('contact-phone-1') as HTMLInputElement).value;
+            const phone2 = (document.getElementById('contact-phone-2') as HTMLInputElement).value;
+            const email = (document.getElementById('contact-email-addr') as HTMLInputElement).value;
+
+            try {
+                await DB.saveSettings('contact_info', { address, phone1, phone2, email });
+                alert('Contact information saved successfully!');
+                // Refresh public site preview if needed
+                if ((window as any).refreshPublicContactInfo) {
+                    (window as any).refreshPublicContactInfo();
+                }
+            } catch (err) {
+                console.error('Error saving contact info:', err);
+                alert('Failed to save contact information.');
+            }
+        });
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    initContactManagement();
+});

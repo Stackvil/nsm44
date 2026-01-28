@@ -39,6 +39,7 @@ const STORES = {
     REUNION: 'nsm_reunion_photos',
     VIDEOS: 'nsm_videos',
     FINANCIALS: 'nsm_financials',
+    SETTINGS: 'nsm_settings',
 };
 
 export interface VideoItem {
@@ -86,6 +87,9 @@ export class DB {
                 }
                 if (!db.objectStoreNames.contains(STORES.FINANCIALS)) {
                     db.createObjectStore(STORES.FINANCIALS, { keyPath: 'id' });
+                }
+                if (!db.objectStoreNames.contains(STORES.SETTINGS)) {
+                    db.createObjectStore(STORES.SETTINGS, { keyPath: 'id' });
                 }
             };
 
@@ -199,5 +203,19 @@ export class DB {
 
     public static async deleteFinancial(id: string): Promise<void> {
         return this.delete(STORES.FINANCIALS, id);
+    }
+
+    // Settings
+    public static async getSettings<T>(id: string): Promise<T | null> {
+        const store = await this.getStore(STORES.SETTINGS, 'readonly');
+        return new Promise((resolve, reject) => {
+            const request = store.get(id);
+            request.onsuccess = () => resolve(request.result || null);
+            request.onerror = () => reject(request.error);
+        });
+    }
+
+    public static async saveSettings<T>(id: string, settings: T): Promise<void> {
+        return this.put(STORES.SETTINGS, { id, ...settings as any });
     }
 }

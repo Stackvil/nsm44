@@ -396,11 +396,13 @@
                             sessionStorage.setItem('nsm_user_email', email);
                             sessionStorage.setItem('nsm_user_name', userCredentials.displayName);
                             sessionStorage.setItem('nsm_is_logged_in', 'true');
+                            sessionStorage.setItem('nsm_user_logged_in', 'true');
 
                             localStorage.setItem('nsm_user_role', userCredentials.role);
                             localStorage.setItem('nsm_user_email', email);
                             localStorage.setItem('nsm_user_name', userCredentials.displayName);
                             localStorage.setItem('nsm_is_logged_in', 'true');
+                            localStorage.setItem('nsm_user_logged_in', 'true');
 
                             // Show success animation
                             submitBtn.innerHTML = '<span>Success!</span><i class="fas fa-check-circle"></i>';
@@ -441,7 +443,8 @@
             }
 
             // Check if already logged in
-            const isLoggedIn = sessionStorage.getItem('nsm_is_logged_in');
+            const isLoggedIn = sessionStorage.getItem('nsm_is_logged_in') === 'true' ||
+                sessionStorage.getItem('nsm_user_logged_in') === 'true';
             if (isLoggedIn === 'true') {
                 // Already logged in, redirect to dashboard
                 window.location.href = '/admin/';
