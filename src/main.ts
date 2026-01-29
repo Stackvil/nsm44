@@ -3,6 +3,7 @@ import './lightbox-override.css';
 import './event-management';
 import type { PageKey } from './types';
 import { mountFAQ } from './mount-faq';
+import { mountEvents } from './mount-events';
 import { DB, ReunionPhoto, PhotoItem, VideoItem } from './db';
 
 // Type guard to check if a string is a valid PageKey
@@ -31,6 +32,7 @@ let currentReunionExistingPhotos: PhotoItem[] = [];
 function initApp(): void {
   // Mount React components
   mountFAQ();
+  mountEvents();
 
   // Expose DB methods to global scope
   (window as any).db = {
