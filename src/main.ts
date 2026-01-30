@@ -4,6 +4,7 @@ import './event-management';
 import type { PageKey } from './types';
 import { mountFAQ } from './mount-faq';
 import { mountEvents } from './mount-events';
+import { mountAlumniEvents } from './mount-alumni-events';
 import { DB, ReunionPhoto, PhotoItem, VideoItem } from './db';
 
 // Type guard to check if a string is a valid PageKey
@@ -33,6 +34,7 @@ function initApp(): void {
   // Mount React components
   mountFAQ();
   mountEvents();
+  mountAlumniEvents();
 
   // Expose DB methods to global scope
   (window as any).db = {
@@ -341,6 +343,11 @@ function initApp(): void {
             // Handle connect subpages - activate the correct tab
             const connectSubpage = link.dataset.connectSubpage;
             if (pageKey === 'connect' && connectSubpage) {
+              // Redirect 'connect-us' to the main contact page
+              if (connectSubpage === 'connect-us') {
+                setActivePage('contact');
+                return;
+              }
               // Helper function to check if user is a member
               function isUserMember(): boolean {
                 const memberships = JSON.parse(localStorage.getItem('nsm_memberships') || '[]');

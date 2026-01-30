@@ -74,22 +74,136 @@ const AlumniDirectory: React.FC = () => {
         );
     }
 
+    const [members, setMembers] = useState<any[]>([]);
+    const [searchTerm, setSearchTerm] = useState('');
+
+    useEffect(() => {
+        const loadMembers = () => {
+            try {
+                const stored = localStorage.getItem('nsm_alumni_directory');
+                if (stored) {
+                    setMembers(JSON.parse(stored));
+                }
+            } catch (e) {
+                console.error("Failed to load directory", e);
+            }
+        };
+        loadMembers();
+
+        // Listen for storage changes in case admin updates in another tab
+        window.addEventListener('storage', loadMembers);
+        return () => window.removeEventListener('storage', loadMembers);
+    }, []);
+
+    const filteredMembers = members.filter(m =>
+        m.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        m.position.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
         <div className="container py-16">
-            <h1 className="page-title" style={{ marginBottom: '2rem' }}>Alumni Directory</h1>
-            <p style={{ marginBottom: '3rem', color: '#666', fontSize: '1.1rem' }}>
-                Search and connect with NSMOSA alumni from around the world.
+            <h1 className="page-title" style={{ marginBottom: '1rem', color: '#00274d', fontSize: '2.5rem', fontWeight: '700' }}>Alumni Directory</h1>
+            <p style={{ marginBottom: '3rem', color: '#64748b', fontSize: '1.1rem' }}>
+                Connect with NSMOSA alumni from around the world. Search by name, batch, or industry.
             </p>
-            <div style={{
-                background: '#fff',
-                padding: '2rem',
-                borderRadius: '10px',
-                boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
-            }}>
-                <p style={{ color: '#666', textAlign: 'center' }}>
-                    Alumni directory will be available here. Content migrated from index.html.
-                </p>
+
+            {/* Search Bar */}
+            <div style={{ marginBottom: '40px', position: 'relative', maxWidth: '600px' }}>
+                <i className="fas fa-search" style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }}></i>
+                <input
+                    type="text"
+                    placeholder="Search by name, role, or company..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    style={{
+                        width: '100%',
+                        padding: '16px 20px 16px 50px',
+                        borderRadius: '50px',
+                        border: '1px solid #e2e8f0',
+                        fontSize: '16px',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+                        outline: 'none'
+                    }}
+                />
             </div>
+
+            {members.length === 0 ? (
+                <div style={{
+                    textAlign: 'center',
+                    padding: '60px',
+                    background: '#f8fafc',
+                    borderRadius: '16px',
+                    color: '#64748b'
+                }}>
+                    <i className="fas fa-user-friends" style={{ fontSize: '48px', marginBottom: '20px', opacity: 0.5 }}></i>
+                    <h3>Directory is Empty</h3>
+                    <p>No alumni members have been added yet.</p>
+                </div>
+            ) : (
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                    gap: '30px'
+                }}>
+                    {filteredMembers.map(member => (
+                        <div key={member.id} style={{
+                            background: '#fff',
+                            borderRadius: '16px',
+                            overflow: 'hidden',
+                            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025)',
+                            transition: 'transform 0.2s, box-shadow 0.2s',
+                            textAlign: 'center',
+                            padding: '30px 20px',
+                            border: '1px solid #f1f5f9'
+                        }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-5px)';
+                                e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'translateY(0)';
+                                e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025)';
+                            }}
+                        >
+                            <img
+                                src={member.image || 'https://via.placeholder.com/150'}
+                                alt={member.name}
+                                style={{
+                                    width: '120px',
+                                    height: '120px',
+                                    borderRadius: '50%',
+                                    objectFit: 'cover',
+                                    marginBottom: '20px',
+                                    border: '4px solid #f0f9ff',
+                                    boxShadow: '0 4px 6px rgba(0,0,0,0.05)'
+                                }}
+                            />
+                            <h3 style={{ fontSize: '1.25rem', fontWeight: '700', color: '#0f172a', marginBottom: '8px' }}>
+                                {member.name}
+                            </h3>
+                            <p style={{ color: '#64748b', fontSize: '0.95rem', lineHeight: '1.5', minHeight: '3em' }}>
+                                {member.position}
+                            </p>
+                            <button style={{
+                                marginTop: '20px',
+                                padding: '10px 24px',
+                                background: '#00274d',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '8px',
+                                fontWeight: '600',
+                                cursor: 'pointer',
+                                transition: 'background 0.2s'
+                            }}
+                                onMouseOver={(e) => e.currentTarget.style.background = '#004e92'}
+                                onMouseOut={(e) => e.currentTarget.style.background = '#00274d'}
+                            >
+                                Connect
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 };

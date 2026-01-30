@@ -11,6 +11,9 @@ node_modules
 dist
 dist-ssr
 *.local
+*.sqlite
+.gitignore
+.gitkeep
 
 # Editor directories and files
 .vscode/*
@@ -24,7 +27,7 @@ dist-ssr
 *.sw?
 
 # Environment variables
-.env
+# .env
 .env.local
 .env.*.local
 

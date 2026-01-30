@@ -311,9 +311,6 @@
                 class="fas fa-chevron-down"></i></a>
             <div class="dropdown-menu">
               <a href="#" class="dropdown-item" data-connect-subpage="profile">My Profile</a>
-              <a href="#" class="dropdown-item" data-connect-subpage="alumni-event">Alumni Event</a>
-              <a href="#" class="dropdown-item" data-connect-subpage="alumni-directory">Alumni Directory</a>
-              <a href="#" class="dropdown-item" data-connect-subpage="business-directory">Business Directory</a>
               <a href="#" class="dropdown-item" data-connect-subpage="how-to-give">How to Give</a>
               <a href="#" class="dropdown-item" data-connect-subpage="connect-us">Connect With Us</a>
             </div>
@@ -376,9 +373,6 @@
             <div class="mobile-dropdown-toggle">ALUMNI CONNECT <i class="fas fa-chevron-down"></i></div>
             <ul class="mobile-dropdown-list">
               <li><a href="#" data-page="connect" data-connect-subpage="profile">My Profile</a></li>
-              <li><a href="#" data-page="connect" data-connect-subpage="alumni-event">Alumni Event</a></li>
-              <li><a href="#" data-page="connect" data-connect-subpage="alumni-directory">Alumni Directory</a></li>
-              <li><a href="#" data-page="connect" data-connect-subpage="business-directory">Business Directory</a></li>
               <li><a href="#" data-page="connect" data-connect-subpage="how-to-give">How to Give</a></li>
               <li><a href="#" data-page="connect" data-connect-subpage="connect-us">Connect With Us</a></li>
             </ul>
@@ -1485,78 +1479,7 @@
           <p class="page-text">Join our upcoming alumni events and reconnect with your batchmates and the NSMOSA
             community.</p>
           <div class="events-grid">
-            <div class="event-card">
-              <div class="event-image-wrapper">
-                <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=90&auto=format&fit=crop"
-                  alt="Alumni Meet 2025" class="event-image" />
-                <div class="event-date-badge">
-                  <span class="event-day">15</span>
-                  <span class="event-month">MAR</span>
-                </div>
-              </div>
-              <div class="event-content">
-                <h4 class="event-title">NSMOSA Alumni Annual Meet 2025</h4>
-                <p class="event-location"><i class="fas fa-map-marker-alt"></i> NSMOSA School Auditorium</p>
-                <p class="event-time"><i class="fas fa-clock"></i> 10:00 AM - 6:00 PM</p>
-                <p class="event-description">Join us for a day of networking, reminiscing, and celebrating our shared
-                  NSMOSA journey. Food, music, and memories await!</p>
-                <a href="#" class="event-btn">Register Now</a>
-              </div>
-            </div>
-            <div class="event-card">
-              <div class="event-image-wrapper">
-                <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=90&auto=format&fit=crop"
-                  alt="Tech Summit" class="event-image" />
-                <div class="event-date-badge">
-                  <span class="event-day">22</span>
-                  <span class="event-month">APR</span>
-                </div>
-              </div>
-              <div class="event-content">
-                <h4 class="event-title">NSMOSA Tech Summit 2025</h4>
-                <p class="event-location"><i class="fas fa-map-marker-alt"></i> NSMOSA School Conference Hall</p>
-                <p class="event-time"><i class="fas fa-clock"></i> 9:00 AM - 5:00 PM</p>
-                <p class="event-description">A day dedicated to technology trends, innovations, and networking
-                  opportunities for NSMOSA tech alumni.</p>
-                <a href="#" class="event-btn">Register Now</a>
-              </div>
-            </div>
-            <div class="event-card">
-              <div class="event-image-wrapper">
-                <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&q=90&auto=format&fit=crop"
-                  alt="Reunion 2025" class="event-image" />
-                <div class="event-date-badge">
-                  <span class="event-day">10</span>
-                  <span class="event-month">MAY</span>
-                </div>
-              </div>
-              <div class="event-content">
-                <h4 class="event-title">Batch of 2005 - 20 Year Reunion</h4>
-                <p class="event-location"><i class="fas fa-map-marker-alt"></i> Grand Hotel, Bangalore</p>
-                <p class="event-time"><i class="fas fa-clock"></i> 6:00 PM - 11:00 PM</p>
-                <p class="event-description">Celebrate two decades of friendship and achievements. Let's make new
-                  memories together!</p>
-                <a href="#" class="event-btn">Register Now</a>
-              </div>
-            </div>
-            <div class="event-card">
-              <div class="event-image-wrapper">
-                <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=90&auto=format&fit=crop"
-                  alt="Career Fair" class="event-image" />
-                <div class="event-date-badge">
-                  <span class="event-day">05</span>
-                  <span class="event-month">JUN</span>
-                </div>
-              </div>
-              <div class="event-content">
-                <h4 class="event-title">NSMOSA Career Fair 2025</h4>
-                <p class="event-location"><i class="fas fa-map-marker-alt"></i> NSMOSA School Sports Complex</p>
-                <p class="event-time"><i class="fas fa-clock"></i> 10:00 AM - 4:00 PM</p>
-                <p class="event-description">Connect with top employers and explore career opportunities. Open to all
-                  NSMOSA alumni and current students.</p>
-                <a href="#" class="event-btn">Register Now</a>
-              </div>
-            </div>
+            <!-- React Component will mount here -->
           </div>
         </div>
 
@@ -1566,221 +1489,241 @@
           <h3 class="page-subtitle">Alumni Directory</h3>
           <p class="page-text">Connect with NSMOSA alumni from around the world. Search by name, batch, location, or
             industry.</p>
-          <div class="directory-search">
-            <input type="text" placeholder="Search by name, batch, location, or industry..."
-              class="directory-search-input" />
-            <button class="directory-search-btn"><i class="fas fa-search"></i> Search</button>
-          </div>
-          <div class="directory-grid">
-            <div class="directory-card">
-              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&q=90&auto=format&fit=crop"
-                alt="Alumni" class="directory-photo" />
-              <h4 class="directory-name">Dr. Priya Sharma</h4>
-              <p class="directory-batch">Class of 2008 | Electronics</p>
-              <p class="directory-location"><i class="fas fa-map-marker-alt"></i> Delhi, India</p>
-              <p class="directory-role">Product Manager at Google</p>
-              <a href="#" class="directory-connect-btn">Connect</a>
+          <div class="coming-soon-container"
+            style="text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%); border-radius: 16px; margin-top: 20px; border: 1px solid #e2e8f0;">
+            <div class="coming-soon-icon" style="margin-bottom: 24px;">
+              <div
+                style="width: 80px; height: 80px; background: white; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
+                <i class="fas fa-rocket" style="font-size: 36px; color: #00274d;"></i>
+              </div>
             </div>
-            <div class="directory-card">
-              <img src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=300&q=90&auto=format&fit=crop"
-                alt="Alumni" class="directory-photo" />
-              <h4 class="directory-name">Amit Kumar</h4>
-              <p class="directory-batch">Class of 2010 | Mechanical</p>
-              <p class="directory-location"><i class="fas fa-map-marker-alt"></i> Bangalore, India</p>
-              <p class="directory-role">Senior Engineer at Microsoft</p>
-              <a href="#" class="directory-connect-btn">Connect</a>
-            </div>
-            <div class="directory-card">
-              <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&q=90&auto=format&fit=crop"
-                alt="Alumni" class="directory-photo" />
-              <h4 class="directory-name">Anita Reddy</h4>
-              <p class="directory-batch">Class of 2012 | Computer Science</p>
-              <p class="directory-location"><i class="fas fa-map-marker-alt"></i> San Francisco, USA</p>
-              <p class="directory-role">Software Architect at Amazon</p>
-              <a href="#" class="directory-connect-btn">Connect</a>
-            </div>
-            <div class="directory-card">
-              <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&q=90&auto=format&fit=crop"
-                alt="Alumni" class="directory-photo" />
-              <h4 class="directory-name">Ravi Singh</h4>
-              <p class="directory-batch">Class of 2007 | Civil Engineering</p>
-              <p class="directory-location"><i class="fas fa-map-marker-alt"></i> Mumbai, India</p>
-              <p class="directory-role">CEO at Construction Solutions</p>
-              <a href="#" class="directory-connect-btn">Connect</a>
-            </div>
-            <div class="directory-card">
-              <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&q=90&auto=format&fit=crop"
-                alt="Alumni" class="directory-photo" />
-              <h4 class="directory-name">Suresh Iyer</h4>
-              <p class="directory-batch">Class of 2009 | Electrical</p>
-              <p class="directory-location"><i class="fas fa-map-marker-alt"></i> Chennai, India</p>
-              <p class="directory-role">Senior Director at Infosys</p>
-              <a href="#" class="directory-connect-btn">Connect</a>
-            </div>
-            <div class="directory-card">
-              <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&q=90&auto=format&fit=crop"
-                alt="Alumni" class="directory-photo" />
-              <h4 class="directory-name">Deepa Menon</h4>
-              <p class="directory-batch">Class of 2011 | Business Admin</p>
-              <p class="directory-location"><i class="fas fa-map-marker-alt"></i> London, UK</p>
-              <p class="directory-role">VP Marketing at Global Corp</p>
-              <a href="#" class="directory-connect-btn">Connect</a>
+            <h3 style="font-size: 2rem; color: #00274d; margin-bottom: 15px; font-weight: 700;">COMING SOON</h3>
+            <p style="font-size: 1.1rem; color: #64748b; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+              We are building a comprehensive directory to help you connect with fellow alumni across the globe.
+              The new <strong>Alumni Directory</strong> will feature advanced search, professional networking, and more.
+            </p>
+            <div style="margin-top: 30px;">
+              <span
+                style="display: inline-block; padding: 8px 20px; background: rgba(0, 39, 77, 0.1); color: #00274d; border-radius: 20px; font-size: 0.9rem; font-weight: 600;">
+                <i class="fas fa-hammer"></i> Under Construction
+              </span>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Business Directory Section -->
-        <div id="business-directory-connect-section" class="connect-section">
-          <h3 class="page-subtitle">Business Directory</h3>
-          <div class="coming-soon-container" style="margin: 60px 0; padding: 60px 20px;">
-            <div class="coming-soon-icon">
-              <i class="fas fa-clock"></i>
+
+
+      <!-- How to Give Section -->
+      <div id="how-to-give-connect-section" class="connect-section">
+        <h3 class="page-subtitle">How to Give</h3>
+        <p class="page-text">Support NSM School and its students through various giving options. Every contribution
+          makes a difference!</p>
+        <div class="giving-container">
+          <div class="giving-card">
+            <img src="/images/NSM School/IMG_6713.JPG" alt="Scholarship" class="giving-image" />
+            <h4>Scholarship Fund</h4>
+            <p class="giving-description">Support deserving students with financial aid. Help make quality education
+              accessible to all.</p>
+            <div class="giving-options">
+              <p><strong>Donation Options:</strong></p>
+              <ul>
+                <li>One-time donation</li>
+                <li>Monthly recurring donation</li>
+                <li>Endowment fund</li>
+                <li>Named scholarship</li>
+              </ul>
             </div>
-            <h2 class="coming-soon-title">Coming Soon</h2>
-            <p class="coming-soon-text">We're working on bringing you the Business Directory section. Stay tuned for
-              updates!</p>
+            <a href="#" class="giving-btn">Donate to Scholarships</a>
+          </div>
+          <div class="giving-card">
+            <img src="/images/NSM School/DJI_0184.JPG" alt="Infrastructure" class="giving-image" />
+            <h4>Infrastructure Development</h4>
+            <p class="giving-description">Contribute to building modern facilities, labs, libraries, and campus
+              infrastructure.</p>
+            <div class="giving-options">
+              <p><strong>Donation Options:</strong></p>
+              <ul>
+                <li>Lab equipment funding</li>
+                <li>Library expansion</li>
+                <li>Sports facilities</li>
+                <li>Hostel improvements</li>
+              </ul>
+            </div>
+            <a href="#" class="giving-btn">Support Infrastructure</a>
+          </div>
+          <div class="giving-card">
+            <img src="/images/NSM School/IMG_8640.JPG" alt="Research" class="giving-image" />
+            <h4>Research & Innovation</h4>
+            <p class="giving-description">Fund research projects, innovation labs, and support faculty and student
+              research initiatives.</p>
+            <div class="giving-options">
+              <p><strong>Donation Options:</strong></p>
+              <ul>
+                <li>Research grants</li>
+                <li>Innovation center funding</li>
+                <li>Equipment for research labs</li>
+                <li>Research fellowship programs</li>
+              </ul>
+            </div>
+            <a href="#" class="giving-btn">Support Research</a>
+          </div>
+          <div class="giving-card">
+            <img src="/images/nsm outer photos/i love nsm.jpg" alt="General" class="giving-image" />
+            <h4>General Fund</h4>
+            <p class="giving-description">Support the overall mission of NSM School. Your donation will be used where
+              it's needed most.</p>
+            <div class="giving-options">
+              <p><strong>Donation Options:</strong></p>
+              <ul>
+                <li>Unrestricted donations</li>
+                <li>Annual fund contributions</li>
+                <li>Matching gift programs</li>
+                <li>Planned giving</li>
+              </ul>
+            </div>
+            <a href="#" class="giving-btn">Make General Donation</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Connect With Us Section -->
+      <div id="page-contact" class="connect-section" style="padding-top: 0;">
+
+        <!-- Blue Cards Section -->
+        <div class="blue-connect-header"
+          style="border: 5px solid red; background-color: #0d47a1; padding: 200px 20px 60px !important; text-align: center; color: white; margin-bottom: 40px;">
+          <h3 class="page-subtitle"
+            style="color: white; margin-bottom: 40px; border-bottom: 2px solid #ff9800; display: inline-block; padding-bottom: 10px;">
+            Connect With Us</h3>
+
+          <div class="blue-cards-container"
+            style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; max-width: 1200px; margin: 0 auto;">
+
+            <!-- Location Card -->
+            <div class="blue-card"
+              style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 40px 30px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); flex: 1; min-width: 300px; max-width: 350px; display: flex; flex-direction: column; align-items: center; transition: transform 0.3s;">
+              <div class="card-icon-circle"
+                style="width: 70px; height: 70px; border-radius: 50%; background: rgba(33, 150, 243, 0.2); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; border: 2px solid rgba(33, 150, 243, 0.4);">
+                <i class="fas fa-map-marker-alt" style="font-size: 28px; color: white;"></i>
+              </div>
+              <h4 style="color: #64b5f6; margin-bottom: 15px; font-weight: 700; letter-spacing: 1px;">LOCATION</h4>
+              <p style="color: rgba(255,255,255,0.9); font-size: 0.95rem; line-height: 1.6;">
+                Patamata, Benz Circle, Vijayawada, Andhra Pradesh 520010
+              </p>
+            </div>
+
+            <!-- Phone Card -->
+            <div class="blue-card"
+              style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 40px 30px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); flex: 1; min-width: 300px; max-width: 350px; display: flex; flex-direction: column; align-items: center; transition: transform 0.3s;">
+              <div class="card-icon-circle"
+                style="width: 70px; height: 70px; border-radius: 50%; background: rgba(76, 175, 80, 0.2); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; border: 2px solid rgba(76, 175, 80, 0.4);">
+                <i class="fas fa-phone-alt" style="font-size: 28px; color: white;"></i>
+              </div>
+              <h4 style="color: #81c784; margin-bottom: 15px; font-weight: 700; letter-spacing: 1px;">PHONE</h4>
+              <p style="color: rgba(255,255,255,0.9); font-size: 0.95rem; line-height: 1.6;">
+                +91-90000 00000<br>
+                +91-44-00000000
+              </p>
+            </div>
+
+            <!-- Email Card -->
+            <div class="blue-card"
+              style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 40px 30px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); flex: 1; min-width: 300px; max-width: 350px; display: flex; flex-direction: column; align-items: center; transition: transform 0.3s;">
+              <div class="card-icon-circle"
+                style="width: 70px; height: 70px; border-radius: 50%; background: rgba(255, 152, 0, 0.2); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; border: 2px solid rgba(255, 152, 0, 0.4);">
+                <i class="fas fa-envelope" style="font-size: 28px; color: white;"></i>
+              </div>
+              <h4 style="color: #ffb74d; margin-bottom: 15px; font-weight: 700; letter-spacing: 1px;">EMAIL</h4>
+              <p style="color: rgba(255,255,255,0.9); font-size: 0.95rem; line-height: 1.6;">
+                alumininsm@gmail.com
+              </p>
+            </div>
+
           </div>
         </div>
 
-        <!-- How to Give Section -->
-        <div id="how-to-give-connect-section" class="connect-section">
-          <h3 class="page-subtitle">How to Give</h3>
-          <p class="page-text">Support NSM School and its students through various giving options. Every contribution
-            makes a difference!</p>
-          <div class="giving-container">
-            <div class="giving-card">
-              <img src="/images/NSM School/IMG_6713.JPG" alt="Scholarship" class="giving-image" />
-              <h4>Scholarship Fund</h4>
-              <p class="giving-description">Support deserving students with financial aid. Help make quality education
-                accessible to all.</p>
-              <div class="giving-options">
-                <p><strong>Donation Options:</strong></p>
-                <ul>
-                  <li>One-time donation</li>
-                  <li>Monthly recurring donation</li>
-                  <li>Endowment fund</li>
-                  <li>Named scholarship</li>
-                </ul>
-              </div>
-              <a href="#" class="giving-btn">Donate to Scholarships</a>
+        <!-- Form Section -->
+        <div class="connect-form-wrapper" style="max-width: 900px; margin: 0 auto; padding: 0 20px 60px;">
+          <div class="form-container"
+            style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+
+            <div
+              style="display: flex; align-items: center; gap: 15px; margin-bottom: 30px; border-bottom: 2px solid #00274d; padding-bottom: 15px;">
+              <i class="fas fa-paper-plane" style="color: #00274d; font-size: 24px;"></i>
+              <h3 style="margin: 0; color: #00274d; font-size: 1.8rem; font-weight: 700;">Send Us a Message</h3>
             </div>
-            <div class="giving-card">
-              <img src="/images/NSM School/DJI_0184.JPG" alt="Infrastructure" class="giving-image" />
-              <h4>Infrastructure Development</h4>
-              <p class="giving-description">Contribute to building modern facilities, labs, libraries, and campus
-                infrastructure.</p>
-              <div class="giving-options">
-                <p><strong>Donation Options:</strong></p>
-                <ul>
-                  <li>Lab equipment funding</li>
-                  <li>Library expansion</li>
-                  <li>Sports facilities</li>
-                  <li>Hostel improvements</li>
-                </ul>
+
+            <form class="contact-form-new">
+              <!-- Name -->
+              <div style="margin-bottom: 20px;">
+                <label
+                  style="display: block; color: #00274d; font-weight: 700; margin-bottom: 8px; font-size: 0.95rem;">
+                  <i class="fas fa-user" style="color: #ff9800; margin-right: 5px;"></i> Name <span
+                    style="color: red;">*</span>
+                </label>
+                <input type="text" placeholder="Enter your full name"
+                  style="width: 100%; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; color: #334155; outline: none; transition: border-color 0.3s;"
+                  required>
               </div>
-              <a href="#" class="giving-btn">Support Infrastructure</a>
-            </div>
-            <div class="giving-card">
-              <img src="/images/NSM School/IMG_8640.JPG" alt="Research" class="giving-image" />
-              <h4>Research & Innovation</h4>
-              <p class="giving-description">Fund research projects, innovation labs, and support faculty and student
-                research initiatives.</p>
-              <div class="giving-options">
-                <p><strong>Donation Options:</strong></p>
-                <ul>
-                  <li>Research grants</li>
-                  <li>Innovation center funding</li>
-                  <li>Equipment for research labs</li>
-                  <li>Research fellowship programs</li>
-                </ul>
+
+              <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <!-- Email -->
+                <div style="flex: 1; min-width: 250px; margin-bottom: 20px;">
+                  <label
+                    style="display: block; color: #00274d; font-weight: 700; margin-bottom: 8px; font-size: 0.95rem;">
+                    <i class="fas fa-envelope" style="color: #ff9800; margin-right: 5px;"></i> Email <span
+                      style="color: red;">*</span>
+                  </label>
+                  <input type="email" placeholder="your.email@example.com"
+                    style="width: 100%; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; color: #334155; outline: none; transition: border-color 0.3s;"
+                    required>
+                </div>
+                <!-- Mobile -->
+                <div style="flex: 1; min-width: 250px; margin-bottom: 20px;">
+                  <label
+                    style="display: block; color: #00274d; font-weight: 700; margin-bottom: 8px; font-size: 0.95rem;">
+                    <i class="fas fa-mobile-alt" style="color: #ff9800; margin-right: 5px;"></i> Mobile Number <span
+                      style="color: red;">*</span>
+                  </label>
+                  <input type="tel" placeholder="+91-XXXXXXXXXX"
+                    style="width: 100%; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; color: #334155; outline: none; transition: border-color 0.3s;"
+                    required>
+                </div>
               </div>
-              <a href="#" class="giving-btn">Support Research</a>
-            </div>
-            <div class="giving-card">
-              <img src="/images/nsm outer photos/i love nsm.jpg" alt="General" class="giving-image" />
-              <h4>General Fund</h4>
-              <p class="giving-description">Support the overall mission of NSM School. Your donation will be used where
-                it's needed most.</p>
-              <div class="giving-options">
-                <p><strong>Donation Options:</strong></p>
-                <ul>
-                  <li>Unrestricted donations</li>
-                  <li>Annual fund contributions</li>
-                  <li>Matching gift programs</li>
-                  <li>Planned giving</li>
-                </ul>
+
+              <!-- City -->
+              <div style="margin-bottom: 20px;">
+                <label
+                  style="display: block; color: #00274d; font-weight: 700; margin-bottom: 8px; font-size: 0.95rem;">
+                  <i class="fas fa-building" style="color: #ff9800; margin-right: 5px;"></i> City
+                </label>
+                <input type="text" placeholder="Enter your city"
+                  style="width: 100%; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; color: #334155; outline: none; transition: border-color 0.3s;">
               </div>
-              <a href="#" class="giving-btn">Make General Donation</a>
-            </div>
+
+              <!-- Message -->
+              <div style="margin-bottom: 25px;">
+                <label
+                  style="display: block; color: #00274d; font-weight: 700; margin-bottom: 8px; font-size: 0.95rem;">
+                  <i class="fas fa-comment-alt" style="color: #ff9800; margin-right: 5px;"></i> Message <span
+                    style="color: red;">*</span>
+                </label>
+                <textarea rows="5" placeholder="Type your message here..."
+                  style="width: 100%; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; color: #334155; outline: none; transition: border-color 0.3s; resize: vertical;"
+                  required></textarea>
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit"
+                style="width: 100%; background-color: #00274d; color: white; padding: 15px; border: none; border-radius: 6px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: background 0.3s; text-align: center; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 6px rgba(0, 39, 77, 0.2);">
+                Submit Now <i class="fas fa-arrow-right"></i>
+              </button>
+            </form>
+
           </div>
         </div>
 
-        <!-- Connect With Us Section -->
-        <div id="connect-us-connect-section" class="connect-section">
-          <h3 class="page-subtitle">Connect With Us</h3>
-          <p class="page-text">Get in touch with the NSM Old Students Association. We'd love to hear from you!</p>
-          <div class="connect-us-container">
-            <div class="connect-us-info">
-              <div class="connect-us-card">
-                <div class="connect-us-icon">
-                  <i class="fas fa-envelope"></i>
-                </div>
-                <h4>Email Us</h4>
-                <p><a href="mailto:alumininsm@gmail.com" style="color: inherit; text-decoration: none;"
-                    class="dynamic-contact-email">alumininsm@gmail.com</a></p>
-              </div>
-              <div class="connect-us-card">
-                <div class="connect-us-icon">
-                  <i class="fas fa-phone"></i>
-                </div>
-                <h4>Call Us</h4>
-                <div class="dynamic-contact-phone">
-                  <p>+91 80 1234 5678</p>
-                  <p>+91 80 1234 5679</p>
-                </div>
-              </div>
-              <div class="connect-us-card">
-                <div class="connect-us-icon">
-                  <i class="fas fa-map-marker-alt"></i>
-                </div>
-                <h4>Visit Us</h4>
-
-                <p><a href="https://maps.app.goo.gl/4MpMZNJ2HJYuwodF8?g_st=aw" target="_blank"
-                    style="color: inherit; text-decoration: none;" class="dynamic-contact-address">Patamata, Benz
-                    Circle, Vijayawada, Andhra Pradesh
-                    520010</a></p>
-              </div>
-              <div class="connect-us-card">
-                <div class="connect-us-icon">
-                  <i class="fas fa-clock"></i>
-                </div>
-                <h4>Office Hours</h4>
-                <p>Monday - Friday: 9:00 AM - 5:00 PM</p>
-                <p>Saturday: 9:00 AM - 1:00 PM</p>
-                <p>Sunday: Closed</p>
-              </div>
-            </div>
-            <div class="connect-us-form-wrapper">
-              <h4>Send us a Message</h4>
-              <form class="connect-us-form">
-                <div class="form-group">
-                  <label for="connect-name">Your Name</label>
-                  <input type="text" id="connect-name" name="name" placeholder="Enter your name" required />
-                </div>
-                <div class="form-group">
-                  <label for="connect-email">Your Email</label>
-                  <input type="email" id="connect-email" name="email" placeholder="Enter your email" required />
-                </div>
-                <div class="form-group">
-                  <label for="connect-message">Message</label>
-                  <textarea id="connect-message" name="message" rows="6" placeholder="Enter your message"
-                    required></textarea>
-                </div>
-                <button type="submit" class="connect-us-submit-btn">Send Message</button>
-              </form>
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- Gallery Page Content -->
@@ -3544,114 +3487,6 @@
       </div>
       </div>
 
-      <!-- Contact Page Content -->
-      <div id="page-contact" class="page-section">
-        <h2 class="page-title">Contact NSM Old Students Association</h2>
-        <p class="page-text">
-          For any queries related to alumni registration, events or contributions,
-          please write to us or call the NSM Alumni Office.
-        </p>
-
-        <div class="contact-page-layout">
-          <!-- Contact Information Section (Left) -->
-          <div class="contact-info-section">
-            <div class="contact-info-card animated-card">
-              <div class="contact-info-icon">
-                <i class="fas fa-map-marker-alt"></i>
-              </div>
-              <div class="contact-info-content">
-                <h3 class="contact-info-title">Office Address</h3>
-                <p class="contact-info-text" id="display-contact-address">
-                  NSM Old Students Association<br />
-                  NSM School<br />
-                  Patamata, Benz Circle, Vijayawada, Andhra Pradesh 520010
-                </p>
-              </div>
-            </div>
-
-            <div class="contact-info-card animated-card">
-              <div class="contact-info-icon">
-                <i class="fas fa-phone-alt"></i>
-              </div>
-              <div class="contact-info-content">
-                <h3 class="contact-info-title">Phone Number</h3>
-                <p class="contact-info-text" id="display-contact-phone">
-                  <a href="tel:+919000000000" class="contact-link">+91-90000 00000</a><br />
-                  <a href="tel:+914400000000" class="contact-link">+91-44-00000000</a>
-                </p>
-              </div>
-            </div>
-
-            <div class="contact-info-card animated-card">
-              <div class="contact-info-icon">
-                <i class="fas fa-envelope"></i>
-              </div>
-              <div class="contact-info-content">
-                <h3 class="contact-info-title">Email Address</h3>
-                <p class="contact-info-text" id="display-contact-email">
-                  <a href="mailto:alumininsm@gmail.com" class="contact-link">alumininsm@gmail.com</a>
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Contact Form Section (Right) -->
-          <div class="contact-form-section">
-            <div class="contact-form-wrapper">
-              <h3 class="form-title">
-                <i class="fas fa-paper-plane"></i> Send Us a Message
-              </h3>
-              <form id="contact-form" class="contact-form">
-                <div class="form-group">
-                  <label for="contact-name">
-                    <i class="fas fa-user"></i> Name <span class="required">*</span>
-                  </label>
-                  <input type="text" id="contact-name" name="name" class="form-input" placeholder="Enter your full name"
-                    required />
-                </div>
-
-                <div class="form-row">
-                  <div class="form-group">
-                    <label for="contact-email">
-                      <i class="fas fa-envelope"></i> Email <span class="required">*</span>
-                    </label>
-                    <input type="email" id="contact-email" name="email" class="form-input"
-                      placeholder="your.email@example.com" required />
-                  </div>
-
-                  <div class="form-group">
-                    <label for="contact-mobile">
-                      <i class="fas fa-mobile-alt"></i> Mobile Number <span class="required">*</span>
-                    </label>
-                    <input type="tel" id="contact-mobile" name="mobile" class="form-input" placeholder="+91-XXXXXXXXXX"
-                      required />
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label for="contact-city">
-                    <i class="fas fa-city"></i> City
-                  </label>
-                  <input type="text" id="contact-city" name="city" class="form-input" placeholder="Enter your city" />
-                </div>
-
-                <div class="form-group">
-                  <label for="contact-message">
-                    <i class="fas fa-comment-alt"></i> Message <span class="required">*</span>
-                  </label>
-                  <textarea id="contact-message" name="message" class="form-textarea" rows="5"
-                    placeholder="Type your message here..." required></textarea>
-                </div>
-
-                <button type="submit" class="submit-btn">
-                  <span>Submit Now</span>
-                  <i class="fas fa-arrow-right"></i>
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
       <!-- Admin Dashboard Page -->
       <div id="page-dashboard" class="page-section">
         <div class="admin-dashboard-container">
@@ -4551,11 +4386,19 @@
               </div>
 
               <!-- Alumni Directory Section -->
+              <!-- Alumni Directory Section -->
               <div id="admin-alumni-directory" class="admin-tab-content">
-                <div class="admin-placeholder-content">
-                  <i class="fas fa-address-book"></i>
-                  <h4>Alumni Directory</h4>
-                  <p>Manage alumni directory entries and privacy settings.</p>
+                <div class="admin-header-row">
+                  <h3>Alumni Directory</h3>
+                  <button class="btn-primary-admin" onclick="window.openCreateAlumniMemberModal()"
+                    style="background-color: #00274d;">
+                    <i class="fas fa-plus"></i> Add Member
+                  </button>
+                </div>
+                <!-- Filtering/Search could go here -->
+                <div id="admin-alumni-directory-grid" class="event-grid-admin"
+                  style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+                  <!-- Members loaded via JS -->
                 </div>
               </div>
 
@@ -16613,6 +16456,52 @@
 
   </script>
 
+  <!-- Create/Edit Alumni Member Modal -->
+  <div id="create-alumni-member-modal" class="modal-overlay"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10005; justify-content: center; align-items: center;">
+    <div class="modal-container"
+      style="background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+      <div class="modal-header"
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="margin: 0; color: #00274d; display: flex; align-items: center; gap: 10px;"><i
+            class="fas fa-user-plus" style="color: #004e92;"></i> Add Alumni Member</h3>
+        <button class="modal-close" onclick="window.closeCreateAlumniMemberModal()"
+          style="background: none; border: none; font-size: 20px; cursor: pointer; color: #64748b;">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="create-alumni-member-form" style="display: grid; gap: 15px;">
+          <div class="form-group">
+            <label for="alumni-member-name"
+              style="display: block; font-size: 13px; color: #64748b; margin-bottom: 5px;">Full Name</label>
+            <input type="text" id="alumni-member-name" required placeholder="e.g. Dr. Priya Sharma"
+              style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
+          </div>
+          <div class="form-group">
+            <label for="alumni-member-position"
+              style="display: block; font-size: 13px; color: #64748b; margin-bottom: 5px;">Class & Position</label>
+            <input type="text" id="alumni-member-position" required
+              placeholder="e.g. Class of 2008 | Product Manager at Google"
+              style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
+          </div>
+          <div class="form-group">
+            <label for="alumni-member-image"
+              style="display: block; font-size: 13px; color: #64748b; margin-bottom: 5px;">Profile Photo</label>
+            <div class="file-upload-container">
+              <input type="file" id="alumni-member-image" accept="image/*">
+            </div>
+          </div>
+          <div class="modal-footer" style="margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px;">
+            <button type="button" class="btn-secondary-admin" onclick="window.closeCreateAlumniMemberModal()"
+              style="padding: 10px 20px; border: 1px solid #e2e8f0; background: white; border-radius: 6px; cursor: pointer;">Cancel</button>
+            <button type="submit" class="btn-primary-admin"
+              style="padding: 10px 20px; background: #00274d; color: white; border: none; border-radius: 6px; cursor: pointer;">Save
+              Member</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- Public Lightbox Modal -->
   <div id="public-lightbox"
     style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100000; align-items: center; justify-content: center; backdrop-filter: blur(8px); cursor: zoom-out;"
@@ -16923,26 +16812,39 @@
     <script>
       /* --- Alumni Event Management Logic --- */
 
-      let editingEventIndex = -1; // -1 means creating new
+      let editingEventId = null; // null means creating new
 
       // Global functions for Modal
-      window.openCreateAlumniEventModal = function (index = -1) {
-        editingEventIndex = index;
+      window.openCreateAlumniEventModal = async function (id = null) {
+        editingEventId = id;
         const modalTitle = document.querySelector('#create-alumni-event-modal h3');
         const submitBtn = document.querySelector('#create-alumni-event-form button[type="submit"]');
 
-        if (index >= 0) {
+        if (id) {
           // Edit Mode
-          const events = JSON.parse(localStorage.getItem('nsm_alumni_events') || '[]');
-          const event = events[index];
-          if (event) {
-            document.getElementById('alumni-event-name').value = event.name;
-            document.getElementById('alumni-event-date').value = event.date;
-            document.getElementById('alumni-event-time').value = event.time;
-            document.getElementById('alumni-event-content').value = event.content;
+          try {
+            // Revert to localStorage as requested
+            const allEvents = JSON.parse(localStorage.getItem('nsm_alumni_events') || '[]');
+            const event = allEvents.find(e => e.id === id);
+            if (event) {
+              document.getElementById('alumni-event-name').value = event.eventName;
 
-            if (modalTitle) modalTitle.innerHTML = '<i class="fas fa-edit" style="color: #004e92; margin-right: 10px;"></i> Edit Alumni Event';
-            if (submitBtn) submitBtn.textContent = 'Update Event';
+              // Parse date and time from ISO string
+              const d = new Date(event.eventDate);
+              // Date input needs YYYY-MM-DD
+              const dateStr = d.toISOString().split('T')[0];
+              // Time input needs HH:MM
+              const timeStr = d.toTimeString().substring(0, 5);
+
+              document.getElementById('alumni-event-date').value = dateStr;
+              document.getElementById('alumni-event-time').value = timeStr;
+              // document.getElementById('alumni-event-content').value = event.content; // Content not in DB schema currently
+
+              if (modalTitle) modalTitle.innerHTML = '<i class="fas fa-edit" style="color: #004e92; margin-right: 10px;"></i> Edit Alumni Event';
+              if (submitBtn) submitBtn.textContent = 'Update Event';
+            }
+          } catch (e) {
+            console.error("Error loading event for edit", e);
           }
         } else {
           // Create Mode
@@ -16957,7 +16859,7 @@
       window.closeCreateAlumniEventModal = function () {
         document.getElementById('create-alumni-event-modal').style.display = 'none';
         document.getElementById('create-alumni-event-form').reset();
-        editingEventIndex = -1;
+        editingEventId = null;
       };
 
       // Load and Render Events
@@ -16965,7 +16867,25 @@
         const eventsGrid = document.getElementById('admin-alumni-event-grid');
         if (!eventsGrid) return;
 
-        const events = JSON.parse(localStorage.getItem('nsm_alumni_events') || '[]');
+        let events = [];
+        try {
+          events = JSON.parse(localStorage.getItem('nsm_alumni_events') || '[]');
+
+          // Filter out bad data (undefined names, invalid dates)
+          events = events.filter(e =>
+            e &&
+            e.eventName &&
+            e.eventName !== 'undefined' &&
+            e.eventDate &&
+            !isNaN(new Date(e.eventDate).getTime())
+          );
+
+          // Optional: Save cleaned list back to storage to permanently fix it
+          localStorage.setItem('nsm_alumni_events', JSON.stringify(events));
+        } catch (e) {
+          console.error("Error reading from localstorage", e);
+          events = [];
+        }
 
         eventsGrid.innerHTML = '';
 
@@ -16980,7 +16900,10 @@
           return;
         }
 
-        events.forEach((event, index) => {
+        // Sort by date descending
+        events.sort((a, b) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime());
+
+        events.forEach((event) => {
           const card = document.createElement('div');
           card.className = 'event-card-admin';
           card.style.background = 'white';
@@ -16989,31 +16912,36 @@
           card.style.overflow = 'hidden';
           card.style.border = '1px solid #e2e8f0';
 
-          // Handle image (if base64 or placeholder)
-          const imgDisplay = event.image
-            ? `<img src="${event.image}" style="width: 100%; height: 160px; object-fit: cover;">`
+          // Handle image (use first photo as cover)
+          const coverPhoto = event.photos && event.photos.length > 0 ? event.photos[0].url : null;
+          const imgDisplay = coverPhoto
+            ? `<img src="${coverPhoto}" style="width: 100%; height: 160px; object-fit: cover;">`
             : `<div style="width: 100%; height: 160px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #94a3b8;"><i class="fas fa-image" style="font-size: 32px;"></i></div>`;
+
+          // Time formatting
+          const eventDateObj = new Date(event.eventDate);
+          const timeStr = eventDateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
           card.innerHTML = `
              ${imgDisplay}
              <div style="padding: 20px;">
                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
                  <span style="font-size: 12px; font-weight: 600; color: #004e92; background: #e0f2fe; padding: 4px 8px; border-radius: 4px;">
-                   ${new Date(event.date).toLocaleDateString()}
+                   ${eventDateObj.toLocaleDateString()}
                  </span>
                  <span style="font-size: 12px; color: #64748b;">
-                   <i class="far fa-clock"></i> ${event.time}
+                   <i class="far fa-clock"></i> ${timeStr}
                  </span>
                </div>
-               <h4 style="margin: 0 0 10px 0; color: #00274d; font-size: 16px;">${event.name}</h4>
-               <p style="margin: 0 0 15px 0; color: #64748b; font-size: 13px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-                 ${event.content}
+               <h4 style="margin: 0 0 10px 0; color: #00274d; font-size: 16px;">${event.eventName}</h4>
+               <p style="margin: 0 0 15px 0; color: #64748b; font-size: 13px; line-height: 1.5;">
+                 <span style="background: ${event.category === 'social' ? '#e0f2fe' : '#fef3c7'}; color: ${event.category === 'social' ? '#004e92' : '#b45309'}; padding: 2px 6px; border-radius: 4px; font-size: 11px; text-transform: uppercase; font-weight: 700;">${event.category}</span>
                </p>
                <div style="display: flex; gap: 10px;">
-                  <button onclick="openCreateAlumniEventModal(${index})" style="flex: 1; padding: 8px; border: 1px solid #004e92; background: white; color: #004e92; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.2s;" onmouseover="this.style.background='#f0f9ff'" onmouseout="this.style.background='white'">
-                    <i class="fas fa-edit"></i> Edit
+                  <button onclick="window.openCreateAlumniEventModal('${event.id}')" style="flex: 1; padding: 8px; border: 1px solid #004e92; background: white; color: #004e92; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.2s;" onmouseover="this.style.background='#f0f9ff'" onmouseout="this.style.background='white'">
+                     <i class="fas fa-edit"></i> Edit
                   </button>
-                  <button onclick="deleteAlumniEvent(${index})" style="flex: 1; padding: 8px; border: 1px solid #ef4444; background: white; color: #ef4444; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.2s;" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='white'">
+                  <button onclick="window.deleteAlumniEvent('${event.id}')" style="flex: 1; padding: 8px; border: 1px solid #ef4444; background: white; color: #ef4444; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.2s;" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='white'">
                     <i class="fas fa-trash"></i> Delete
                   </button>
                </div>
@@ -17024,18 +16952,29 @@
       };
 
       // Delete Event
-      window.deleteAlumniEvent = function (index) {
+      window.deleteAlumniEvent = function (id) {
         if (confirm('Are you sure you want to delete this event?')) {
-          const events = JSON.parse(localStorage.getItem('nsm_alumni_events') || '[]');
-          events.splice(index, 1);
-          localStorage.setItem('nsm_alumni_events', JSON.stringify(events));
-          loadAlumniEvents();
+          if (id.includes('default')) {
+            alert('Cannot delete system default events.');
+            return;
+          }
+          try {
+            const events = JSON.parse(localStorage.getItem('nsm_alumni_events') || '[]');
+            const newEvents = events.filter(e => e.id !== id);
+            localStorage.setItem('nsm_alumni_events', JSON.stringify(newEvents));
+            loadAlumniEvents();
+            alert('Event deleted.');
+          } catch (e) {
+            console.error("Delete failed", e);
+            alert('Failed to delete event.');
+          }
         }
       };
 
       // Handle Form Submission
       document.addEventListener('DOMContentLoaded', () => {
-        loadAlumniEvents();
+        // Delay load slightly to allow DB init
+        setTimeout(loadAlumniEvents, 1000);
 
         const form = document.getElementById('create-alumni-event-form');
         if (form) {
@@ -17048,49 +16987,237 @@
             const content = document.getElementById('alumni-event-content').value;
             const imageInput = document.getElementById('alumni-event-image');
 
-            const saveEvent = (imageData) => {
-              const events = JSON.parse(localStorage.getItem('nsm_alumni_events') || '[]');
+            const processSave = (imageData) => {
+              try {
+                // Construct date object
+                const fullDate = new Date(`${date}T${time || '00:00'}`);
+                const year = fullDate.getFullYear();
 
-              const newEvent = {
-                name,
-                date,
-                time,
-                content,
-                // Use new image if uploaded, otherwise keep existing if editing, or null
-                image: imageData || (editingEventIndex >= 0 ? events[editingEventIndex].image : null),
-                createdAt: new Date().toISOString()
-              };
+                // Construct Photos Array
+                let photos = [];
+                if (imageData) {
+                  photos.push({
+                    id: `photo-${Date.now()}`,
+                    url: imageData,
+                    name: 'Event Cover',
+                    uploadedAt: Date.now()
+                  });
+                }
 
-              if (editingEventIndex >= 0) {
-                // Update existing
-                events[editingEventIndex] = newEvent;
-                alert('Event updated successfully!');
-              } else {
-                // Create new
-                events.unshift(newEvent);
-                alert('Event saved successfully!');
+                let newEvent = {
+                  id: editingEventId || `event-${Date.now()}`,
+                  eventName: name,
+                  eventDate: fullDate.toISOString(),
+                  category: 'social',
+                  year: year,
+                  photos: photos,
+                  createdAt: Date.now()
+                };
+
+                const events = JSON.parse(localStorage.getItem('nsm_alumni_events') || '[]');
+
+                // Preserve existing photos if editing and no new photo uploaded
+                if (editingEventId && (!photos || photos.length === 0)) {
+                  const existing = events.find(e => e.id === editingEventId);
+                  if (existing) {
+                    newEvent.photos = existing.photos;
+                    newEvent.createdAt = existing.createdAt;
+                  }
+                }
+
+                if (editingEventId) {
+                  const index = events.findIndex(e => e.id === editingEventId);
+                  if (index !== -1) events[index] = newEvent;
+                } else {
+                  events.push(newEvent);
+                }
+
+                localStorage.setItem('nsm_alumni_events', JSON.stringify(events));
+
+                alert('Event saved successfully to Local Storage!');
+                closeCreateAlumniEventModal();
+                loadAlumniEvents();
+              } catch (err) {
+                console.error("Save failed", err);
+                alert('Failed to save event to local storage.');
               }
-
-              localStorage.setItem('nsm_alumni_events', JSON.stringify(events));
-
-              closeCreateAlumniEventModal();
-              loadAlumniEvents();
             };
 
             // Handle Image Upload logic (read as Base64)
             if (imageInput.files && imageInput.files[0]) {
               const reader = new FileReader();
               reader.onload = function (e) {
-                saveEvent(e.target.result);
+                processSave(e.target.result);
               };
               reader.readAsDataURL(imageInput.files[0]);
             } else {
-              saveEvent(null);
+              processSave(null);
+            }
+          });
+        }
+      });
+
+      /* --- Alumni Directory Management Logic --- */
+      let editingMemberId = null;
+
+      window.openCreateAlumniMemberModal = function (id = null) {
+        editingMemberId = id;
+        const modal = document.getElementById('create-alumni-member-modal');
+        const title = modal.querySelector('h3');
+        const btn = modal.querySelector('button[type="submit"]');
+
+        if (id) {
+          const members = JSON.parse(localStorage.getItem('nsm_alumni_directory') || '[]');
+          const member = members.find(m => m.id === id);
+          if (member) {
+            document.getElementById('alumni-member-name').value = member.name;
+            document.getElementById('alumni-member-position').value = member.position;
+            title.innerHTML = '<i class="fas fa-user-edit" style="color: #004e92; margin-right: 10px;"></i> Edit Alumni Member';
+            btn.textContent = 'Update Member';
+          }
+        } else {
+          document.getElementById('create-alumni-member-form').reset();
+          title.innerHTML = '<i class="fas fa-user-plus" style="color: #004e92; margin-right: 10px;"></i> Add Alumni Member';
+          btn.textContent = 'Save Member';
+        }
+        modal.style.display = 'flex';
+      };
+
+      window.closeCreateAlumniMemberModal = function () {
+        document.getElementById('create-alumni-member-modal').style.display = 'none';
+        document.getElementById('create-alumni-member-form').reset();
+        editingMemberId = null;
+      };
+
+      window.loadAlumniDirectory = function () {
+        const grid = document.getElementById('admin-alumni-directory-grid');
+
+        let members = [];
+        try {
+          members = JSON.parse(localStorage.getItem('nsm_alumni_directory') || '[]');
+        } catch (e) { members = []; }
+
+        // Update Dashboard Stats (Total Members & Pending Approval)
+        const totalMembersEl = document.getElementById('stat-total-members-val');
+        const pendingApprovalEl = document.getElementById('stat-pending-approval-val');
+
+        if (totalMembersEl) totalMembersEl.textContent = members.length;
+        // Default pending count to 0 or calculate based on status if we had it
+        if (pendingApprovalEl) pendingApprovalEl.textContent = "0";
+
+        if (!grid) return;
+
+        grid.innerHTML = '';
+
+        if (members.length === 0) {
+          grid.innerHTML = `
+                 <div class="admin-placeholder-content" style="grid-column: 1 / -1;">
+                    <i class="fas fa-users-slash"></i>
+                    <h4>No Members Found</h4>
+                    <p>Click "Add Member" to create your first directory entry.</p>
+                 </div>
+              `;
+          return;
+        }
+
+        members.forEach(member => {
+          const card = document.createElement('div');
+          card.className = 'event-card-admin';
+          card.style.background = 'white';
+          card.style.borderRadius = '12px';
+          card.style.padding = '20px';
+          card.style.textAlign = 'center';
+          card.style.boxShadow = '0 4px 6px rgba(0,0,0,0.05)';
+          card.style.border = '1px solid #e2e8f0';
+
+          const img = member.image || 'https://via.placeholder.com/150';
+
+          card.innerHTML = `
+                  <img src="${img}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; border: 3px solid #e0f2fe;">
+                  <h4 style="margin: 0 0 5px 0; color: #00274d;">${member.name}</h4>
+                  <p style="margin: 0 0 15px 0; color: #64748b; font-size: 13px;">${member.position}</p>
+                  <div style="display: flex; gap: 10px; justify-content: center;">
+                      <button onclick="window.openCreateAlumniMemberModal('${member.id}')" style="padding: 6px 12px; border: 1px solid #004e92; background: white; color: #004e92; border-radius: 4px; cursor: pointer;">Edit</button>
+                      <button onclick="window.deleteAlumniMember('${member.id}')" style="padding: 6px 12px; border: 1px solid #ef4444; background: white; color: #ef4444; border-radius: 4px; cursor: pointer;">Delete</button>
+                  </div>
+              `;
+          grid.appendChild(card);
+        });
+      };
+
+      window.deleteAlumniMember = function (id) {
+        if (confirm('Delete this member?')) {
+          let members = JSON.parse(localStorage.getItem('nsm_alumni_directory') || '[]');
+          members = members.filter(m => m.id !== id);
+          localStorage.setItem('nsm_alumni_directory', JSON.stringify(members));
+          loadAlumniDirectory();
+          alert('Member deleted.');
+        }
+      };
+
+      // Init logic
+      document.addEventListener('DOMContentLoaded', () => {
+        // Hook tab switch to load directory
+        const tabLinks = document.querySelectorAll('.sidebar-menu a[data-connect-subpage="alumni-directory"]');
+        tabLinks.forEach(link => {
+          link.addEventListener('click', () => {
+            setTimeout(loadAlumniDirectory, 100);
+          });
+        });
+
+        // Form Submit
+        const form = document.getElementById('create-alumni-member-form');
+        if (form) {
+          form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const name = document.getElementById('alumni-member-name').value;
+            const position = document.getElementById('alumni-member-position').value;
+            const imageInput = document.getElementById('alumni-member-image');
+
+            const saveMember = (imgData) => {
+              let members = [];
+              try { members = JSON.parse(localStorage.getItem('nsm_alumni_directory') || '[]'); } catch (e) { }
+
+              const newMember = {
+                id: editingMemberId || `member-${Date.now()}`,
+                name,
+                position,
+                image: imgData,
+                createdAt: Date.now()
+              };
+
+              // Keep old image if editing and no new one
+              if (editingMemberId && !imgData) {
+                const old = members.find(m => m.id === editingMemberId);
+                if (old) newMember.image = old.image;
+              }
+
+              if (editingMemberId) {
+                const index = members.findIndex(m => m.id === editingMemberId);
+                if (index !== -1) members[index] = newMember;
+              } else {
+                members.push(newMember);
+              }
+
+              localStorage.setItem('nsm_alumni_directory', JSON.stringify(members));
+              alert('Member saved successfully!');
+              closeCreateAlumniMemberModal();
+              loadAlumniDirectory();
+            };
+
+            if (imageInput.files && imageInput.files[0]) {
+              const reader = new FileReader();
+              reader.onload = (e) => saveMember(e.target.result);
+              reader.readAsDataURL(imageInput.files[0]);
+            } else {
+              saveMember(null);
             }
           });
         }
       });
     </script>
+    <script src="../js/backend-integration.js"></script>
+    <script src="/js/backend-integration.js"></script>
 </body>
 
 </html>

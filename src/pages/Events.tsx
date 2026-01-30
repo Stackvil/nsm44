@@ -94,43 +94,45 @@ const Events: React.FC = () => {
     // --- STYLES ---
     const styles = {
         container: {
-            minHeight: '80vh',
-            padding: '4rem 1rem',
+            // minHeight removed to let content dictate height
+            padding: '1rem 0', // Reduced to minimal vertical padding
             backgroundColor: '#f9fafb',
             fontFamily: "'Roboto', sans-serif"
         },
         innerContainer: {
             maxWidth: '1200px',
-            margin: '0 auto'
+            margin: '0 auto',
+            padding: '0 1rem' // Add side padding to inner container instead
         },
         header: {
             textAlign: 'center' as const,
-            marginBottom: '3rem'
+            marginBottom: '1rem' // Reduced further
         },
         title: {
-            fontSize: '2.5rem',
+            fontSize: '2rem', // Slightly smaller title
             fontWeight: 'bold',
-            color: '#1a237e', // Loyola blue roughly
-            marginBottom: '1rem'
+            color: '#1a237e',
+            marginBottom: '0.25rem'
         },
         subtitle: {
             color: '#4b5563',
             maxWidth: '600px',
             margin: '0 auto',
-            lineHeight: '1.6'
+            lineHeight: '1.5',
+            fontSize: '0.9rem'
         },
         gridContainer: {
             display: 'flex',
             flexWrap: 'wrap' as const,
             justifyContent: 'center',
-            gap: '2rem',
-            marginTop: '2rem'
+            gap: '1.5rem', // Reduced gap
+            marginTop: '1rem'
         },
         card: {
             width: '100%',
-            maxWidth: '400px',
+            maxWidth: '380px', // Slightly smaller max-width
             borderRadius: '16px',
-            padding: '3rem',
+            padding: '1.5rem', // Reduced padding inside card
             textAlign: 'center' as const,
             position: 'relative' as const,
             overflow: 'hidden',
@@ -140,7 +142,7 @@ const Events: React.FC = () => {
             display: 'flex',
             flexDirection: 'column' as const,
             alignItems: 'center',
-            minHeight: '300px',
+            minHeight: '220px', // Reduced height
             justifyContent: 'center'
         },
         cardIconBg: {

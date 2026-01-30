@@ -28,9 +28,19 @@ const AlumniEvent: React.FC = () => {
 
     const loadEvents = async () => {
         try {
-            const allEvents = await DB.getEvents();
-            setSocialEvents(allEvents.filter(e => e.category === 'social').sort((a, b) => b.year - a.year));
-            setNsmosaEvents(allEvents.filter(e => e.category === 'nsmosa').sort((a, b) => b.year - a.year));
+            // Prioritize localStorage as per user request for simpler storage
+            const localEvents = JSON.parse(localStorage.getItem('nsm_alumni_events') || '[]');
+
+            // Optional: You could still merge DB events if needed, but for now we switch source
+            const rawEvents = localEvents.length > 0 ? localEvents : await DB.getEvents();
+
+            // Safety: Filter out corrupt data
+            const allEvents = rawEvents.filter((e: EventPhoto) =>
+                e && e.eventName && e.eventName !== 'undefined' && e.eventDate && !isNaN(new Date(e.eventDate).getTime())
+            );
+
+            setSocialEvents(allEvents.filter((e: EventPhoto) => e.category === 'social').sort((a: EventPhoto, b: EventPhoto) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime()));
+            setNsmosaEvents(allEvents.filter((e: EventPhoto) => e.category === 'nsmosa').sort((a: EventPhoto, b: EventPhoto) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime()));
         } catch (error) {
             console.error('Error loading events:', error);
         } finally {
@@ -87,43 +97,49 @@ const AlumniEvent: React.FC = () => {
         </div>
     );
 
-    const EventSection = ({ title, events, color }: { title: string; events: EventPhoto[]; color: string }) => (
-        <div style={{ marginBottom: '50px' }}>
-            <h2 style={{
-                fontSize: '2rem',
-                fontWeight: '700',
-                color: '#00274d',
-                marginBottom: '10px',
-                paddingBottom: '15px',
-                borderBottom: `3px solid ${color}`
-            }}>
-                {title}
-            </h2>
-            {events.length === 0 ? (
-                <div style={{
-                    background: '#f8fafc',
-                    padding: '40px',
-                    borderRadius: '12px',
-                    textAlign: 'center',
-                    color: '#64748b'
-                }}>
-                    <i className="fas fa-calendar-alt" style={{ fontSize: '48px', marginBottom: '15px', opacity: 0.5 }}></i>
-                    <p>No events available in this category yet.</p>
-                </div>
-            ) : (
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                    gap: '25px',
-                    marginTop: '25px'
-                }}>
-                    {events.map(event => (
-                        <EventCard key={event.id} event={event} />
-                    ))}
-                </div>
-            )}
-        </div>
-    );
+    const EventSection = ({ title, events, color }: { title: string; events: EventPhoto[]; color: string }) => {
+        if (events.length === 0) return null; // Double safety
+
+        return (
+            <div style={{ marginBottom: '50px' }}>
+                {title && (
+                    <h2 style={{
+                        fontSize: '2rem',
+                        fontWeight: '700',
+                        color: '#00274d',
+                        marginBottom: '10px',
+                        paddingBottom: '15px',
+                        borderBottom: `3px solid ${color}`
+                    }}>
+                        {title}
+                    </h2>
+                )}
+                {events.length === 0 ? (
+                    <div style={{
+                        background: '#f8fafc',
+                        padding: '40px',
+                        borderRadius: '12px',
+                        textAlign: 'center',
+                        color: '#64748b'
+                    }}>
+                        <i className="fas fa-calendar-alt" style={{ fontSize: '48px', marginBottom: '15px', opacity: 0.5 }}></i>
+                        <p>No events available in this category yet.</p>
+                    </div>
+                ) : (
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+                        gap: '25px',
+                        marginTop: '25px'
+                    }}>
+                        {events.map(event => (
+                            <EventCard key={event.id} event={event} />
+                        ))}
+                    </div>
+                )}
+            </div>
+        );
+    };
 
     if (!isLoggedIn) {
         return (
@@ -182,11 +198,7 @@ const AlumniEvent: React.FC = () => {
 
     return (
         <div className="container py-16">
-            <h1 className="page-title" style={{ marginBottom: '1rem' }}>Alumni Events</h1>
-            <p style={{ marginBottom: '3rem', color: '#666', fontSize: '1.1rem', maxWidth: '800px' }}>
-                Join our upcoming alumni events and reconnect with your batchmates and the NSMOSA community.
-                Browse through our collection of social events and NSMOSA special occasions.
-            </p>
+            {/* Title and intro removed to avoid duplication with index.html */}
 
             {loading ? (
                 <div style={{ textAlign: 'center', padding: '60px', color: '#64748b' }}>
@@ -195,11 +207,28 @@ const AlumniEvent: React.FC = () => {
                 </div>
             ) : (
                 <>
-                    <EventSection title="Social Events" events={socialEvents} color="#004e92" />
-                    <EventSection title="NSMOSA Events" events={nsmosaEvents} color="#fbbf24" />
+                    {socialEvents.length > 0 && (
+                        <EventSection title="" events={socialEvents} color="#004e92" />
+                    )}
+                    {nsmosaEvents.length > 0 && (
+                        <EventSection title="NSMOSA Events" events={nsmosaEvents} color="#fbbf24" />
+                    )}
+
+                    {socialEvents.length === 0 && nsmosaEvents.length === 0 && (
+                        <div style={{
+                            textAlign: 'center',
+                            padding: '60px 20px',
+                            background: '#f8fafc',
+                            borderRadius: '16px',
+                            border: '1px dashed #cbd5e1'
+                        }}>
+                            <i className="fas fa-calendar-times" style={{ fontSize: '48px', color: '#94a3b8', marginBottom: '20px', display: 'block' }}></i>
+                            <h3 style={{ color: '#475569', fontSize: '1.25rem', marginBottom: '10px' }}>No Events Scheduled</h3>
+                            <p style={{ color: '#64748b' }}>Check back later for upcoming alumni gatherings and reunions.</p>
+                        </div>
+                    )}
                 </>
             )}
-
             {/* Event Detail Modal */}
             {selectedEvent && (
                 <div
