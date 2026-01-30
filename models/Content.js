@@ -21,7 +21,17 @@ const Content = sequelize.define('Content', {
     isVisible: {
         type: DataTypes.BOOLEAN,
         defaultValue: true
+    },
+    status: {
+        type: DataTypes.ENUM('pending', 'approved', 'rejected'),
+        defaultValue: 'approved' // Default 'approved' for existing/seeded data
+    },
+    createdBy: {
+        type: DataTypes.INTEGER,
+        allowNull: true // Optional for seeded data
     }
+}, {
+    timestamps: true
 });
 
 module.exports = Content;

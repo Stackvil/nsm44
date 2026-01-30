@@ -1,50 +1,119 @@
 <%- include('../partials/header') %>
-    <div class="flex items-center justify-center min-h-screen bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 bg-cover bg-center relative"
-        style="background-image: url('/images/bg2.png');">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div> <!-- Overlay -->
 
-        <div
-            class="relative max-w-md w-full space-y-8 p-10 bg-white/10 glass rounded-3xl shadow-2xl border border-white/20 transform transition hover:scale-[1.01] duration-300">
-            <div>
-                <h2 class="mt-6 text-center text-4xl font-extrabold text-white tracking-tight">Join NSMOSA</h2>
-                <p class="mt-2 text-center text-sm text-gray-300">Create your account</p>
+    <main
+        class="flex-grow flex items-center justify-center py-20 px-4 relative min-h-[calc(100vh-120px)] bg-cover bg-center"
+        style="background-image: url('/images/HOME%20PAGE%20PHOTOS%20NSM/event%204.jpg');">
+        <!-- Dark Overlay for better readability -->
+        <div class="absolute inset-0 bg-[#0A2040]/70 backdrop-blur-[2px]"></div>
+
+        <div class="relative max-w-md w-full z-10">
+            <!-- Unified Professional Card -->
+            <div class="bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-white/20">
+                <!-- Card Header -->
+                <div class="bg-gradient-to-r from-[#0A2040] to-[#113061] p-8 text-center">
+                    <div
+                        class="inline-flex items-center justify-center w-16 h-16 bg-white/10 rounded-2xl mb-4 border border-white/20">
+                        <svg class="w-8 h-8 text-[#FFD700]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white tracking-tight uppercase">Register</h2>
+                    <p class="text-blue-100/70 text-sm mt-1 uppercase tracking-widest font-semibold">Join the network
+                    </p>
+                </div>
+
+                <!-- Form Body -->
+                <div class="p-8 sm:p-10">
+                    <%- include('../partials/messages') %>
+
+                        <form class="space-y-5" action="/auth/register" method="POST">
+                            <!-- Username -->
+                            <div class="space-y-1.5">
+                                <label for="username"
+                                    class="block text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">Username</label>
+                                <input id="username" name="username" type="text" required
+                                    class="block w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#0A2040] focus:border-transparent transition-all shadow-sm"
+                                    placeholder="Pick a username">
+                            </div>
+
+                            <!-- Email -->
+                            <div class="space-y-1.5">
+                                <label for="email"
+                                    class="block text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">Email
+                                    Address</label>
+                                <input id="email" name="email" type="email" autocomplete="email" required
+                                    class="block w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#0A2040] focus:border-transparent transition-all shadow-sm"
+                                    placeholder="you@example.com">
+                            </div>
+
+                            <!-- Password -->
+                            <div class="space-y-1.5">
+                                <label for="password"
+                                    class="block text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">Password</label>
+                                <div class="relative">
+                                    <input id="password" name="password" type="password" required
+                                        class="block w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#0A2040] focus:border-transparent transition-all shadow-sm pr-12"
+                                        placeholder="••••••••">
+                                    <button type="button" onclick="togglePassword('password', 'reg-password-icon')"
+                                        class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-[#0A2040] transition">
+                                        <svg id="reg-password-icon" class="w-5 h-5" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="pt-6">
+                                <button type="submit"
+                                    class="w-full flex justify-center items-center py-4 px-6 border border-transparent text-sm font-bold rounded-xl text-white bg-[#0A2040] hover:bg-[#113061] focus:outline-none focus:ring-2 focus:offset-2 focus:ring-blue-500 transition-all shadow-lg active:scale-[0.98] uppercase tracking-widest">
+                                    Register Now
+                                </button>
+                            </div>
+
+                            <!-- Login Link -->
+                            <div class="text-center pt-8 border-t border-gray-100 mt-8">
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                                    Already a member?
+                                    <a href="/auth/login"
+                                        class="text-[#0A2040] hover:text-blue-700 ml-1 hover:underline">Sign In</a>
+                                </p>
+                            </div>
+                        </form>
+                </div>
             </div>
 
-            <%- include('../partials/messages') %>
-
-                <form class="mt-8 space-y-6" action="/auth/register" method="POST">
-                    <div class="rounded-2xl shadow-sm -space-y-px overflow-hidden">
-                        <div>
-                            <label for="username" class="sr-only">Username</label>
-                            <input id="username" name="username" type="text" required
-                                class="appearance-none relative block w-full px-4 py-4 border border-gray-300/50 placeholder-gray-400 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm bg-white/80 hover:bg-white transition"
-                                placeholder="Username">
-                        </div>
-                        <div>
-                            <label for="email" class="sr-only">Email address</label>
-                            <input id="email" name="email" type="email" autocomplete="email" required
-                                class="appearance-none relative block w-full px-4 py-4 border border-gray-300/50 placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm bg-white/80 hover:bg-white transition"
-                                placeholder="Email address">
-                        </div>
-                        <div>
-                            <label for="password" class="sr-only">Password</label>
-                            <input id="password" name="password" type="password" required
-                                class="appearance-none relative block w-full px-4 py-4 border border-gray-300/50 placeholder-gray-400 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm bg-white/80 hover:bg-white transition"
-                                placeholder="Password">
-                        </div>
-                    </div>
-
-                    <div>
-                        <button type="submit"
-                            class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-full text-white bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                            Register
-                        </button>
-                    </div>
-                </form>
-                <div class="text-center mt-4">
-                    <a href="/auth/login" class="text-sm text-gray-300 hover:text-white transition">Already have an
-                        account? Sign in</a>
-                </div>
+            <!-- App Return Link -->
+            <div class="text-center mt-8">
+                <a href="/"
+                    class="text-white/60 hover:text-white text-xs font-bold uppercase tracking-widest inline-flex items-center transition">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Return to Campus Home
+                </a>
+            </div>
         </div>
-    </div>
+    </main>
+
+    <script>
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />';
+            } else {
+                input.type = 'password';
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />';
+            }
+        }
+    </script>
+
     <%- include('../partials/footer') %>

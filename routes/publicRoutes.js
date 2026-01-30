@@ -77,4 +77,16 @@ router.get('/reunion', (req, res) => {
     res.render('events', { path: '/reunion' });
 });
 
+router.get('/reunion-about', (req, res) => {
+    res.render('about', { path: '/reunion-about' });
+});
+
+router.get('/reunion-gallery', (req, res) => {
+    res.render('gallery', { gallery: [], path: '/reunion-gallery' });
+});
+
+router.get('/video-gallery', (req, res) => {
+    res.render('gallery', { gallery: [], path: '/video-gallery' });
+});
+
 module.exports = router;

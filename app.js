@@ -13,10 +13,37 @@ initDb().then(async () => {
     if (count === 0) {
         await User.create({
             username: 'admin',
+            email: 'admin@nsm.com',
             password: '12345',
-            role: 'super_admin'
+            role: 'super_admin',
+            isActive: true,
+            membershipStatus: 'active'
         });
-        console.log('Default Super Admin created: admin / password123');
+        await User.create({
+            username: 'admin1',
+            email: 'admin1@nsm.com',
+            password: '12345',
+            role: 'admin',
+            isActive: true,
+            membershipStatus: 'active'
+        });
+        await User.create({
+            username: 'rep_admin',
+            email: 'rep@nsm.com',
+            password: '12345',
+            role: 'rep_admin',
+            isActive: true,
+            membershipStatus: 'active'
+        });
+        await User.create({
+            username: 'user',
+            email: 'user@nsm.com',
+            password: '12345',
+            role: 'user',
+            isActive: true,
+            membershipStatus: 'active'
+        });
+        console.log('Default Admins created: admin / 12345');
     }
 
     const fs = require('fs');
@@ -100,10 +127,12 @@ app.set('views', path.join(__dirname, 'views'));
 const publicRoutes = require('./routes/publicRoutes');
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 app.use('/', publicRoutes);
 app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
+app.use('/user', userRoutes);
 
 const PORT = process.env.PORT || 3030;
 app.listen(PORT, () => {

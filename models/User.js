@@ -8,6 +8,12 @@ const User = sequelize.define('User', {
         allowNull: false,
         unique: true
     },
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        validate: { isEmail: true }
+    },
     password: {
         type: DataTypes.STRING,
         allowNull: false
@@ -15,7 +21,43 @@ const User = sequelize.define('User', {
     role: {
         type: DataTypes.ENUM('super_admin', 'admin', 'rep_admin', 'user'),
         defaultValue: 'user'
+    },
+    otp: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    otpExpires: {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
+    isActive: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
+    graduationYear: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    phone: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    membershipStatus: {
+        type: DataTypes.ENUM('pending', 'active', 'suspended'),
+        defaultValue: 'pending'
+    },
+    batch: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
+}, {
+    indexes: [
+        { unique: true, fields: ['email'] },
+        { unique: true, fields: ['username'] },
+        { fields: ['graduationYear'] },
+        { fields: ['membershipStatus'] }
+    ],
+    paranoid: true // Enable soft deletes
 });
 
 User.beforeCreate(async (user) => {
