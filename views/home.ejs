@@ -1,12 +1,12 @@
 <%- include('partials/header') %>
 
     <!-- Hero Section -->
-    <div class="relative bg-gray-900 h-screen max-h-[800px] overflow-hidden">
+    <div class="relative bg-gray-900 h-[550px] overflow-hidden">
         <div class="absolute inset-0 z-0">
             <div id="hero-carousel" class="relative w-full h-full">
                 <!-- Carousel Items -->
-                <% const images=['bg1.png', 'bg2.png' , 'bg3.png' , 'bg4.png' , 'bg5.png' ]; %>
-                    <% images.forEach((img, index)=> { %>
+                <% const images=['bg1.jpg']; %>
+                    <% images.forEach(function(img, index) { %>
                         <div class="carousel-item absolute inset-0 transition-opacity duration-1000 ease-in-out <%= index === 0 ? 'opacity-100' : 'opacity-0' %>"
                             data-index="<%= index %>">
                             <img src="/images/<%= img %>" alt="Alumni Event"
@@ -19,92 +19,313 @@
         </div>
 
         <div class="relative z-10 flex flex-col items-center justify-center h-full text-center px-4">
-            <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg tracking-tight">
-                Welcome Home, <span
-                    class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-pink-500">Alumni</span>
+            <h1
+                class="text-4xl md:text-6xl font-extrabold text-[#FFD700] mb-6 drop-shadow-lg tracking-widest uppercase">
+                NSMOSA
             </h1>
-            <p class="text-xl md:text-2xl text-gray-200 mb-10 max-w-2xl font-light leading-relaxed">
-                Rekindle friendships, expand your network, and give back to the community that started it all.
-            </p>
-            <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6">
-                <a href="/auth/register"
-                    class="px-8 py-4 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg shadow-lg hover:shadow-blue-500/50 transition transform hover:-translate-y-1">
-                    Join our Community
-                </a>
-                <a href="#events"
-                    class="px-8 py-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold text-lg hover:bg-white/20 transition">
-                    Explore Events
-                </a>
+            <div
+                class="inline-block px-8 py-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-xl  transform skew-x-[-10deg]">
+                <p class="text-white font-bold text-lg md:text-2xl tracking-[0.2em] uppercase transform skew-x-[10deg]">
+                    Towards a better society
+                </p>
             </div>
+
         </div>
     </div>
 
-    <!-- Stats / Highlights -->
-    <section class="py-20 bg-white relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
-                <div class="p-8 rounded-2xl bg-gray-50 hover:shadow-xl transition duration-300 border border-gray-100">
-                    <div class="text-5xl font-bold text-blue-600 mb-2">5000+</div>
-                    <div class="text-gray-600 font-medium text-lg">Active Members</div>
+
+
+    <!-- 3-Column Events & Community Section -->
+    <section class="py-12 bg-[#F3F4F6]">
+        <div class="max-w-[1400px] mx-auto px-4 lg:px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-auto lg:h-[500px]">
+
+                <!-- Left Column: NSMOSA Events Vertical Card -->
+                <div
+                    class="lg:col-span-3 h-full bg-white rounded-2xl shadow-sm p-4 flex flex-col items-center text-center border border-gray-100">
+                    <div class="mb-4">
+                        <h3 class="text-[#0B2447] text-xl font-bold uppercase leading-tight">NSMOSA<br><span
+                                class="text-[#00A9CE]">Events</span></h3>
+                        <div class="w-12 h-1 bg-[#00A9CE] mx-auto mt-2 rounded-full"></div>
+                    </div>
+                    <!-- Single Vertical Feature Image -->
+                    <div class="flex-1 w-full relative rounded-xl overflow-hidden group">
+                        <% if (gallery && gallery.length> 0) { %>
+                            <img src="<%= gallery[0].imageUrl %>" alt="Event" class="w-full h-full object-cover">
+                            <% } else { %>
+                                <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">No
+                                    Image</div>
+                                <% } %>
+                    </div>
                 </div>
-                <div class="p-8 rounded-2xl bg-gray-50 hover:shadow-xl transition duration-300 border border-gray-100">
-                    <div class="text-5xl font-bold text-purple-600 mb-2">120+</div>
-                    <div class="text-gray-600 font-medium text-lg">Yearly Events</div>
+
+                <!-- Middle Column: Main Slider (Carousel) -->
+                <div class="lg:col-span-6 h-full relative group rounded-2xl overflow-hidden shadow-lg">
+                    <!-- Carousel Wrapper -->
+                    <div class="relative w-full h-full">
+                        <% if (gallery && gallery.length> 0) { %>
+                            <% gallery.forEach(function(item, index) { %>
+                                <div
+                                    class="main-gallery-item absolute inset-0 transition-opacity duration-700 ease-in-out <%= index === 0 ? 'opacity-100' : 'opacity-0' %>">
+                                    <img src="<%= item.imageUrl %>" alt="<%= item.title %>"
+                                        class="w-full h-full object-cover">
+                                    <div
+                                        class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex flex-col justify-end p-8">
+                                        <h2 class="text-white text-3xl font-bold uppercase tracking-wider mb-2">
+                                            <%= item.title %>
+                                        </h2>
+                                        <p class="text-gray-200 text-lg">
+                                            <%= item.description %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <% }); %>
+                                    <% } else { %>
+                                        <div class="w-full h-full bg-gray-300 flex items-center justify-center">No
+                                            Events Available</div>
+                                        <% } %>
+                    </div>
+
+                    <!-- Carousel Controls -->
+                    <button onclick="prevGallerySlide()"
+                        class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
+                            </path>
+                        </svg>
+                    </button>
+                    <button onclick="nextGallerySlide()"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                            </path>
+                        </svg>
+                    </button>
+
+                    <!-- Dots -->
+                    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+                        <% if (gallery && gallery.length> 0) { %>
+                            <% gallery.forEach(function(_, idx) { %>
+                                <div class="w-2 h-2 rounded-full bg-white/50 hover:bg-white cursor-pointer transition-colors"
+                                    onclick="goToGallerySlide(<%= idx %>)"></div>
+                                <% }); %>
+                                    <% } %>
+                    </div>
                 </div>
-                <div class="p-8 rounded-2xl bg-gray-50 hover:shadow-xl transition duration-300 border border-gray-100">
-                    <div class="text-5xl font-bold text-pink-600 mb-2">$2M+</div>
-                    <div class="text-gray-600 font-medium text-lg">Raised for Scholarships</div>
+
+                <!-- Right Column: Registration & Grid -->
+                <div
+                    class="lg:col-span-3 h-full bg-white rounded-2xl shadow-sm p-5 flex flex-col border border-gray-100">
+                    <div class="mb-4">
+                        <h3 class="text-[#0B2447] font-bold uppercase text-sm">NSMOSA Alumni<br><span
+                                class="font-light">Association</span></h3>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-wider">Join Our Community</p>
+                    </div>
+
+                    <!-- Small Grid of Images -->
+                    <div class="grid grid-cols-2 gap-3 mb-auto">
+                        <% if (gallery && gallery.length> 0) { %>
+                            <% gallery.slice(0, 4).forEach(function(item) { %>
+                                <div class="aspect-square rounded-lg overflow-hidden relative">
+                                    <img src="<%= item.imageUrl %>"
+                                        class="w-full h-full object-cover hover:scale-110 transition duration-500">
+                                </div>
+                                <% }); %>
+                                    <% } else { %>
+                                        <div class="aspect-square bg-gray-100 rounded-lg"></div>
+                                        <div class="aspect-square bg-gray-100 rounded-lg"></div>
+                                        <% } %>
+                    </div>
+
+                    <% if (!user) { %>
+                        <a href="/auth/register"
+                            class="w-full mt-6 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-extrabold py-5 rounded-xl text-center uppercase text-lg tracking-wider shadow-[0_4px_14px_0_rgba(0,118,255,0.39)] hover:shadow-[0_6px_20px_rgba(0,118,255,0.23)] hover:-translate-y-1 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ease-in-out flex items-center justify-center gap-3 group relative overflow-hidden">
+                            <!-- Shine effect -->
+                            <div
+                                class="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out">
+                            </div>
+                            <svg class="w-6 h-6 group-hover:rotate-12 transition-transform duration-300"
+                                fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0 1 1 0 002 0zM16 9a3 3 0 11-6 0 3 3 0 016 0z">
+                                </path>
+                            </svg>
+                            Register Now
+                        </a>
+                        <% } else { %>
+                            <a href="/admin/dashboard"
+                                class="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg text-center uppercase text-sm shadow-md transition-all">
+                                Go to Dashboard
+                            </a>
+                            <% } %>
                 </div>
+
             </div>
         </div>
+
+        <script>
+            let galleryIndex = 0;
+            const gallerySlides = document.querySelectorAll('.main-gallery-item');
+
+            function showGallerySlide(n) {
+                if (gallerySlides.length === 0) return;
+                gallerySlides.forEach(slide => {
+                    slide.classList.remove('opacity-100');
+                    slide.classList.add('opacity-0');
+                });
+                galleryIndex = (n + gallerySlides.length) % gallerySlides.length;
+                gallerySlides[galleryIndex].classList.remove('opacity-0');
+                gallerySlides[galleryIndex].classList.add('opacity-100');
+            }
+
+            function nextGallerySlide() { showGallerySlide(galleryIndex + 1); }
+            function prevGallerySlide() { showGallerySlide(galleryIndex - 1); }
+            function goToGallerySlide(n) { showGallerySlide(n); }
+
+            // Auto slide every 5s
+            setInterval(nextGallerySlide, 5000);
+        </script>
     </section>
 
-    <!-- Content Gallery (Dynamic from Admin) -->
-    <% if (gallery && gallery.length> 0) { %>
-        <section id="gallery" class="py-20 bg-gray-50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-16">
-                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Community Moments</h2>
-                    <div class="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <% gallery.forEach(item=> { %>
-                        <div class="group relative overflow-hidden rounded-2xl shadow-lg cursor-pointer">
-                            <img src="<%= item.imageUrl %>" alt="<%= item.title %>"
-                                class="w-full h-64 object-cover transform group-hover:scale-110 transition duration-500">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-6">
-                                <h3 class="text-white text-xl font-bold mb-1">
-                                    <%= item.title %>
-                                </h3>
-                                <p class="text-gray-300 text-sm">
-                                    <%= item.description %>
-                                </p>
-                            </div>
+    <!-- Join & Gallery Section -->
+    <section class="pb-12 bg-[#F3F4F6]">
+        <div class="max-w-[1400px] mx-auto px-4 lg:px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+                <!-- Left: How to Join -->
+                <div
+                    class="bg-white rounded-2xl shadow-sm p-8 border border-gray-100 relative overflow-hidden flex flex-col items-start lg:col-span-1 min-h-[300px] group hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+                    <!-- Accent Line -->
+                    <div
+                        class="absolute top-8 left-0 w-1.5 h-12 bg-[#0056D2] rounded-r-full group-hover:h-16 group-hover:w-2 transition-all duration-300">
+                    </div>
+
+                    <div class="flex items-center gap-3 mb-6 pl-2">
+                        <div
+                            class="bg-[#003B73] p-2 rounded-lg text-white group-hover:bg-[#0056D2] transition-colors duration-300">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z">
+                                </path>
+                            </svg>
                         </div>
-                        <% }) %>
+                        <h3
+                            class="text-[#0B2447] text-lg font-bold leading-tight group-hover:text-[#0056D2] transition-colors">
+                            How to Join<br>NSMOSA?</h3>
+                    </div>
+
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                        Click "Join Now" and complete the registration. Get verified to access exclusive alumni benefits
+                        and networking.
+                    </p>
+
+                    <a href="/auth/register"
+                        class="text-[#003B73] font-bold text-sm uppercase tracking-wide flex items-center gap-2 hover:gap-4 transition-all duration-300">
+                        Read More <span class="text-lg">→</span>
+                    </a>
                 </div>
+
+                <!-- Right: Photo Gallery Slider -->
+                <div
+                    class="bg-white rounded-2xl shadow-sm p-4 border border-gray-100 lg:col-span-3 flex flex-col min-h-[350px]">
+                    <div class="flex items-center gap-2 mb-4 px-2">
+                        <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                            </path>
+                        </svg>
+                        <h3 class="text-[#0B2447] text-xl font-bold">Photo Gallery</h3>
+                    </div>
+
+                    <div class="flex-1 relative rounded-xl overflow-hidden group">
+                        <!-- Gallery Images -->
+                        <div id="sub-gallery-container" class="relative w-full h-full">
+                            <% if (gallery && gallery.length> 0) { %>
+                                <% gallery.forEach(function(item, index) { %>
+                                    <div
+                                        class="sub-gallery-item absolute inset-0 transition-opacity duration-500 ease-in-out <%= index === 0 ? 'opacity-100' : 'opacity-0' %>">
+                                        <img src="<%= item.imageUrl %>" class="w-full h-full object-cover">
+                                    </div>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <div
+                                                class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500">
+                                                No Photos</div>
+                                            <% } %>
+                        </div>
+
+                        <!-- Navigation Pill -->
+                        <div
+                            class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-4 py-2 rounded-full flex items-center gap-4 text-white z-10 hover:bg-black/70 transition">
+                            <button onclick="prevSubSlide()"
+                                class="hover:text-yellow-400 transition transform hover:-translate-x-1">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                            </button>
+
+                            <!-- Dots (Small) -->
+                            <div class="flex space-x-1.5">
+                                <div class="w-2 h-2 rounded-full bg-white"></div>
+                                <div class="w-2 h-2 rounded-full bg-white/50"></div>
+                                <div class="w-2 h-2 rounded-full bg-white/50"></div>
+                            </div>
+
+                            <button onclick="nextSubSlide()"
+                                class="hover:text-yellow-400 transition transform hover:translate-x-1">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-        </section>
-        <% } %>
+        </div>
 
-            <!-- Simple JS for Carousel -->
-            <script>
-                const items = document.querySelectorAll('.carousel-item');
-                let current = 0;
+        <script>
+            // Sub Gallery Logic
+            let subIndex = 0;
+            const subSlides = document.querySelectorAll('.sub-gallery-item');
 
-                // Fallback if no images found
-                if (items.length > 0) {
-                    setInterval(() => {
-                        items[current].classList.remove('opacity-100');
-                        items[current].classList.add('opacity-0');
+            function showSubSlide(n) {
+                if (subSlides.length === 0) return;
+                subSlides.forEach(slide => {
+                    slide.classList.remove('opacity-100');
+                    slide.classList.add('opacity-0');
+                });
+                subIndex = (n + subSlides.length) % subSlides.length;
+                subSlides[subIndex].classList.remove('opacity-0');
+                subSlides[subIndex].classList.add('opacity-100');
+            }
 
-                        current = (current + 1) % items.length;
+            function nextSubSlide() { showSubSlide(subIndex + 1); }
+            function prevSubSlide() { showSubSlide(subIndex - 1); }
 
-                        items[current].classList.remove('opacity-0');
-                        items[current].classList.add('opacity-100');
-                    }, 5000);
-                }
-            </script>
+            // Sync auto slide for variety
+            setInterval(nextSubSlide, 6000);
+        </script>
 
-            <%- include('partials/footer') %>
+        <!-- Simple JS for Carousel -->
+        <script>
+            const items = document.querySelectorAll('.carousel-item');
+            let current = 0;
+
+            // Fallback if no images found
+            if (items.length > 0) {
+                setInterval(() => {
+                    items[current].classList.remove('opacity-100');
+                    items[current].classList.add('opacity-0');
+
+                    current = (current + 1) % items.length;
+
+                    items[current].classList.remove('opacity-0');
+                    items[current].classList.add('opacity-100');
+                }, 5000);
+            }
+        </script>
+
+        <%- include('partials/footer') %>

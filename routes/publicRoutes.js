@@ -2,14 +2,79 @@ const express = require('express');
 const router = express.Router();
 const Content = require('../models/Content');
 
+
 router.get('/', async (req, res) => {
     try {
         const gallery = await Content.findAll({ where: { section: 'home', isVisible: true } });
-        res.render('home', { gallery });
+        res.render('home', { gallery, path: '/' });
     } catch (err) {
         console.error(err);
-        res.render('home', { gallery: [] });
+        res.render('home', { gallery: [], path: '/' });
     }
+});
+
+router.get('/about', (req, res) => {
+    res.render('about', { path: '/about' });
+});
+
+router.get('/contact', (req, res) => {
+    res.render('contact', { path: '/contact' });
+});
+
+router.get('/gallery', async (req, res) => {
+    try {
+        const gallery = await Content.findAll({ where: { isVisible: true } });
+        res.render('gallery', { gallery, path: '/gallery' });
+    } catch (err) {
+        res.render('gallery', { gallery: [], path: '/gallery' });
+    }
+});
+
+router.get('/alumni-chapter', (req, res) => {
+    res.render('chapter', { path: '/alumni-chapter' });
+});
+
+router.get('/alumni-chapters', (req, res) => {
+    res.redirect('/alumni-chapter');
+});
+
+router.get('/events', (req, res) => {
+    res.render('events', { path: '/events' });
+});
+
+// New Placeholders
+router.get('/presidents-message', (req, res) => {
+    res.render('about', { path: '/presidents-message' });
+});
+
+router.get('/executive-committee', (req, res) => {
+    res.render('about', { path: '/executive-committee' });
+});
+
+router.get('/alumni-benefits', (req, res) => {
+    res.render('about', { path: '/alumni-benefits' });
+});
+
+router.get('/annual-reports', (req, res) => {
+    res.render('about', { path: '/annual-reports' });
+});
+
+// Alumni Connect Placeholders
+router.get('/my-profile', (req, res) => {
+    // Ideally this would check auth
+    res.redirect('/auth/login');
+});
+
+router.get('/how-to-give', (req, res) => {
+    res.render('about', { path: '/how-to-give' });
+});
+
+router.get('/connect-with-us', (req, res) => {
+    res.redirect('/contact');
+});
+
+router.get('/reunion', (req, res) => {
+    res.render('events', { path: '/reunion' });
 });
 
 module.exports = router;
