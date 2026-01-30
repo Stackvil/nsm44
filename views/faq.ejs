@@ -1,0 +1,138 @@
+<%- include('partials/header') %>
+
+    <div class="bg-gray-50 min-h-screen py-16" x-data="faqHandler()">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <h1 class="text-4xl font-extrabold text-[#002845] mb-4">Frequently Asked Questions</h1>
+                <p class="text-gray-600">Find answers to common questions about NSM Old Students Association</p>
+            </div>
+
+            <!-- Search & Filter -->
+            <div class="mb-10 space-y-6">
+                <!-- Search -->
+                <div class="relative max-w-xl mx-auto">
+                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </span>
+                    <input type="text" x-model="search" placeholder="Search for questions..."
+                        class="w-full pl-12 pr-4 py-4 rounded-full border border-gray-200 shadow-sm focus:ring-2 focus:ring-[#002845] focus:border-transparent outline-none transition-all">
+                </div>
+
+                <!-- Categories -->
+                <div class="flex flex-wrap justify-center gap-2">
+                    <template x-for="cat in categories" :key="cat">
+                        <button @click="activeCategory = cat"
+                            :class="activeCategory === cat ? 'bg-[#002845] text-white' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'"
+                            class="px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 shadow-sm"
+                            x-text="cat"></button>
+                    </template>
+                </div>
+            </div>
+
+            <!-- FAQ Accordion -->
+            <div class="space-y-4">
+                <template x-for="(item, index) in filteredFaqs" :key="index">
+                    <div
+                        class="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden">
+                        <button @click="toggle(index)"
+                            class="w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none">
+                            <span class="text-[#002845] font-bold text-lg" x-text="item.question"></span>
+                            <span
+                                class="bg-blue-50 text-[#002845] rounded-full p-1 transition-transform duration-300 transform"
+                                :class="{'rotate-180': isOpen(index)}">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </span>
+                        </button>
+                        <div x-show="isOpen(index)" x-collapse class="border-t border-gray-100">
+                            <div class="px-6 py-4 text-gray-600 leading-relaxed" x-text="item.answer"></div>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- No Results Message -->
+                <div x-show="filteredFaqs.length === 0" class="text-center py-12 text-gray-500">
+                    <p>No questions found matching your criteria.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Alpine.js for interactivity -->
+    <script src="//unpkg.com/alpinejs" defer></script>
+    <script>
+        function faqHandler() {
+            return {
+                search: '',
+                activeCategory: 'All',
+                categories: ['All', 'Registration', 'Donation', 'Events', 'General'],
+                openIndex: null,
+                faqs: [
+                    {
+                        question: 'How do I register as an NSM alumnus?',
+                        answer: 'Click on the "Become a Member" button in the navigation bar or header. Fill in your details including full name, graduation year, and contact information. Once you pay the lifetime membership fee of ₹5,000, your account will be activated.',
+                        category: 'Registration'
+                    },
+                    {
+                        question: 'How can I contribute to NSM?',
+                        answer: 'You can contribute through scholarships, infrastructure support, student mentoring or by hosting events. You can also make a donation through our Donate page. Reach out via the Contact Us page for more details.',
+                        category: 'Donation'
+                    },
+                    {
+                        question: 'What information do I need to register?',
+                        answer: 'You\'ll need your full name, email address, phone number, graduation year, and some basic personal information. Make sure to have your graduation certificate or student ID ready for verification if requested.',
+                        category: 'Registration'
+                    },
+                    {
+                        question: 'What is the minimum donation amount?',
+                        answer: 'The minimum donation amount is ₹5,000. You can donate any amount above this through our secure payment gateway or bank transfer.',
+                        category: 'Donation'
+                    },
+                    {
+                        question: 'How can I participate in alumni events?',
+                        answer: 'Upcoming events are listed on the "Events" page. Registered members can RSVP directly through the portal. Some exclusive events may require a valid membership login.',
+                        category: 'Events'
+                    },
+                    {
+                        question: 'How do I update my profile information?',
+                        answer: 'Log in to your account and navigate to "My Profile". Click on the "Edit Profile" button to update your contact details, employment information, or profile picture.',
+                        category: 'General'
+                    },
+                    {
+                        question: 'How can I connect with other alumni?',
+                        answer: 'The "Alumni Connect" section allows you to search for batchmates and other alumni. You can view their public profiles and connect via professional networks like LinkedIn if listed.',
+                        category: 'General'
+                    },
+                    {
+                        question: 'Is my donation tax-deductible?',
+                        answer: 'Yes, NSMOSA is a registered non-profit organization. All donations are eligible for tax exemption under Section 80G of the Income Tax Act. Receipts will be emailed to you after the transaction.',
+                        category: 'Donation'
+                    }
+                ],
+                toggle(index) {
+                    this.openIndex = this.openIndex === index ? null : index;
+                },
+                isOpen(index) {
+                    return this.openIndex === index;
+                },
+                get filteredFaqs() {
+                    return this.faqs.filter(item => {
+                        const matchesSearch = item.question.toLowerCase().includes(this.search.toLowerCase()) ||
+                            item.answer.toLowerCase().includes(this.search.toLowerCase());
+                        const matchesCategory = this.activeCategory === 'All' || item.category === this.activeCategory;
+                        return matchesSearch && matchesCategory;
+                    });
+                }
+            }
+        }
+    </script>
+
+    <%- include('partials/footer') %>

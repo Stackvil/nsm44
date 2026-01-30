@@ -18,6 +18,10 @@ const Content = sequelize.define('Content', {
         type: DataTypes.STRING,
         defaultValue: 'home'
     },
+    year: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
     isVisible: {
         type: DataTypes.BOOLEAN,
         defaultValue: true

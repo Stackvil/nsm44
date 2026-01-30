@@ -28,8 +28,8 @@ router.post('/create', ensureAuthenticated, async (req, res) => {
         req.flash('error_msg', 'Permission denied.');
         return res.redirect('/admin/dashboard');
     }
-    const { title, description, imageUrl, section } = req.body;
-    await Content.create({ title, description, imageUrl, section });
+    const { title, description, imageUrl, section, year } = req.body;
+    await Content.create({ title, description, imageUrl, section, year });
     req.flash('success_msg', 'Content created successfully');
     res.redirect('/admin/dashboard');
 });
@@ -50,8 +50,8 @@ router.post('/edit/:id', ensureAuthenticated, async (req, res) => {
         req.flash('error_msg', 'Permission denied.');
         return res.redirect('/admin/dashboard');
     }
-    const { title, description, imageUrl, section, isVisible } = req.body;
-    await Content.update({ title, description, imageUrl, section, isVisible: isVisible === 'on' }, { where: { id: req.params.id } });
+    const { title, description, imageUrl, section, isVisible, year } = req.body;
+    await Content.update({ title, description, imageUrl, section, year, isVisible: isVisible === 'on' }, { where: { id: req.params.id } });
     req.flash('success_msg', 'Content updated successfully');
     res.redirect('/admin/dashboard');
 });
