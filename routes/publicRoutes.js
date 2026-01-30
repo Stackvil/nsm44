@@ -21,6 +21,10 @@ router.get('/contact', (req, res) => {
     res.render('contact', { path: '/contact' });
 });
 
+router.get('/faq', (req, res) => {
+    res.render('faq', { path: '/faq' });
+});
+
 router.get('/gallery', async (req, res) => {
     try {
         const gallery = await Content.findAll({ where: { isVisible: true } });
