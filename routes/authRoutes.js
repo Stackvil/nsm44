@@ -36,4 +36,15 @@ router.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
+router.get('/register', (req, res) => {
+    res.render('auth/register');
+});
+
+router.post('/register', async (req, res) => {
+    // Placeholder registration logic
+    // Implementation would go here
+    req.flash('success_msg', 'Registration coming soon!');
+    res.redirect('/auth/login');
+});
+
 module.exports = router;
