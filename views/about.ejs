@@ -1,22 +1,576 @@
 <%- include('partials/header') %>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,800;1,400;1,700&display=swap"
+        rel="stylesheet">
 
-    <div class="bg-gray-50 min-h-screen py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 class="text-4xl font-extrabold text-[#002845] mb-8 text-center uppercase tracking-wider">About NSMOSA
-            </h1>
-            <div class="bg-white rounded-lg shadow-lg p-8 text-gray-700 leading-relaxed text-xl space-y-4">
-                <p class="mb-6">
-                    NSM School aims at the training of young men and women of quality to be leaders in all walks of life
-                    and to serve society in justice, truth and service. It is expected that this training will play a
-                    vital role in bringing about a just social order in our country.
-                </p>
-                <p>
-                    The Old Students Association (NSMOSA) is a vibrant community that connects alumni from across the
-                    globe,
-                    fostering lifelong relationships and supporting the alma mater in its mission.
-                </p>
+    <style>
+        @keyframes revealUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes subtleFloat {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .animate-reveal {
+            animation: revealUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        .animate-float-slow {
+            animation: subtleFloat 4s ease-in-out infinite;
+        }
+
+        .quote-style {
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: -0.01em;
+        }
+
+        /* Sophisticated Floating Bloom Effect */
+        .advanced-hover {
+            transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            background: #0A2040;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            cursor: pointer;
+        }
+
+        .advanced-hover::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(0, 163, 224, 0.15) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.7s ease;
+        }
+
+        .advanced-hover:hover {
+            transform: translateY(-12px) scale(1.015);
+            background: #0c254a;
+            box-shadow:
+                0 40px 100px -20px rgba(0, 0, 0, 0.7),
+                0 20px 50px -15px rgba(0, 163, 224, 0.3),
+                inset 0 0 30px rgba(255, 255, 255, 0.02);
+            border-color: rgba(0, 163, 224, 0.3);
+        }
+
+        .advanced-hover:hover::before {
+            opacity: 1;
+        }
+
+        .quote-text {
+            transition: all 0.6s ease;
+        }
+
+        .advanced-hover:hover .quote-text {
+            text-shadow: 0 0 25px rgba(255, 255, 255, 0.15);
+        }
+
+        .golden-glow {
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .advanced-hover:hover .golden-glow {
+            color: #fff;
+            background: #FFD700;
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6), 0 0 40px rgba(255, 215, 0, 0.2);
+            transform: scale(1.02);
+            display: inline-block;
+        }
+
+        /* --- Advanced Premium Transitions --- */
+        .premium-card {
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            z-index: 1;
+            border-left: 8px solid #0A2040 !important;
+        }
+
+        .premium-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 40px 80px -15px rgba(0, 163, 224, 0.15);
+        }
+
+        .premium-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 2px;
+            background: linear-gradient(45deg, transparent, rgba(0, 163, 224, 0.3), transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .premium-card:hover::before {
+            opacity: 1;
+        }
+
+        /* --- Advanced Icon Interactions --- */
+        .icon-floating {
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .premium-card:hover .icon-floating {
+            transform: scale(1.15) rotate(8deg);
+            box-shadow: 0 15px 30px -5px rgba(0, 163, 224, 0.4);
+            background: linear-gradient(135deg, #00a3e0, #00c6ff);
+        }
+
+        .premium-card:hover .icon-floating svg {
+            animation: iconPulse 2s infinite;
+        }
+
+        @keyframes iconPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 0px rgba(255, 255, 255, 0));
+            }
+
+            50% {
+                transform: scale(1.1);
+                filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+            }
+        }
+
+        /* Inner Content Border Effect */
+        .content-highlight {
+            transition: all 0.5s ease;
+            border-left: 4px solid #0A2040;
+            border-radius: 0 16px 16px 0;
+        }
+
+        .premium-card:hover .content-highlight {
+            border-left-color: #00a3e0;
+            background: white;
+            padding-left: 2rem;
+            box-shadow: inset 0 0 20px rgba(0, 163, 224, 0.05);
+        }
+
+        .magnetic-title {
+            position: relative;
+            cursor: default;
+        }
+
+        .magnetic-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 30px;
+            height: 4px;
+            background: #00a3e0;
+            border-radius: 20px;
+            transition: width 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .magnetic-title:hover::after {
+            width: 100%;
+        }
+
+        .depth-image {
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .depth-image:hover {
+            transform: scale(1.03) rotate(0.5deg);
+            filter: brightness(1.05) contrast(1.05);
+        }
+
+        .feature-item {
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .feature-item:hover {
+            transform: scale(1.05);
+            background: #0A2040;
+            border-color: #0A2040;
+        }
+
+        .feature-item:hover * {
+            color: white !important;
+        }
+
+        .feature-item:hover .icon-box {
+            background: #FFD700 !important;
+            color: #0A2040 !important;
+            transform: rotate(360deg);
+        }
+
+        .icon-box {
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        /* --- Stylish Timeline Markers --- */
+        .timeline-marker {
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+        }
+
+        .milestone-group:hover .timeline-marker {
+            transform: scale(1.25);
+            filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.2));
+            z-index: 20;
+        }
+
+        .timeline-year-pill {
+            transition: all 0.4s ease;
+            z-index: 15;
+            position: relative;
+        }
+
+        .milestone-group:hover .timeline-year-pill {
+            transform: scale(1.1);
+            letter-spacing: 0.05em;
+        }
+
+        .marker-1975 {
+            background: linear-gradient(135deg, #0088cc, #004466);
+        }
+
+        .marker-1979 {
+            background: linear-gradient(135deg, #0A2040, #1a3a6a);
+        }
+
+        .marker-1984 {
+            background: linear-gradient(135deg, #ff4b2b, #ff416c);
+        }
+    </style>
+
+    <div class="bg-gray-50 min-h-screen pb-16">
+        <!-- Quote Section -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8">
+            <div
+                class="bg-[#0A2040] rounded-2xl p-8 md:p-12 shadow-2xl relative overflow-hidden group animate-reveal advanced-hover">
+                <div class="relative z-10 text-center">
+                    <p
+                        class="text-xl md:text-2xl text-white font-bold leading-relaxed max-w-5xl mx-auto quote-style quote-text">
+                        <span class="italic font-extrabold text-[#FFD700] golden-glow">"The future of India is shaped in
+                            her classrooms,"</span><br class="hidden md:block">
+                        <span class="text-blue-50 font-medium op-text">Pandit Nehru was very true when he uttered these
+                            lines because,</span><br class="hidden md:block">
+                        <span class="text-blue-50 font-medium op-text">certainly the future of many a great Indian is
+                            moulded in NSM.</span>
+                    </p>
+                </div>
             </div>
         </div>
+
+        <!-- Main Content Area -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mt-8">
+
+            <!-- Left Column -->
+            <div class="lg:col-span-7 space-y-8">
+                <div>
+                    <h2 class="text-3xl font-black text-[#0A2040] uppercase tracking-tight inline-block magnetic-title">
+                        About NSMOSA
+                    </h2>
+                </div>
+
+                <!-- 37 Years Box -->
+                <div
+                    class="bg-white rounded-2xl shadow-xl shadow-blue-900/5 p-8 border border-gray-100 group transition-all premium-card overflow-hidden">
+                    <div class="flex items-start gap-6">
+                        <div
+                            class="w-16 h-16 bg-[#00a3e0] rounded-xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-[#00a3e0]/30 transition-transform icon-floating">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 14l9-5-9-5-9 5 9 5z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h3
+                                class="text-xl font-bold text-[#0A2040] mb-3 group-hover:text-[#00a3e0] transition-colors">
+                                37 Years of Glorious Service</h3>
+                            <div class="p-6 bg-gray-50 rounded-xl content-highlight">
+                                <p class="text-gray-600 leading-relaxed">
+                                    N.St.Mathew's Public School has put up <span class="font-bold text-[#0A2040]">37
+                                        years of glorious service</span> in the field of education. The year <span
+                                        class="text-[#00a3e0] font-semibold">1973</span>, saw the humble beginning of
+                                    the school that was to make a name for itself.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Journey Box -->
+                <div
+                    class="bg-white rounded-2xl shadow-xl shadow-blue-900/5 p-8 border border-gray-100 group transition-all premium-card overflow-hidden">
+                    <div class="flex items-start gap-6">
+                        <div
+                            class="w-16 h-16 bg-[#00a3e0] rounded-xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-[#00a3e0]/30 transition-transform icon-floating">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 9m0 11V9" />
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h3
+                                class="text-xl font-bold text-[#0A2040] mb-3 group-hover:text-[#00a3e0] transition-colors">
+                                A Journey of Excellence</h3>
+                            <p class="text-gray-600 leading-relaxed">
+                                The journey of a thousand miles begins with a single step. Similarly NSMOSA has risen
+                                from a humble dwelling to imposing buildings well equipped with latest state-of-art
+                                technology. The school is managed by the <span class="font-bold text-[#0A2040]">Society
+                                    of Montfort Brothers of St. Gabriel</span>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Image -->
+            <div class="lg:col-span-5 relative group">
+                <div
+                    class="absolute -inset-4 bg-[#00a3e0]/10 rounded-3xl blur-2xl group-hover:bg-[#00a3e0]/20 transition-all -z-10">
+                </div>
+                <div class="rounded-3xl overflow-hidden shadow-2xl border-8 border-white depth-image">
+                    <img src="/images/NSM School/NSM Public School copy.jpg" alt="NSM Campus"
+                        class="w-full h-[550px] object-cover">
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Features Grid -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
+            <!-- Classes -->
+            <div
+                class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 flex flex-col items-center text-center group transition-transform duration-300 feature-item cursor-default">
+                <div
+                    class="w-14 h-14 bg-blue-50 text-[#00a3e0] rounded-2xl flex items-center justify-center mb-4 transition-all duration-500 icon-box">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                </div>
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 title-text">Classes</span>
+                <span class="text-lg font-black text-[#0A2040] value-text">KG to X</span>
+            </div>
+
+            <!-- Recognition -->
+            <div
+                class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 flex flex-col items-center text-center group transition-transform duration-300 feature-item cursor-default">
+                <div
+                    class="w-14 h-14 bg-blue-50 text-[#00a3e0] rounded-2xl flex items-center justify-center mb-4 transition-all duration-500 icon-box">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                    </svg>
+                </div>
+                <span
+                    class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 title-text">Recognition</span>
+                <span class="text-lg font-black text-[#0A2040] value-text">CBSE, New Delhi</span>
+            </div>
+
+            <!-- Type -->
+            <div
+                class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 flex flex-col items-center text-center group transition-transform duration-300 feature-item cursor-default">
+                <div
+                    class="w-14 h-14 bg-blue-50 text-[#00a3e0] rounded-2xl flex items-center justify-center mb-4 transition-all duration-500 icon-box">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </div>
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 title-text">Type</span>
+                <span class="text-lg font-black text-[#0A2040] value-text">Co-educational</span>
+            </div>
+
+            <!-- Medium -->
+            <div
+                class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 flex flex-col items-center text-center group transition-transform duration-300 feature-item cursor-default">
+                <div
+                    class="w-14 h-14 bg-blue-50 text-[#00a3e0] rounded-2xl flex items-center justify-center mb-4 transition-all duration-500 icon-box">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                    </svg>
+                </div>
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 title-text">Medium</span>
+                <span class="text-lg font-black text-[#0A2040] value-text">English</span>
+            </div>
+        </div>
+
+        <!-- Timeline Section -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-24 mb-20">
+            <div class="text-center mb-16">
+                <div class="flex items-center justify-center gap-3 mb-2">
+                    <svg class="w-8 h-8 text-[#00a3e0]" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                        <path d="M3 3v5h5"></path>
+                        <path d="M12 7v5l4 2"></path>
+                    </svg>
+                    <h2 class="text-3xl font-black text-[#0A2040] tracking-tight uppercase magnetic-title">Our Journey
+                        Through Time
+                    </h2>
+                </div>
+                <p class="text-gray-500 italic">Key milestones that shaped NSMOSA's legacy</p>
+                <div class="w-24 h-1 bg-gray-100 mx-auto mt-6"></div>
+            </div>
+
+            <div class="relative border-l-4 border-[#0A2040] ml-4 md:ml-12 space-y-16">
+                <!-- 1975 Milestone -->
+                <div class="relative pl-24 milestone-group pb-12">
+                    <!-- Icon Container with Line Centering -->
+                    <div class="absolute left-0 top-0 flex flex-col items-start -ml-[32px] space-y-2">
+                        <!-- Circle Icon -->
+                        <div
+                            class="w-16 h-16 rounded-full border-4 border-white shadow-xl flex items-center justify-center z-10 timeline-marker marker-1975">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M19 2H5C3.34315 2 2 3.34315 2 5V19C2 20.6569 3.34315 22 5 22H19C20.6569 22 22 20.6569 22 19V5C22 3.34315 20.6569 2 19 2ZM18 19H13V15H11V19H6V7H18V19ZM9 9H7V11H9V9ZM14 9H12V11H14V9ZM17 9H15V11H17V9ZM9 12H7V14H9V12ZM14 12H12V14H14V12ZM17 12H15V14H17V12Z" />
+                            </svg>
+                        </div>
+                        <!-- Year Pill on the Right Side of Line -->
+                        <div
+                            class="bg-gradient-to-r from-[#0088cc] to-[#004466] text-white text-[11px] font-black px-4 py-1.5 rounded-full shadow-lg timeline-year-pill whitespace-nowrap ml-10">
+                            1975</div>
+                    </div>
+
+                    <div
+                        class="bg-white p-8 rounded-2xl shadow-xl shadow-blue-900/5 group transition-all border border-gray-100 premium-card overflow-hidden">
+                        <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                            <h3 class="text-xl font-bold text-[#0A2040]">Foundation Stone Laid</h3>
+                            <span
+                                class="text-[10px] uppercase tracking-widest bg-blue-50 text-blue-600 px-3 py-1 rounded-full font-bold">Foundation</span>
+                        </div>
+                        <p class="text-gray-600 leading-relaxed mb-6">
+                            On <span class="font-bold text-gray-800">16th March, 1975</span>, by the then Minister for
+                            Primary Education, <span class="font-bold text-gray-800">Sri Mandali Venkata Krishna
+                                Rao</span>, the foundation stone was laid, marking the beginning of an extraordinary
+                            journey.
+                        </p>
+                        <div class="flex items-center gap-2 text-[#00a3e0] text-sm font-semibold">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            March 16, 1975
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 1979 Milestone -->
+                <div class="relative pl-24 milestone-group pb-12">
+                    <!-- Icon Container with Line Centering -->
+                    <div class="absolute left-0 top-0 flex flex-col items-start -ml-[32px] space-y-2">
+                        <!-- Circle Icon -->
+                        <div
+                            class="w-16 h-16 rounded-full border-4 border-white shadow-xl flex items-center justify-center z-10 timeline-marker marker-1979">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 14l9-5-9-5-9 5 9 5z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                            </svg>
+                        </div>
+                        <!-- Year Pill on the Right Side of Line -->
+                        <div
+                            class="bg-gradient-to-r from-[#0A2040] to-[#1a3a6a] text-white text-[11px] font-black px-4 py-1.5 rounded-full shadow-lg timeline-year-pill whitespace-nowrap ml-10">
+                            1979</div>
+                    </div>
+
+                    <div
+                        class="bg-white p-8 rounded-2xl shadow-xl shadow-blue-900/5 group transition-all border border-gray-100 premium-card overflow-hidden">
+                        <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                            <h3 class="text-xl font-bold text-[#0A2040]">First Board Examination</h3>
+                            <span
+                                class="text-[10px] uppercase tracking-widest bg-blue-50 text-blue-600 px-3 py-1 rounded-full font-bold">Academic
+                                Milestone</span>
+                        </div>
+                        <p class="text-gray-600 leading-relaxed mb-6">
+                            The first batch of Class X appeared for the <span class="font-bold text-gray-800">AISSE in
+                                1979</span>, setting the stage for academic excellence and establishing NSMOSA's
+                            commitment to quality education.
+                        </p>
+                        <div class="flex items-center gap-2 text-[#00a3e0] text-sm font-semibold">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            1979
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 1984-85 Milestone -->
+                <div class="relative pl-24 milestone-group pb-12">
+                    <!-- Icon Container with Line Centering -->
+                    <div class="absolute left-0 top-0 flex flex-col items-start -ml-[32px] space-y-2">
+                        <!-- Circle Icon -->
+                        <div
+                            class="w-16 h-16 rounded-full border-4 border-white shadow-xl flex items-center justify-center z-10 timeline-marker marker-1984">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M18 2H6v3H2v4c0 2.21 1.79 4 4 4h1.15c.6 2.65 2.53 4.8 5.1 5.44V20H9v2h6v-2h-3.25v-1.56c2.57-.64 4.5-2.79 5.1-5.44H18c2.21 0 4-1.79 4-4V5h-4V2zm-2 7c0 2.21-1.79 4-4 4s-4-1.79-4-4V5h8v4zM4 9V7h2v2c0 1.1.9 2 2 2H6c-1.1 0-2-.9-2-2zm16 0c0 1.1-.9 2-2 2h-1c1.1 0 2-.9 2-2V7h2v2z" />
+                            </svg>
+                        </div>
+                        <!-- Year Pill on the Right Side of Line -->
+                        <div
+                            class="bg-gradient-to-r from-[#ff4b2b] to-[#ff416c] text-white text-[11px] font-black px-4 py-1.5 rounded-full shadow-lg timeline-year-pill whitespace-nowrap ml-10">
+                            1984-85</div>
+                    </div>
+
+                    <div
+                        class="bg-white p-8 rounded-2xl shadow-xl shadow-red-500/5 group transition-all border-2 border-blue-50 premium-card overflow-hidden">
+                        <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                            <h3 class="text-xl font-bold text-[#0A2040]">National Recognition</h3>
+                            <span
+                                class="text-[10px] uppercase tracking-widest bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full font-bold">Achievement</span>
+                        </div>
+                        <p class="text-gray-600 leading-relaxed mb-6">
+                            We secured <span class="font-black text-[#0A2040]">21 National ranks</span> in the AISSE
+                            (1984-85), establishing NSMOSA as a premier educational institution and showcasing our
+                            commitment to academic excellence.
+                        </p>
+                        <div class="bg-gray-50 rounded-xl p-4 mb-6 border-2 border-dashed border-gray-200">
+                            <div class="flex items-center gap-4">
+                                <span class="text-3xl font-black text-[#0A2040]">21</span>
+                                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">National
+                                    Ranks</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 text-[#00a3e0] text-sm font-semibold">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            1984 - 1985
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 
     <%- include('partials/footer') %>

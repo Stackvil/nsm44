@@ -44,11 +44,11 @@ router.get('/events', (req, res) => {
 
 // New Placeholders
 router.get('/presidents-message', (req, res) => {
-    res.render('about', { path: '/presidents-message' });
+    res.render('presidents-message', { path: '/presidents-message' });
 });
 
 router.get('/executive-committee', (req, res) => {
-    res.render('about', { path: '/executive-committee' });
+    res.render('executive-committee', { path: '/executive-committee' });
 });
 
 router.get('/alumni-benefits', (req, res) => {
@@ -61,8 +61,7 @@ router.get('/annual-reports', (req, res) => {
 
 // Alumni Connect Placeholders
 router.get('/my-profile', (req, res) => {
-    // Ideally this would check auth
-    res.redirect('/auth/login');
+    res.render('my-profile', { path: '/my-profile' });
 });
 
 router.get('/how-to-give', (req, res) => {

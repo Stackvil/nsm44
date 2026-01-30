@@ -1,0 +1,305 @@
+<%- include('partials/header') %>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,800;1,400;1,700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        .page-reveal {
+            animation: revealUp 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        @keyframes revealUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .premium-text {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .committee-table {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            background: white;
+        }
+
+        .designation-pill {
+            padding: 8px 20px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: inline-block;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            min-width: 140px;
+        }
+
+        .pill-president {
+            background: linear-gradient(135deg, #FFD700, #FFC000);
+            color: #0A2040;
+            box-shadow: 0 6px 20px rgba(255, 192, 0, 0.4);
+        }
+
+        .pill-gen-sec {
+            background: linear-gradient(135deg, #4F46E5, #3730A3);
+            color: white;
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+        }
+
+        .pill-sr-vp {
+            background: linear-gradient(135deg, #10B981, #065F46);
+            color: white;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .pill-sr-sec {
+            background: linear-gradient(135deg, #8B5CF6, #5B21B6);
+            color: white;
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .pill-jr-vp {
+            background: linear-gradient(135deg, #F59E0B, #B45309);
+            color: white;
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .pill-cyan,
+        .pill-treasurer {
+            background: linear-gradient(135deg, #00B4D8, #0077B6);
+            color: white;
+            box-shadow: 0 6px 20px rgba(0, 119, 182, 0.4);
+        }
+
+        .pill-jr-sec {
+            background: linear-gradient(135deg, #64748B, #334155);
+            color: white;
+            box-shadow: 0 6px 20px rgba(100, 116, 139, 0.4);
+        }
+
+        .row-hover:hover {
+            background-color: #f0f7ff;
+            transform: translateX(4px);
+        }
+
+        .row-hover td:first-child {
+            position: relative;
+        }
+
+        .row-hover td:first-child::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #00A3E0;
+            transform: scaleY(0);
+            transition: transform 0.4s ease;
+            z-index: 10;
+        }
+
+        .row-hover:hover td:first-child::before {
+            transform: scaleY(1);
+        }
+
+        .row-hover:hover .designation-pill {
+            transform: scale(1.1);
+            letter-spacing: 0.1em;
+        }
+
+        .member-name {
+            transition: color 0.3s ease;
+        }
+
+        .row-hover:hover .member-name {
+            color: #00A3E0;
+        }
+
+        .pill-president:hover {
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        }
+
+        .pill-cyan:hover {
+            box-shadow: 0 0 20px rgba(0, 163, 224, 0.6);
+        }
+
+        .table-header {
+            background: #0A2040;
+            color: white;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.1em;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+
+        .magnetic-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: #00a3e0;
+            border-radius: 2px;
+            transition: width 0.4s ease;
+        }
+
+        .page-reveal:hover .magnetic-title::after {
+            width: 100%;
+        }
+    </style>
+
+    <div class="min-h-screen bg-gray-50/50 py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto page-reveal">
+
+            <!-- Header Section -->
+            <div class="mb-12">
+                <div class="relative inline-block mb-8">
+                    <h1 class="text-3xl font-black text-[#0A2040] uppercase tracking-tight magnetic-title">
+                        NSM ALUMNI - GOVERNING COUNCIL
+                    </h1>
+                </div>
+
+                <div class="space-y-4">
+                    <p class="text-[18px] font-bold text-[#0A2040]">Term: 2024-27</p>
+                    <p class="text-gray-500 text-sm max-w-4xl leading-relaxed">
+                        Meet the dedicated members of the NSM Old Students Association Executive Committee who work
+                        tirelessly to strengthen our alumni network and support the growth of our alma mater.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Table Section -->
+            <div class="committee-table overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="table-header">
+                            <th class="px-10 py-6 w-1/4">DESIGNATION</th>
+                            <th class="px-10 py-6 w-1/3">NAME</th>
+                            <th class="px-10 py-6">PROFESSIONAL DETAILS</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+
+                        <!-- Row 1: President -->
+                        <tr class="row-hover">
+                            <td class="px-10 py-8">
+                                <span class="designation-pill pill-president">President</span>
+                            </td>
+                            <td class="px-10 py-8">
+                                <p class="font-bold text-[#0A2040] text-lg member-name">Venkat Jagdish Nalluri</p>
+                                <p class="text-gray-500 text-sm">vinots@gmail.com</p>
+                            </td>
+                            <td class="px-10 py-8 text-gray-500 text-sm leading-relaxed">
+                                Managing Director, OTS Advertisings
+                            </td>
+                        </tr>
+
+                        <!-- Row 2: General Secretary -->
+                        <tr class="row-hover">
+                            <td class="px-10 py-8">
+                                <span class="designation-pill pill-gen-sec">General Secretary</span>
+                            </td>
+                            <td class="px-10 py-8">
+                                <p class="font-bold text-[#0A2040] text-lg member-name">Gurjeet Singh Sahni</p>
+                                <p class="text-gray-500 text-sm">vjwgurjeet@gmail.com</p>
+                            </td>
+                            <td class="px-10 py-8 text-gray-500 text-sm leading-relaxed">
+                                Managing Director, Sahni Auto Pvt Ltd, Dealer for Tata Commercial Vehicles
+                            </td>
+                        </tr>
+
+                        <!-- Row 3: Sr. Vice President -->
+                        <tr class="row-hover">
+                            <td class="px-10 py-8">
+                                <span class="designation-pill pill-sr-vp">Sr. Vice President</span>
+                            </td>
+                            <td class="px-10 py-8">
+                                <p class="font-bold text-[#0A2040] text-lg member-name">Jayanarayana Kureti</p>
+                                <p class="text-gray-500 text-sm">jaykureti@gmail.com</p>
+                            </td>
+                            <td class="px-10 py-8 text-gray-500 text-sm leading-relaxed">
+                                Founder & CEO, Jaan Entertainment Pvt Ltd, ETHREE, Rajiv Gandhi Park
+                            </td>
+                        </tr>
+
+                        <!-- Row 4: Sr. Secretary -->
+                        <tr class="row-hover">
+                            <td class="px-10 py-8">
+                                <span class="designation-pill pill-sr-sec">Sr. Secretary</span>
+                            </td>
+                            <td class="px-10 py-8">
+                                <p class="font-bold text-[#0A2040] text-lg member-name">Ayesha Khatoon</p>
+                                <p class="text-gray-500 text-sm">aaeshakhatoon10@gmail.com</p>
+                            </td>
+                            <td class="px-10 py-8 text-gray-500 text-sm leading-relaxed">
+                                Optometrist, Dilip Opticals
+                            </td>
+                        </tr>
+
+                        <!-- Row 5: Jr. Vice President -->
+                        <tr class="row-hover">
+                            <td class="px-10 py-8">
+                                <span class="designation-pill pill-jr-vp">Jr. Vice President</span>
+                            </td>
+                            <td class="px-10 py-8">
+                                <p class="font-bold text-[#0A2040] text-lg member-name">Jaideep Arza</p>
+                                <p class="text-gray-500 text-sm">ajaideep@gmail.com</p>
+                            </td>
+                            <td class="px-10 py-8 text-gray-500 text-sm leading-relaxed">
+                                Proprietor, Sri Dhanalakshmi Stones & Tiles
+                            </td>
+                        </tr>
+
+                        <!-- Row 6: Treasurer -->
+                        <tr class="row-hover">
+                            <td class="px-10 py-8">
+                                <span class="designation-pill pill-cyan">Treasurer</span>
+                            </td>
+                            <td class="px-10 py-8">
+                                <p class="font-bold text-[#0A2040] text-lg member-name">Kowtha V. Subba Rao</p>
+                                <p class="text-gray-500 text-sm">kowtha@hotmail.com</p>
+                            </td>
+                            <td class="px-10 py-8 text-gray-500 text-sm leading-relaxed">
+                                Chartered Accountant, M/s Kowtha & Co.
+                            </td>
+                        </tr>
+
+                        <!-- Row 7: Jr. Secretary -->
+                        <tr class="row-hover">
+                            <td class="px-10 py-8">
+                                <span class="designation-pill pill-jr-sec">Jr. Secretary</span>
+                            </td>
+                            <td class="px-10 py-8">
+                                <p class="font-bold text-[#0A2040] text-lg member-name">Suhrith Durbha</p>
+                                <p class="text-gray-500 text-sm">suhrith.raja@gmail.com</p>
+                            </td>
+                            <td class="px-10 py-8 text-gray-500 text-sm leading-relaxed">
+                                Business Associate, Bank of Baroda
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>

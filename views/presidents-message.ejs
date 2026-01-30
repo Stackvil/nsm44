@@ -1,0 +1,154 @@
+<%- include('partials/header') %>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,800;1,400;1,700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        .page-reveal {
+            animation: revealUp 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        @keyframes revealUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .premium-text {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.8;
+        }
+
+        .message-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .message-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 40px 80px -15px rgba(0, 60, 115, 0.12);
+        }
+
+        .president-photo-container {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .president-photo-container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+        }
+
+        .photo-label {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 10;
+            color: white;
+        }
+
+        .magnetic-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: #00a3e0;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .message-card:hover .magnetic-title::after {
+            width: 120px;
+        }
+    </style>
+
+    <div class="min-h-screen bg-gray-50/50 py-20 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto page-reveal">
+
+            <div class="message-card p-8 md:p-12">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+
+                    <!-- Text Content -->
+                    <div class="lg:col-span-7 space-y-8">
+                        <div class="relative inline-block">
+                            <h2 class="text-3xl font-black text-[#0A2040] uppercase tracking-tight magnetic-title">
+                                President's Message
+                            </h2>
+                        </div>
+
+                        <div class="premium-text text-[#0A2040]/90 text-[16px] space-y-6 text-justify">
+                            <p>
+                                It gives me immense pride and pleasure to welcome you to the official website of NSM Old
+                                Students Association (NSM OSA).
+                            </p>
+                            <p>
+                                NSM OSA is more than an alumni platform. It is a living bond that connects generations
+                                of students through shared values, memories, and a commitment to growth. Our association
+                                strives to strengthen these connections by fostering meaningful engagement,
+                                collaboration, and mutual support among alumni, students, and the institution.
+                            </p>
+                            <p>
+                                Over the years, NSM OSA has grown into a vibrant community that actively contributes to
+                                academic excellence, professional development, social responsibility, and the overall
+                                progress of our alma mater. This journey has been possible because of the collective
+                                efforts, dedication, and goodwill of our members.
+                            </p>
+                            <p>
+                                This website serves as a digital bridge. A place to reconnect, stay informed about
+                                upcoming events and initiatives, celebrate achievements, and participate in shaping the
+                                future of NSM OSA. I encourage all alumni to stay engaged, contribute their ideas, and
+                                be active partners in our shared mission.
+                            </p>
+                            <p>
+                                Together, let us continue to uphold the legacy of NSM and inspire future generations
+                                with unity, integrity, and purpose.
+                            </p>
+                        </div>
+
+                        <div class="pt-8 border-t border-gray-100">
+                            <p class="text-gray-500 italic mb-2">Warm Regards,</p>
+                            <h3 class="text-2xl font-black text-[#0A2040]">Venkat Jagdish Nalluri</h3>
+                            <p class="text-[#00a3e0] font-bold uppercase tracking-widest text-sm">President NSM OSA</p>
+                        </div>
+                    </div>
+
+                    <!-- Side Photo -->
+                    <div class="lg:col-span-5">
+                        <div class="president-photo-container aspect-[3/4] bg-gray-200">
+                            <img src="/images/presedent.jpeg" alt="Venkat Jagdish Nalluri"
+                                class="w-full h-full object-cover">
+                            <div class="photo-label">
+                                <h4 class="text-xl font-bold">Venkat Jagdish Nalluri</h4>
+                                <p class="text-sm opacity-80">President, NSM OSA</p>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
