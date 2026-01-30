@@ -1,0 +1,62 @@
+<%- include('../partials/header') %>
+    <div class="min-h-screen bg-gray-100 py-12">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div class="px-8 py-6 border-b border-gray-100 bg-gray-50">
+                    <h1 class="text-2xl font-bold text-gray-900">Edit Content</h1>
+                </div>
+                <div class="p-8">
+                    <form action="/admin/edit/<%= content.id %>" method="POST">
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                                <input type="text" name="title" value="<%= content.title %>" required
+                                    class="block w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 transition shadow-sm">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                <textarea name="description" rows="4"
+                                    class="block w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 transition shadow-sm"><%= content.description %></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+                                <input type="text" name="imageUrl" value="<%= content.imageUrl %>"
+                                    class="block w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 transition shadow-sm">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Section</label>
+                                <select name="section"
+                                    class="block w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 transition shadow-sm bg-white">
+                                    <option value="home" <%=content.section==='home' ? 'selected' : '' %>>Home Gallery
+                                    </option>
+                                    <option value="news" <%=content.section==='news' ? 'selected' : '' %>>News</option>
+                                    <option value="events" <%=content.section==='events' ? 'selected' : '' %>>Events
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="flex items-center">
+                                <input type="checkbox" name="isVisible" id="isVisible"
+                                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                    <%=content.isVisible ? 'checked' : '' %>>
+                                <label for="isVisible" class="ml-2 block text-sm text-gray-900">Visible on Public
+                                    Site</label>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 flex justify-end space-x-4">
+                            <a href="/admin/dashboard"
+                                class="px-6 py-3 rounded-lg text-gray-700 bg-gray-100 hover:bg-gray-200 transition font-medium">Cancel</a>
+                            <button type="submit"
+                                class="px-6 py-3 rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition shadow-lg hover:shadow-xl font-medium">Update
+                                Content</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%- include('../partials/footer') %>

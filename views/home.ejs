@@ -1,0 +1,110 @@
+<%- include('partials/header') %>
+
+    <!-- Hero Section -->
+    <div class="relative bg-gray-900 h-screen max-h-[800px] overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <div id="hero-carousel" class="relative w-full h-full">
+                <!-- Carousel Items -->
+                <% const images=['bg1.png', 'bg2.png' , 'bg3.png' , 'bg4.png' , 'bg5.png' ]; %>
+                    <% images.forEach((img, index)=> { %>
+                        <div class="carousel-item absolute inset-0 transition-opacity duration-1000 ease-in-out <%= index === 0 ? 'opacity-100' : 'opacity-0' %>"
+                            data-index="<%= index %>">
+                            <img src="/images/<%= img %>" alt="Alumni Event"
+                                class="w-full h-full object-cover opacity-60">
+                            <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent">
+                            </div>
+                        </div>
+                        <% }); %>
+            </div>
+        </div>
+
+        <div class="relative z-10 flex flex-col items-center justify-center h-full text-center px-4">
+            <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg tracking-tight">
+                Welcome Home, <span
+                    class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-pink-500">Alumni</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-200 mb-10 max-w-2xl font-light leading-relaxed">
+                Rekindle friendships, expand your network, and give back to the community that started it all.
+            </p>
+            <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6">
+                <a href="/auth/register"
+                    class="px-8 py-4 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg shadow-lg hover:shadow-blue-500/50 transition transform hover:-translate-y-1">
+                    Join our Community
+                </a>
+                <a href="#events"
+                    class="px-8 py-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold text-lg hover:bg-white/20 transition">
+                    Explore Events
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats / Highlights -->
+    <section class="py-20 bg-white relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+                <div class="p-8 rounded-2xl bg-gray-50 hover:shadow-xl transition duration-300 border border-gray-100">
+                    <div class="text-5xl font-bold text-blue-600 mb-2">5000+</div>
+                    <div class="text-gray-600 font-medium text-lg">Active Members</div>
+                </div>
+                <div class="p-8 rounded-2xl bg-gray-50 hover:shadow-xl transition duration-300 border border-gray-100">
+                    <div class="text-5xl font-bold text-purple-600 mb-2">120+</div>
+                    <div class="text-gray-600 font-medium text-lg">Yearly Events</div>
+                </div>
+                <div class="p-8 rounded-2xl bg-gray-50 hover:shadow-xl transition duration-300 border border-gray-100">
+                    <div class="text-5xl font-bold text-pink-600 mb-2">$2M+</div>
+                    <div class="text-gray-600 font-medium text-lg">Raised for Scholarships</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Gallery (Dynamic from Admin) -->
+    <% if (gallery && gallery.length> 0) { %>
+        <section id="gallery" class="py-20 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Community Moments</h2>
+                    <div class="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <% gallery.forEach(item=> { %>
+                        <div class="group relative overflow-hidden rounded-2xl shadow-lg cursor-pointer">
+                            <img src="<%= item.imageUrl %>" alt="<%= item.title %>"
+                                class="w-full h-64 object-cover transform group-hover:scale-110 transition duration-500">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-6">
+                                <h3 class="text-white text-xl font-bold mb-1">
+                                    <%= item.title %>
+                                </h3>
+                                <p class="text-gray-300 text-sm">
+                                    <%= item.description %>
+                                </p>
+                            </div>
+                        </div>
+                        <% }) %>
+                </div>
+            </div>
+        </section>
+        <% } %>
+
+            <!-- Simple JS for Carousel -->
+            <script>
+                const items = document.querySelectorAll('.carousel-item');
+                let current = 0;
+
+                // Fallback if no images found
+                if (items.length > 0) {
+                    setInterval(() => {
+                        items[current].classList.remove('opacity-100');
+                        items[current].classList.add('opacity-0');
+
+                        current = (current + 1) % items.length;
+
+                        items[current].classList.remove('opacity-0');
+                        items[current].classList.add('opacity-100');
+                    }, 5000);
+                }
+            </script>
+
+            <%- include('partials/footer') %>
