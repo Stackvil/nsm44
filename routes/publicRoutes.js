@@ -6,11 +6,24 @@ const { ensureAuthenticated, preventCache } = require('../middleware/auth');
 
 router.get('/', async (req, res) => {
     try {
-        const gallery = await Content.findAll({ where: { section: 'home', isVisible: true } });
-        res.render('home', { gallery, path: '/' });
+        // Fetch specific sections
+        const homeEvents = await Content.findAll({ where: { section: 'home_nsmosa_events', isVisible: true }, order: [['createdAt', 'DESC']] });
+        const homeMiddle = await Content.findAll({ where: { section: 'home_middle_box', isVisible: true }, order: [['createdAt', 'DESC']] });
+        const homeGallery = await Content.findAll({ where: { section: 'home_photo_gallery', isVisible: true }, order: [['createdAt', 'DESC']] });
+
+        // Fallback or legacy content
+        const legacyGallery = await Content.findAll({ where: { section: 'home', isVisible: true } });
+
+        res.render('home', {
+            gallery: legacyGallery, // Keep compatible if needed
+            homeEvents,
+            homeMiddle,
+            homeGallery,
+            path: '/'
+        });
     } catch (err) {
         console.error(err);
-        res.render('home', { gallery: [], path: '/' });
+        res.render('home', { gallery: [], homeEvents: [], homeMiddle: [], homeGallery: [], path: '/' });
     }
 });
 

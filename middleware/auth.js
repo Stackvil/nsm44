@@ -8,7 +8,8 @@ module.exports = {
     },
     ensureRole: (...roles) => {
         return (req, res, next) => {
-            if (req.session.user && roles.includes(req.session.user.role)) {
+            const allowedRoles = roles.flat();
+            if (req.session.user && allowedRoles.includes(req.session.user.role)) {
                 return next();
             }
             req.flash('error_msg', 'Access Denied');

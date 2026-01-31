@@ -1,0 +1,18 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"sqltools.connections": [
+			{
+				"previewLimit": 50,
+				"driver": "SQLite",
+				"name": "NSM",
+				"database": "database.sqlite"
+			}
+		],
+		"sqltools.useNodeRuntime": true
+	}
+}
