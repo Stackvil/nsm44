@@ -46,8 +46,18 @@ router.get('/alumni-events', (req, res) => {
     res.render('alumni-events', { path: '/alumni-events' });
 });
 
-router.get('/events', (req, res) => {
-    res.redirect('/alumni-events');
+router.get('/events', async (req, res) => {
+    try {
+        // Fetch all visible content. The frontend will filter by section/category.
+        const events = await Content.findAll({
+            where: { isVisible: true },
+            order: [['year', 'DESC'], ['createdAt', 'DESC']]
+        });
+        res.render('events', { events, path: '/events' });
+    } catch (err) {
+        console.error('Error fetching events:', err);
+        res.render('events', { events: [], path: '/events' });
+    }
 });
 
 // New Placeholders
@@ -93,36 +103,15 @@ router.get('/reunion', (req, res) => {
 });
 
 router.get('/reunion-about', (req, res) => {
-    res.render('about', { path: '/reunion-about' });
+    res.render('reunion-about', { path: '/reunion-about' });
 });
 
 router.get('/reunion-gallery', (req, res) => {
-    res.render('gallery', { gallery: [], path: '/reunion-gallery' });
+    res.render('reunion-gallery', { gallery: [], path: '/reunion-gallery' });
 });
 
 router.get('/video-gallery', (req, res) => {
-    res.render('gallery', { gallery: [], path: '/video-gallery' });
-});
-
-
-router.get('/donate', (req, res) => {
-    res.render('donation-form', { path: '/donate' });
-});
-
-router.post('/process-donation', (req, res) => {
-    // Placeholder for payment processing logic
-    // In a real app, this would integrate with a payment gateway (Razorpay, Stripe, etc.)
-    res.send(`
-        <div style="font-family: sans-serif; text-align: center; padding: 50px;">
-            <h1 style="color: #0A2040;">Thank You for Your Generosity!</h1>
-            <p>This is a simulated payment page.</p>
-            <p><strong>Name:</strong> ${req.body.name}</p>
-            <p><strong>Amount:</strong> ₹${req.body.amount}</p>
-            <p><strong>Type:</strong> ${req.body.donationType}</p>
-            <br>
-            <a href="/" style="background: #0A2040; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Return Home</a>
-        </div>
-    `);
+    res.render('video-gallery', { gallery: [], path: '/video-gallery' });
 });
 
 module.exports = router;

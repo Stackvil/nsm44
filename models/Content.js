@@ -22,6 +22,14 @@ const Content = sequelize.define('Content', {
         type: DataTypes.INTEGER,
         allowNull: true
     },
+    eventDate: {
+        type: DataTypes.DATEONLY,
+        allowNull: true
+    },
+    batch: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     isVisible: {
         type: DataTypes.BOOLEAN,
         defaultValue: true
