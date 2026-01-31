@@ -42,8 +42,18 @@ router.get('/alumni-chapters', (req, res) => {
     res.redirect('/alumni-chapter');
 });
 
-router.get('/events', (req, res) => {
-    res.render('events', { path: '/events' });
+router.get('/events', async (req, res) => {
+    try {
+        // Fetch all visible content. The frontend will filter by section/category.
+        const events = await Content.findAll({
+            where: { isVisible: true },
+            order: [['year', 'DESC'], ['createdAt', 'DESC']]
+        });
+        res.render('events', { events, path: '/events' });
+    } catch (err) {
+        console.error('Error fetching events:', err);
+        res.render('events', { events: [], path: '/events' });
+    }
 });
 
 // New Placeholders
@@ -56,11 +66,11 @@ router.get('/executive-committee', (req, res) => {
 });
 
 router.get('/alumni-benefits', (req, res) => {
-    res.render('about', { path: '/alumni-benefits' });
+    res.render('alumni-benefits', { path: '/alumni-benefits' });
 });
 
 router.get('/annual-reports', (req, res) => {
-    res.render('about', { path: '/annual-reports' });
+    res.render('annual-reports', { path: '/annual-reports' });
 });
 
 // Alumni Connect Placeholders
@@ -69,7 +79,7 @@ router.get('/my-profile', (req, res) => {
 });
 
 router.get('/how-to-give', (req, res) => {
-    res.render('about', { path: '/how-to-give' });
+    res.render('how-to-give', { path: '/how-to-give' });
 });
 
 router.get('/connect-with-us', (req, res) => {
@@ -81,15 +91,15 @@ router.get('/reunion', (req, res) => {
 });
 
 router.get('/reunion-about', (req, res) => {
-    res.render('about', { path: '/reunion-about' });
+    res.render('reunion-about', { path: '/reunion-about' });
 });
 
 router.get('/reunion-gallery', (req, res) => {
-    res.render('gallery', { gallery: [], path: '/reunion-gallery' });
+    res.render('reunion-gallery', { gallery: [], path: '/reunion-gallery' });
 });
 
 router.get('/video-gallery', (req, res) => {
-    res.render('gallery', { gallery: [], path: '/video-gallery' });
+    res.render('video-gallery', { gallery: [], path: '/video-gallery' });
 });
 
 module.exports = router;
