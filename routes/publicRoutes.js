@@ -42,8 +42,12 @@ router.get('/alumni-chapters', (req, res) => {
     res.redirect('/alumni-chapter');
 });
 
+router.get('/alumni-events', (req, res) => {
+    res.render('alumni-events', { path: '/alumni-events' });
+});
+
 router.get('/events', (req, res) => {
-    res.render('events', { path: '/events' });
+    res.redirect('/alumni-events');
 });
 
 // New Placeholders
@@ -56,11 +60,11 @@ router.get('/executive-committee', (req, res) => {
 });
 
 router.get('/alumni-benefits', (req, res) => {
-    res.render('about', { path: '/alumni-benefits' });
+    res.render('alumni-benefits', { path: '/alumni-benefits' });
 });
 
 router.get('/annual-reports', (req, res) => {
-    res.render('about', { path: '/annual-reports' });
+    res.render('annual-reports', { path: '/annual-reports' });
 });
 
 // Alumni Connect Placeholders
@@ -69,11 +73,19 @@ router.get('/my-profile', (req, res) => {
 });
 
 router.get('/how-to-give', (req, res) => {
-    res.render('about', { path: '/how-to-give' });
+    res.render('how-to-give', { path: '/how-to-give' });
 });
 
 router.get('/connect-with-us', (req, res) => {
     res.redirect('/contact');
+});
+
+router.get('/alumni-directory', (req, res) => {
+    res.render('alumni-directory', { path: '/alumni-directory' });
+});
+
+router.get('/business-directory', (req, res) => {
+    res.render('business-directory', { path: '/business-directory' });
 });
 
 router.get('/reunion', (req, res) => {
@@ -90,6 +102,27 @@ router.get('/reunion-gallery', (req, res) => {
 
 router.get('/video-gallery', (req, res) => {
     res.render('gallery', { gallery: [], path: '/video-gallery' });
+});
+
+
+router.get('/donate', (req, res) => {
+    res.render('donation-form', { path: '/donate' });
+});
+
+router.post('/process-donation', (req, res) => {
+    // Placeholder for payment processing logic
+    // In a real app, this would integrate with a payment gateway (Razorpay, Stripe, etc.)
+    res.send(`
+        <div style="font-family: sans-serif; text-align: center; padding: 50px;">
+            <h1 style="color: #0A2040;">Thank You for Your Generosity!</h1>
+            <p>This is a simulated payment page.</p>
+            <p><strong>Name:</strong> ${req.body.name}</p>
+            <p><strong>Amount:</strong> ₹${req.body.amount}</p>
+            <p><strong>Type:</strong> ${req.body.donationType}</p>
+            <br>
+            <a href="/" style="background: #0A2040; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Return Home</a>
+        </div>
+    `);
 });
 
 module.exports = router;

@@ -1,0 +1,363 @@
+<%- include('partials/header') %>
+
+    <style>
+        @keyframes revealUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .animate-reveal {
+            animation: revealUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        /* Sophisticated Floating Bloom Effect */
+        .advanced-hover {
+            transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            background: white;
+            /* Changed from #0A2040 for text readability if needed, or keep transparent/white */
+            cursor: default;
+        }
+
+        .advanced-hover::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(0, 163, 224, 0.05) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.7s ease;
+            pointer-events: none;
+        }
+
+        .advanced-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
+        }
+
+        .advanced-hover:hover::before {
+            opacity: 1;
+        }
+
+        /* Premium Card */
+        .premium-card {
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            z-index: 1;
+            border: 1px solid #f3f4f6;
+            /* border-gray-100 */
+        }
+
+        .premium-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -10px rgba(0, 75, 125, 0.1);
+            border-color: #bfdbfe;
+            /* blue-200 */
+        }
+
+        .premium-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 2px;
+            background: linear-gradient(45deg, transparent, rgba(0, 163, 224, 0.3), transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .premium-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Floating Icon */
+        .icon-floating {
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .premium-card:hover .icon-floating {
+            transform: scale(1.15) rotate(8deg);
+            background: linear-gradient(135deg, #e0f2fe, #bfdbfe);
+            /* blue-50 to blue-200 */
+            color: #0284c7;
+            /* blue-600 */
+        }
+
+        /* Magnetic Title */
+        .magnetic-title {
+            position: relative;
+            display: inline-block;
+        }
+
+        .magnetic-title::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 30px;
+            height: 3px;
+            background: #FFD700;
+            transition: width 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .magnetic-title:hover::after {
+            width: 100%;
+        }
+
+        /* Depth Image */
+        .depth-image {
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .depth-image:hover {
+            transform: scale(1.03) rotate(1deg);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.25);
+        }
+    </style>
+
+    <div class="bg-gray-50 min-h-screen pb-16">
+        <!-- Main Content Area -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mt-8">
+
+                <!-- Left Column: Text Content -->
+                <div class="lg:col-span-7 space-y-6 animate-reveal">
+                    <div class="mb-6">
+                        <h2
+                            class="text-3xl font-black text-[#0A2040] uppercase tracking-tight pl-4 border-l-4 border-[#FFD700] magnetic-title">
+                            Benefits of an Alumni
+                        </h2>
+                    </div>
+
+                    <div
+                        class="bg-white rounded-2xl shadow-xl shadow-blue-900/5 p-8 border border-gray-100 text-gray-700 leading-relaxed space-y-6 advanced-hover">
+                        <p>
+                            As a member of the NSM Old Students Association, you gain access to a wide range of benefits
+                            designed to support your professional growth, expand your network, and help you stay
+                            connected with your alma mater and fellow graduates.
+                        </p>
+                        <p>
+                            The NSMOSA Old Students Association represents a vibrant community of graduates who have
+                            walked the hallowed halls of N.St.Mathew's Public School. Our association serves as a bridge
+                            connecting past, present, and future generations of NSMOSAites, fostering lifelong
+                            relationships and creating opportunities for mutual growth and development.
+                        </p>
+                        <p>
+                            Membership in our association opens doors to exclusive networking events, professional
+                            development workshops, and mentorship programs. Whether you're a recent graduate starting
+                            your career journey or an established professional looking to give back, our community
+                            provides the perfect platform to connect, learn, and grow together.
+                        </p>
+                        <p>
+                            Beyond professional benefits, our association organizes annual reunions, cultural events,
+                            and social gatherings that celebrate the rich heritage and shared memories of NSMOSA. These
+                            events provide opportunities to reconnect with old friends, make new connections, and relive
+                            the cherished moments of your school days.
+                        </p>
+                        <p>
+                            We also offer various resources including access to our extensive alumni directory, career
+                            counseling services, job placement assistance, and opportunities to contribute to school
+                            development initiatives. Our scholarship programs and mentorship opportunities allow you to
+                            make a meaningful impact on current students while staying connected to your alma mater.
+                        </p>
+                        <p>
+                            Join us in building a stronger NSMOSA community where every graduate can thrive, contribute,
+                            and continue the legacy of excellence that defines our institution. Together, we can create
+                            a network that supports each other's success and strengthens the bonds that make NSMOSA more
+                            than just a school—it's a family.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right Column: Image -->
+                <div class="lg:col-span-5 sticky top-24">
+                    <div class="relative group">
+                        <div
+                            class="absolute -inset-4 bg-[#FFD700]/20 rounded-3xl blur-2xl group-hover:bg-[#FFD700]/30 transition-all -z-10">
+                        </div>
+                        <div class="rounded-3xl overflow-hidden shadow-2xl border-8 border-white depth-image">
+                            <img src="/images/nsm outer photos/mother and son.jpg" alt="Mother and Child Statue"
+                                class="w-full h-auto object-cover">
+                        </div>
+
+                        <!-- Caption/Decoration -->
+                        <div
+                            class="absolute -bottom-6 -right-6 bg-white p-4 rounded-xl shadow-lg border border-gray-100 hidden md:block premium-card">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 bg-[#0A2040] rounded-full flex items-center justify-center text-white icon-floating">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                        fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Symbol of Love
+                                    </p>
+                                    <p class="text-sm font-bold text-[#0A2040]">Mother & Child</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Benefits Cards Section -->
+            <div class="mt-20 mb-16">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- 1. Wider Professional Network -->
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 premium-card h-full">
+                        <div
+                            class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-[#0A2040] mb-4 icon-floating">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-gray-900 font-bold text-lg mb-3">Wider Professional Network</h3>
+                        <p class="text-gray-500 text-sm leading-relaxed">
+                            Alumni associations are rife with opportunities for expanding a graduate's professional
+                            network. Connect with fellow alumni across various industries, sectors, and geographic
+                            locations to build meaningful professional relationships.
+                        </p>
+                    </div>
+
+                    <!-- 2. Targeted Career Services -->
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 premium-card h-full">
+                        <div
+                            class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-[#0A2040] mb-4 icon-floating">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-gray-900 font-bold text-lg mb-3">Targeted Career Services</h3>
+                        <p class="text-gray-500 text-sm leading-relaxed">
+                            Alumni associations often provide a wealth of career services to help former students find
+                            job opportunities and improve their chances of landing a job offer. Career fairs,
+                            counseling, and resumes assistance help graduates put their best foot forward.
+                        </p>
+                    </div>
+
+                    <!-- 3. Access to School Resources -->
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 premium-card h-full">
+                        <div
+                            class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-[#0A2040] mb-4 icon-floating">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                        </div>
+                        <h3 class="text-gray-900 font-bold text-lg mb-3">Access to School Resources</h3>
+                        <p class="text-gray-500 text-sm leading-relaxed">
+                            In addition to career services, alumni associations may provide various resources such as
+                            access to library materials, journals, and even educational amenities on campus.
+                        </p>
+                    </div>
+
+                    <!-- 4. Contact with Classmates -->
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 premium-card h-full">
+                        <div
+                            class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-[#0A2040] mb-4 icon-floating">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-gray-900 font-bold text-lg mb-3">Contact with Classmates</h3>
+                        <p class="text-gray-500 text-sm leading-relaxed">
+                            Reconnect with former classmates and catch up with old friends. Alumni directories and
+                            social media groups keep the lines of communication open well after graduation.
+                        </p>
+                    </div>
+
+                    <!-- 5. Connect with Professors -->
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 premium-card h-full">
+                        <div
+                            class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-[#0A2040] mb-4 icon-floating">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-gray-900 font-bold text-lg mb-3">Connect with Professors</h3>
+                        <p class="text-gray-500 text-sm leading-relaxed">
+                            Reconnect with past professors for research opportunities, guidance, or mentorship. Gain
+                            insights from experienced academics in your field.
+                        </p>
+                    </div>
+
+                    <!-- 6. Connect with the Community -->
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 premium-card h-full">
+                        <div
+                            class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-[#0A2040] mb-4 icon-floating">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-gray-900 font-bold text-lg mb-3">Connect with the Community</h3>
+                        <p class="text-gray-500 text-sm leading-relaxed">
+                            Partner with the local community to provide assistance and build relationships with
+                            community members and leaders through the association.
+                        </p>
+                    </div>
+
+                    <!-- 7. Socializing -->
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 premium-card h-full">
+                        <div
+                            class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-[#0A2040] mb-4 icon-floating">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-gray-900 font-bold text-lg mb-3">Socializing</h3>
+                        <p class="text-gray-500 text-sm leading-relaxed">
+                            Participate in social events, mixers, and reunions. Take a break and reconnect with
+                            classmates while making new social connections.
+                        </p>
+                    </div>
+
+                    <!-- 8. Giving Back (Special Styling) -->
+                    <div
+                        class="bg-white p-8 rounded-2xl shadow-sm border-l-4 border-[#0A2040] premium-card h-full relative overflow-hidden group">
+                        <!-- Subtle background decoration for focus -->
+                        <div
+                            class="absolute top-0 right-0 w-24 h-24 bg-gray-50 rounded-bl-full -mr-12 -mt-12 transition-transform group-hover:scale-150">
+                        </div>
+
+                        <div
+                            class="w-12 h-12 bg-[#0A2040] rounded-xl flex items-center justify-center text-white mb-4 relative z-10 icon-floating">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                            </svg>
+                        </div>
+                        <h3 class="text-gray-900 font-bold text-lg mb-3 relative z-10">Giving Back</h3>
+                        <p class="text-gray-500 text-sm leading-relaxed relative z-10">
+                            Support future generations through gifts, endowments, and volunteer opportunities. Ensure
+                            the school's legacy continues by giving back to the community that shaped you.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>

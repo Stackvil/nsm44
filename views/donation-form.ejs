@@ -1,0 +1,130 @@
+<%- include('partials/header') %>
+
+    <div class="bg-gray-50 min-h-screen py-12">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+                <!-- Header -->
+                <div class="bg-[#0A2040] py-8 px-8 text-center relative overflow-hidden">
+                    <div
+                        class="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]">
+                    </div>
+                    <h1 class="text-3xl font-bold text-white mb-2 relative z-10">Make a Donation</h1>
+                    <p class="text-blue-100 relative z-10">Your contribution empowers the next generation.</p>
+                </div>
+
+                <form action="/process-donation" method="POST" class="p-8 space-y-6">
+
+                    <!-- Personal Details -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-bold text-[#0A2040] border-b pb-2">Personal Details</h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                <input type="text" id="name" name="name" required
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0A2040] focus:border-transparent outline-none transition-all"
+                                    placeholder="John Doe">
+                            </div>
+                            <div>
+                                <label for="mobile" class="block text-sm font-medium text-gray-700 mb-1">Mobile
+                                    Number</label>
+                                <input type="tel" id="mobile" name="mobile" required
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0A2040] focus:border-transparent outline-none transition-all"
+                                    placeholder="+91 98765 43210">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                            <textarea id="address" name="address" rows="3" required
+                                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0A2040] focus:border-transparent outline-none transition-all"
+                                placeholder="Enter your full address"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Donation Details -->
+                    <div class="space-y-4 pt-4">
+                        <h3 class="text-lg font-bold text-[#0A2040] border-b pb-2">Donation Details</h3>
+
+                        <div>
+                            <label for="donationType" class="block text-sm font-medium text-gray-700 mb-1">I want to
+                                support</label>
+                            <select id="donationType" name="donationType"
+                                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0A2040] focus:border-transparent outline-none transition-all bg-white">
+                                <option value="General Fund">General Fund (Where needed most)</option>
+                                <option value="Scholarship Fund">Scholarship Fund</option>
+                                <option value="Infrastructure">Infrastructure Development</option>
+                                <option value="Research & Innovation">Research & Innovation</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">Donation Amount
+                                (INR)</label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">₹</span>
+                                <input type="number" id="amount" name="amount" required min="100"
+                                    class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0A2040] focus:border-transparent outline-none transition-all text-lg font-bold text-[#0A2040]"
+                                    placeholder="1000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Button -->
+                    <div class="pt-6">
+                        <button type="submit"
+                            class="w-full py-4 bg-[#0A2040] text-white text-lg font-bold rounded-xl hover:bg-[#FFD700] hover:text-[#0A2040] transition-all duration-300 shadow-lg shadow-blue-900/20 hover:shadow-yellow-500/20 group relative overflow-hidden">
+                            <span class="relative z-10 flex items-center justify-center gap-2">
+                                Proceed to Pay
+                                <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                </svg>
+                            </span>
+                        </button>
+                        <p class="text-center text-xs text-gray-400 mt-4 flex items-center justify-center gap-1">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                            Secure Payment Gateway
+                        </p>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple script to pre-select donation type from URL query parameter
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const type = urlParams.get('type');
+            if (type) {
+                const select = document.getElementById('donationType');
+                // Map simple keys to full values
+                const typeMap = {
+                    'scholarship': 'Scholarship Fund',
+                    'infrastructure': 'Infrastructure',
+                    'research': 'Research & Innovation',
+                    'general': 'General Fund'
+                };
+                if (typeMap[type]) {
+                    select.value = typeMap[type];
+                } else {
+                    // Try straight match
+                    for (let i = 0; i < select.options.length; i++) {
+                        if (select.options[i].value === type) {
+                            select.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+    <%- include('partials/footer') %>

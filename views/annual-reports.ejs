@@ -52,11 +52,13 @@
 
         .glass-card {
             background: rgba(255, 255, 255, 0.85);
+            /* Slightly more opaque for content clarity */
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.6);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
             transform-style: preserve-3d;
+            /* Key for 3D depth */
             will-change: transform;
             position: relative;
             overflow: hidden;
@@ -73,13 +75,15 @@
 
         .depth-layer {
             transform: translateZ(30px);
+            /* Lifts content off the card */
         }
 
         .depth-layer-deep {
             transform: translateZ(60px);
+            /* Lifts content further */
         }
 
-        /* --- Gradient Text --- */
+        /* --- Gradient Text & Icons --- */
         .text-gradient {
             background: linear-gradient(135deg, #0A2040 0%, #00a3e0 100%);
             -webkit-background-clip: text;
@@ -114,10 +118,9 @@
                 <!-- Icon -->
                 <div class="mb-8 flex justify-center depth-layer-deep">
                     <div class="w-24 h-24 bg-blue-50/80 rounded-full flex items-center justify-center shadow-inner">
-                        <!-- Globe Icon -->
                         <svg class="w-12 h-12 text-[#0A2040]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                     </div>
                 </div>
@@ -125,28 +128,28 @@
                 <!-- Title -->
                 <h1
                     class="text-5xl md:text-6xl font-black mb-6 tracking-tight text-gradient animate-enter delay-100 depth-layer-deep">
-                    Alumni Chapters
+                    Annual Reports
                 </h1>
 
                 <!-- Divider & Subtitle -->
                 <div class="flex items-center justify-center gap-4 mb-8 animate-enter delay-200 depth-layer">
                     <div class="h-0.5 w-16 bg-gray-200 rounded-full"></div>
-                    <span class="text-sm font-bold text-[#FFD700] uppercase tracking-[0.2em]">Connecting Globally</span>
+                    <span class="text-sm font-bold text-[#FFD700] uppercase tracking-[0.2em]">Coming Soon</span>
                     <div class="h-0.5 w-16 bg-gray-200 rounded-full"></div>
                 </div>
 
                 <!-- Description -->
                 <p
                     class="text-gray-600 text-lg leading-relaxed mb-10 max-w-xl mx-auto animate-enter delay-300 depth-layer">
-                    Information about alumni chapters will be available soon. Explore our global network and connect
-                    with fellow graduates in your region.
+                    We are curating a decade of excellence. Our comprehensive annual reports, detailing the impact and
+                    milestones of NSMOSA, will be available here shortly.
                 </p>
 
                 <!-- Interactive Button -->
                 <div class="animate-enter delay-300 depth-layer-deep">
                     <button
                         class="px-10 py-4 rounded-full bg-[#0A2040] text-white font-bold tracking-wider shadow-xl hover:bg-[#00a3e0] hover:shadow-blue-500/40 hover:-translate-y-1 transition-all duration-300">
-                        Find a Chapter
+                        Notify Me
                     </button>
                 </div>
 
@@ -154,7 +157,7 @@
 
             <!-- Footer text in 3D space -->
             <div class="text-center mt-12 animate-enter delay-300 opacity-60 relative z-10">
-                <p class="text-sm font-medium text-gray-400 tracking-wide">CONNECT • ENGAGE • INSPIRE</p>
+                <p class="text-sm font-medium text-gray-400 tracking-wide">EST. 1975 • NSM OLD STUDENTS ASSOCIATION</p>
             </div>
         </div>
     </div>
@@ -186,11 +189,11 @@
                     card.style.transition = 'transform 0.5s ease';
                     card.style.transform = 'rotateX(0deg) rotateY(0deg)';
                     setTimeout(() => {
-                        card.style.transition = '';
+                        card.style.transition = ''; // Remove transition for responsiveness during hover
                     }, 500);
                 });
 
-                // Clear transition on mouse enter
+                // Clear transition on mouse enter to prevent laggy movement
                 container.addEventListener('mouseenter', () => {
                     card.style.transition = 'none';
                 });
@@ -239,7 +242,7 @@
                     this.vx = (Math.random() - 0.5) * 0.5;
                     this.vy = (Math.random() - 0.5) * 0.5;
                     this.size = Math.random() * 2 + 1;
-                    this.color = Math.random() > 0.5 ? 'rgba(10, 32, 64, 0.1)' : 'rgba(0, 163, 224, 0.1)';
+                    this.color = Math.random() > 0.5 ? 'rgba(10, 32, 64, 0.1)' : 'rgba(0, 163, 224, 0.1)'; // Brand colors
                 }
 
                 update() {
@@ -255,7 +258,7 @@
                     const dy = mouseY - this.y;
                     const dist = Math.sqrt(dx * dx + dy * dy);
                     if (dist < 200) {
-                        this.x -= dx * 0.01;
+                        this.x -= dx * 0.01; // subtle push away
                         this.y -= dy * 0.01;
                     }
                 }
