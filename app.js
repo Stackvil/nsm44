@@ -12,6 +12,7 @@ initDb().then(async () => {
     const count = await User.count();
     if (count === 0) {
         await User.create({
+            fullName: 'Super Admin',
             username: 'admin',
             email: 'admin@nsm.com',
             password: '12345',
@@ -20,6 +21,7 @@ initDb().then(async () => {
             membershipStatus: 'active'
         });
         await User.create({
+            fullName: 'Admin User',
             username: 'admin1',
             email: 'admin1@nsm.com',
             password: '12345',
@@ -28,6 +30,7 @@ initDb().then(async () => {
             membershipStatus: 'active'
         });
         await User.create({
+            fullName: 'Representative Admin',
             username: 'rep_admin',
             email: 'rep@nsm.com',
             password: '12345',
@@ -36,6 +39,7 @@ initDb().then(async () => {
             membershipStatus: 'active'
         });
         await User.create({
+            fullName: 'Standard User',
             username: 'user',
             email: 'user@nsm.com',
             password: '12345',

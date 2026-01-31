@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Content = require('../models/Content');
-const { ensureAuthenticated } = require('../middleware/auth');
+const { ensureAuthenticated, preventCache } = require('../middleware/auth');
 
 // User Dashboard - Only see Approved Content
-router.get('/dashboard', ensureAuthenticated, async (req, res) => {
+router.get('/dashboard', ensureAuthenticated, preventCache, async (req, res) => {
     try {
         // User must be active to see dashboard
         if (!req.session.user.isActive && req.session.user.role === 'user') {

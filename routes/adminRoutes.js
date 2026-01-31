@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const Content = require('../models/Content');
-const { ensureAuthenticated, ensureRole } = require('../middleware/auth');
+const { ensureAuthenticated, ensureRole, preventCache } = require('../middleware/auth');
 
 // Change Password Page
 router.get('/change-password', ensureAuthenticated, (req, res) => {
@@ -41,7 +41,7 @@ router.post('/change-password', ensureAuthenticated, async (req, res) => {
 });
 
 // Dashboard - View Data based on Role
-router.get('/dashboard', ensureAuthenticated, async (req, res) => {
+router.get('/dashboard', ensureAuthenticated, preventCache, async (req, res) => {
     let contents;
     if (req.session.user.role === 'rep_admin') {
         // Rep Admins see everything but with status tracking

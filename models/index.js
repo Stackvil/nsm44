@@ -4,7 +4,7 @@ const Content = require('./Content');
 
 const initDb = async () => {
     try {
-        await sequelize.sync({ force: false }); // Schema updated with Content status/createdBy
+        await sequelize.sync({ alter: true }); // Schema updated with Content status/createdBy
         console.log('Database synced');
     } catch (error) {
         console.error('Database sync failed:', error);

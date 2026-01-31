@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Content = require('../models/Content');
+const { ensureAuthenticated, preventCache } = require('../middleware/auth');
 
 
 router.get('/', async (req, res) => {
@@ -78,8 +79,8 @@ router.get('/annual-reports', (req, res) => {
 });
 
 // Alumni Connect Placeholders
-router.get('/my-profile', (req, res) => {
-    res.render('my-profile', { path: '/my-profile' });
+router.get('/my-profile', ensureAuthenticated, preventCache, (req, res) => {
+    res.render('my-profile', { path: '/my-profile', user: req.session.user });
 });
 
 router.get('/how-to-give', (req, res) => {
