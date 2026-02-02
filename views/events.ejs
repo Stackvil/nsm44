@@ -163,19 +163,81 @@
                 </div>
             </div>
 
-            <!-- Fake Gallery Modal (Placeholder for actual lightbox logic if needed, or re-use existing) -->
-            <div x-show="lightboxOpen" class="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
-                x-transition.opacity>
-                <button @click="lightboxOpen = false" class="absolute top-6 right-6 text-white hover:text-gray-300">
-                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- Gallery Modal (Grid View + Lightbox) -->
+            <div x-show="lightboxOpen" class="fixed inset-0 z-[60] bg-white/95 overflow-y-auto" x-transition.opacity>
+
+                <!-- Close Button -->
+                <button @click="closeGallery()"
+                    class="fixed top-6 right-6 text-gray-500 hover:text-gray-900 z-[70] transition-colors p-2 bg-gray-100 rounded-full hover:bg-gray-200">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
                         </path>
                     </svg>
                 </button>
-                <div class="max-w-4xl w-full">
-                    <img :src="currentPhoto" class="mx-auto max-h-[85vh] rounded shadow-2xl">
-                    <h3 class="text-white text-center mt-4 text-xl font-bold" x-text="currentPhotoTitle"></h3>
+
+                <!-- 1. Grid View Mode -->
+                <div x-show="!sliderMode" class="min-h-full p-4 md:p-10">
+                    <div class="max-w-7xl mx-auto">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-2 text-center" x-text="currentPhotoTitle"></h2>
+                        <p class="text-gray-500 text-center mb-10" x-text="galleryImages.length + ' Photos'"></p>
+
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                            <template x-for="(img, idx) in galleryImages" :key="idx">
+                                <div @click="openSlider(idx)"
+                                    class="group relative aspect-square cursor-pointer rounded-xl overflow-hidden bg-gray-100 border border-transparent hover:border-blue-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                                    <img :src="img"
+                                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-100">
+                                    <div class="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors">
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- 2. Slider View Mode -->
+                <div x-show="sliderMode"
+                    class="fixed inset-0 z-[65] bg-white flex flex-col items-center justify-center p-4">
+                    <!-- Back to Grid Button -->
+                    <button @click="sliderMode = false"
+                        class="absolute top-6 left-6 text-gray-600 hover:text-gray-900 z-[70] flex items-center gap-2 transition-colors px-4 py-2 bg-gray-100 rounded-full hover:bg-gray-200">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        <span class="text-sm font-medium">All Photos</span>
+                    </button>
+
+                    <div class="relative w-full max-w-7xl h-[80vh] flex items-center justify-center">
+                        <!-- Prev -->
+                        <button @click.stop="prevImage()" x-show="galleryImages.length > 1"
+                            class="absolute left-2 md:-left-4 text-gray-700 p-4 hover:bg-gray-100 rounded-full transition z-50 shadow-sm border border-gray-100 bg-white/50 backdrop-blur-sm">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+
+                        <img :src="currentPhoto" class="w-full h-full object-contain rounded-md drop-shadow-2xl">
+
+                        <!-- Next -->
+                        <button @click.stop="nextImage()" x-show="galleryImages.length > 1"
+                            class="absolute right-2 md:-right-4 text-gray-700 p-4 hover:bg-gray-100 rounded-full transition z-50 shadow-sm border border-gray-100 bg-white/50 backdrop-blur-sm">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Caption / Counter -->
+                    <div class="absolute bottom-6 left-0 right-0 text-center">
+                        <p class="text-gray-900 font-medium text-lg" x-text="currentPhotoTitle"></p>
+                        <p class="text-gray-500 text-sm mt-1"
+                            x-text="(currentImageIndex + 1) + ' of ' + galleryImages.length"></p>
+                    </div>
+                </div>
+
             </div>
 
         </div>
@@ -198,8 +260,16 @@
                 currentCategory: null, // 'social_events' or 'nsmosa_events'
                 allData: allEvents,
                 lightboxOpen: false,
-                currentPhoto: '',
+                sliderMode: false,
+                galleryImages: [],
+                currentImageIndex: 0,
                 currentPhotoTitle: '',
+
+                get currentPhoto() {
+                    return this.galleryImages[this.currentImageIndex] || '';
+                },
+
+                // ... (existing category getters) ... // 
 
                 get categoryTitle() {
                     if (this.currentCategory === 'social_events') return 'Social Events Years';
@@ -208,27 +278,41 @@
                 },
 
                 get filteredItems() {
-                    // Filter logic based on categorization strategy
-                    // Assuming 'social_events' mapping to specific section or using years
-                    // For demo, we might need to filter based on 'section' in DB
+                    // ... existing logic ...
+                    let rawItems = [];
 
                     if (this.currentCategory === 'social_events') {
-                        // Filter for Social Events (e.g., specific batch gatherings)
-                        // Logic: Explicit 'social_event' OR 'events' with a year defined
-                        return this.allData.filter(item =>
+                        rawItems = this.allData.filter(item =>
                             item.section === 'social_event' ||
+                            item.section === 'social_events' ||
+                            item.section === 'social' ||
                             (item.section === 'events' && item.year)
                         );
-                    }
-                    if (this.currentCategory === 'nsmosa_events') {
-                        // Filter for NSMOSA Events (e.g., Golden Jubilee)
-                        // Logic: Explicit 'nsmosa_event' OR 'events' without a year
-                        return this.allData.filter(item =>
+                    } else if (this.currentCategory === 'nsmosa_events') {
+                        rawItems = this.allData.filter(item =>
                             item.section === 'nsmosa_event' ||
-                            (item.section === 'events' && !item.year)
+                            item.section === 'nsmosa_events' ||
+                            item.section === 'nsmosa'
                         );
                     }
-                    return [];
+
+                    // Group items
+                    const groups = {};
+                    rawItems.forEach(item => {
+                        const key = (item.title || 'Untitled').trim() + '-' + (item.year || 'NoYear');
+                        if (!groups[key]) {
+                            groups[key] = {
+                                ...item,
+                                images: item.imageUrl ? [item.imageUrl] : []
+                            };
+                        } else {
+                            if (item.imageUrl) {
+                                groups[key].images.push(item.imageUrl);
+                            }
+                        }
+                    });
+
+                    return Object.values(groups);
                 },
 
                 selectCategory(cat) {
@@ -240,13 +324,34 @@
                 },
 
                 openGallery(item) {
-                    // If the item represents a "Folder" (like a year), we might want to drill down further
-                    // Or if it's a single event with photos, open the first photo or a gallery view
-                    // For now, simple lightbox for the cover image
-                    if (item.imageUrl) {
-                        this.currentPhoto = item.imageUrl;
-                        this.currentPhotoTitle = item.title;
+                    this.sliderMode = false; // Start in Grid Mode
+                    this.galleryImages = item.images && item.images.length > 0 ? item.images : (item.imageUrl ? [item.imageUrl] : []);
+                    this.currentImageIndex = 0;
+                    this.currentPhotoTitle = item.title;
+                    if (this.galleryImages.length > 0) {
                         this.lightboxOpen = true;
+                    }
+                },
+
+                openSlider(index) {
+                    this.currentImageIndex = index;
+                    this.sliderMode = true;
+                },
+
+                closeGallery() {
+                    this.lightboxOpen = false;
+                    this.sliderMode = false;
+                },
+
+                nextImage() {
+                    if (this.galleryImages.length > 1) {
+                        this.currentImageIndex = (this.currentImageIndex + 1) % this.galleryImages.length;
+                    }
+                },
+
+                prevImage() {
+                    if (this.galleryImages.length > 1) {
+                        this.currentImageIndex = (this.currentImageIndex - 1 + this.galleryImages.length) % this.galleryImages.length;
                     }
                 }
             }

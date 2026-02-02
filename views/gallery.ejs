@@ -1,175 +1,259 @@
 <%- include('partials/header') %>
 
-    <div class="bg-gray-50 min-h-screen py-16" x-data="galleryHandler()">
+    <div class="bg-gray-50 min-h-screen py-12" x-data="galleryHandler()" x-cloak>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            <!-- Header -->
-            <div class="text-center mb-16">
-                <h1 class="text-5xl font-extrabold text-[#002845] mb-4 tracking-tight uppercase">Photo Gallery</h1>
-                <p class="text-gray-600 max-w-2xl mx-auto text-lg">Clean, modern, and immersive. Explore our memories.
-                </p>
+            <!-- Main Header -->
+            <div class="text-center mb-12">
+                <h1
+                    class="text-4xl font-extrabold text-[#002845] mb-4 uppercase tracking-wider border-b-4 border-[#eab308] inline-block pb-2">
+                    Photo Gallery
+                </h1>
+                <p class="text-gray-600 max-w-2xl mx-auto text-lg">Explore our enhanced collection of memories.</p>
             </div>
 
-            <!-- View 1: Year Grid (Shown when no activeYear selected) -->
-            <img :src="getCoverImage(year)"
-                class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-300">
+            <!-- Albums Grid -->
+            <div x-show="filteredItems.length > 0" x-transition.opacity.duration.500ms>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 
-            <div class="absolute inset-0 flex items-center justify-center">
-                <h2 class="text-4xl font-extrabold text-white drop-shadow-md tracking-wider border-2 border-white/30 px-6 py-2 rounded-xl backdrop-blur-sm"
-                    x-text="year"></h2>
+                    <!-- Loop through albums -->
+                    <template x-for="item in filteredItems" :key="item.id">
+                        <div @click="openGallery(item)"
+                            class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden group border border-gray-100 flex flex-col h-full">
+
+                            <!-- Image Area -->
+                            <div class="h-56 overflow-hidden relative bg-gray-200">
+                                <template x-if="item.imageUrl">
+                                    <img :src="item.imageUrl"
+                                        class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
+                                </template>
+                                <template x-if="!item.imageUrl">
+                                    <div class="w-full h-full flex items-center justify-center text-gray-400">
+                                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                </template>
+
+                                <!-- Overlay with count -->
+                                <div
+                                    class="absolute bottom-0 right-0 bg-[#eab308]/90 text-white text-xs px-3 py-1 rounded-tl-lg backdrop-blur-sm shadow-sm font-bold">
+                                    <span x-text="item.images.length + ' Photos'"></span>
+                                </div>
+                            </div>
+
+                            <!-- Content Area -->
+                            <div class="p-5 flex-1 flex flex-col justify-between">
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-800 mb-2 truncate"
+                                        x-text="item.title || 'Gallery ' + item.year"></h3>
+
+                                    <!-- Meta Details -->
+                                    <div class="mt-2 flex flex-wrap gap-2 text-xs font-semibold text-gray-600">
+                                        <template x-if="item.year">
+                                            <span
+                                                class="bg-yellow-50 text-yellow-700 px-2 py-1 rounded border border-yellow-100 flex items-center gap-1">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                                    </path>
+                                                </svg>
+                                                <span x-text="item.year"></span>
+                                            </span>
+                                        </template>
+                                    </div>
+                                </div>
+                                <div class="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center">
+                                    <span class="text-sm font-semibold text-[#eab308] group-hover:underline">View
+                                        Album</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </template>
+                </div>
             </div>
-        </div>
 
-        <div class="p-5 text-center bg-white relative z-10">
-            <span class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 block">Collection</span>
-            <span class="text-sm font-semibold text-gray-700" x-text="getCount(year) + ' Photos'"></span>
-            <div class="mt-4 w-10 h-1 bg-indigo-500 mx-auto rounded-full group-hover:w-20 transition-all duration-300">
+            <!-- Empty State -->
+            <div x-show="filteredItems.length === 0" class="text-center py-20">
+                <div
+                    class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                </div>
+                <p class="text-xl text-gray-500">No galleries found.</p>
             </div>
-        </div>
-    </div>
-    </template>
-    </div>
 
-    <!-- No photos message -->
-    <div x-show="sortedYears.length === 0" class="text-center py-20">
-        <p class="text-gray-400 text-xl font-light">No photos uploaded yet.</p>
-    </div>
-    </div>
+            <!-- Lightbox Modal (Reused from events.ejs) -->
+            <div x-show="lightboxOpen" class="fixed inset-0 z-[60] bg-white/95 overflow-y-auto" x-transition.opacity>
 
-    <!-- View 2: Photo Grid for Specific Year (Shown when activeYear is set) -->
-    <div x-show="activeYear" x-cloak class="min-h-screen">
-        <!-- Breadcrumb / Back -->
-        <div class="flex items-center gap-4 mb-8">
-            <button @click="activeYear = null"
-                class="flex items-center gap-2 text-indigo-600 font-bold hover:text-indigo-800 transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-                Back to Years
-            </button>
-            <div class="h-6 w-px bg-gray-300"></div>
-            <h2 class="text-2xl font-bold text-gray-800" x-text="activeYear + ' Gallery'"></h2>
-        </div>
+                <!-- Close Button -->
+                <button @click="closeGallery()"
+                    class="fixed top-6 right-6 text-gray-500 hover:text-gray-900 z-[70] transition-colors p-2 bg-gray-100 rounded-full hover:bg-gray-200">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <template x-for="(photo, index) in getPhotosForYear(activeYear)" :key="index">
-                <div class="bg-white p-2 rounded-xl shadow-sm hover:shadow-xl transition duration-300 cursor-zoom-in"
-                    @click="openLightbox(photo)">
-                    <div class="h-64 rounded-lg overflow-hidden relative group">
-                        <img :src="photo.imageUrl" :alt="photo.title"
-                            class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
-                        <!-- Overlay -->
-                        <div
-                            class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                            <span
-                                class="bg-white/90 rounded-full p-3 text-indigo-600 shadow-lg transform scale-50 group-hover:scale-100 transition duration-300">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0h-3">
-                                    </path>
-                                </svg>
-                            </span>
+                <!-- 1. Grid View Mode -->
+                <div x-show="!sliderMode" class="min-h-full p-4 md:p-10">
+                    <div class="max-w-7xl mx-auto">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-2 text-center" x-text="currentPhotoTitle"></h2>
+                        <p class="text-gray-500 text-center mb-10" x-text="galleryImages.length + ' Photos'"></p>
+
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                            <template x-for="(img, idx) in galleryImages" :key="idx">
+                                <div @click="openSlider(idx)"
+                                    class="group relative aspect-square cursor-pointer rounded-xl overflow-hidden bg-gray-100 border border-transparent hover:border-yellow-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                                    <img :src="img"
+                                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-100">
+                                    <div class="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors">
+                                    </div>
+                                </div>
+                            </template>
                         </div>
                     </div>
-                    <div class="mt-3 px-1">
-                        <h3 class="font-bold text-gray-800 truncate" x-text="photo.title"></h3>
-                        <p class="text-xs text-gray-400 mt-0.5 truncate" x-text="photo.description"></p>
+                </div>
+
+                <!-- 2. Slider View Mode -->
+                <div x-show="sliderMode"
+                    class="fixed inset-0 z-[65] bg-white flex flex-col items-center justify-center p-4">
+                    <!-- Back to Grid Button -->
+                    <button @click="sliderMode = false"
+                        class="absolute top-6 left-6 text-gray-600 hover:text-gray-900 z-[70] flex items-center gap-2 transition-colors px-4 py-2 bg-gray-100 rounded-full hover:bg-gray-200">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        <span class="text-sm font-medium">All Photos</span>
+                    </button>
+
+                    <div class="relative w-full max-w-7xl h-[80vh] flex items-center justify-center">
+                        <!-- Prev -->
+                        <button @click.stop="prevImage()" x-show="galleryImages.length > 1"
+                            class="absolute left-2 md:-left-4 text-gray-700 p-4 hover:bg-gray-100 rounded-full transition z-50 shadow-sm border border-gray-100 bg-white/50 backdrop-blur-sm">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+
+                        <img :src="currentPhoto" class="w-full h-full object-contain rounded-md drop-shadow-2xl">
+
+                        <!-- Next -->
+                        <button @click.stop="nextImage()" x-show="galleryImages.length > 1"
+                            class="absolute right-2 md:-right-4 text-gray-700 p-4 hover:bg-gray-100 rounded-full transition z-50 shadow-sm border border-gray-100 bg-white/50 backdrop-blur-sm">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Caption / Counter -->
+                    <div class="absolute bottom-6 left-0 right-0 text-center">
+                        <p class="text-gray-900 font-medium text-lg" x-text="currentPhotoTitle"></p>
+                        <p class="text-gray-500 text-sm mt-1"
+                            x-text="(currentImageIndex + 1) + ' of ' + galleryImages.length"></p>
                     </div>
                 </div>
-            </template>
-        </div>
 
-        <div x-show="getPhotosForYear(activeYear).length === 0" class="text-center py-20 text-gray-500">
-            No photos in this folder.
-        </div>
-    </div>
-
-    </div>
-
-    <!-- Lightbox Modal -->
-    <div x-show="lightboxOpen" x-transition.opacity.duration.300ms x-cloak
-        class="fixed inset-0 z-[100] bg-black/95 backdrop-blur-lg flex items-center justify-center p-4">
-
-        <button @click="lightboxOpen = false" class="absolute top-6 right-6 text-white/50 hover:text-white transition">
-            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                </path>
-            </svg>
-        </button>
-
-        <div class="max-w-7xl max-h-[90vh] relative" @click.outside="lightboxOpen = false">
-            <img :src="activePhoto?.imageUrl"
-                class="max-h-[85vh] max-w-full rounded-md shadow-2xl mx-auto object-contain">
-            <div class="text-center mt-4 space-y-1">
-                <h3 class="text-white text-xl font-bold tracking-wide" x-text="activePhoto?.title"></h3>
-                <p class="text-gray-400 text-sm" x-text="activePhoto?.description"></p>
             </div>
+
         </div>
     </div>
 
-    </div>
-
-    <!-- Pass data to JS safely -->
+    <!-- Data Injection -->
     <script id="gallery-data" type="application/json">
     <%- JSON.stringify(gallery) %>
 </script>
 
-    <!-- Alpine.js -->
     <script src="//unpkg.com/alpinejs" defer></script>
     <script>
         function galleryHandler() {
-            let items = [];
+            let allItems = [];
             try {
-                const dataElement = document.getElementById('gallery-data');
-                if (dataElement && dataElement.textContent) {
-                    items = JSON.parse(dataElement.textContent);
-                }
+                allItems = JSON.parse(document.getElementById('gallery-data').textContent);
             } catch (e) {
-                console.error('Failed to parse gallery data:', e);
+                console.error('Error parsing gallery data', e)
             }
 
             return {
-                items: items,
-                activeYear: null,
+                allData: allItems,
                 lightboxOpen: false,
-                activePhoto: null,
+                sliderMode: false,
+                galleryImages: [],
+                currentImageIndex: 0,
+                currentPhotoTitle: '',
 
-                get sortedYears() {
-                    // Extract unique years. If year is null, label 'General'
-                    const years = [...new Set(this.items.map(item => item.year || 'General'))];
-                    // Sort descending (newest first). 'General' goes last.
-                    return years.sort((a, b) => {
-                        if (a === 'General') return 1;
-                        if (b === 'General') return -1;
-                        return b - a; // Descending numbers
+                get currentPhoto() {
+                    return this.galleryImages[this.currentImageIndex] || '';
+                },
+
+                get filteredItems() {
+                    // Filter for Photo Gallery items
+                    const rawItems = this.allData.filter(item =>
+                        item.section === 'photo_gallery' ||
+                        item.section === 'home_photo_gallery'
+                    );
+
+                    // Group items by Title + Year
+                    const groups = {};
+                    rawItems.forEach(item => {
+                        const key = (item.title || 'Untitled').trim() + '-' + (item.year || 'NoYear');
+                        if (!groups[key]) {
+                            groups[key] = {
+                                ...item,
+                                images: item.imageUrl ? [item.imageUrl] : []
+                            };
+                        } else {
+                            if (item.imageUrl) {
+                                groups[key].images.push(item.imageUrl);
+                            }
+                        }
                     });
+
+                    return Object.values(groups);
                 },
 
-                getPhotosForYear(year) {
-                    return this.items.filter(item => {
-                        if (year === 'General') return !item.year;
-                        return item.year == year;
-                    });
+                openGallery(item) {
+                    this.sliderMode = false;
+                    this.galleryImages = item.images && item.images.length > 0 ? item.images : (item.imageUrl ? [item.imageUrl] : []);
+                    this.currentImageIndex = 0;
+                    this.currentPhotoTitle = item.title;
+                    if (this.galleryImages.length > 0) {
+                        this.lightboxOpen = true;
+                    }
                 },
 
-                getCoverImage(year) {
-                    const photos = this.getPhotosForYear(year);
-                    return photos.length > 0 ? photos[0].imageUrl : '';
+                openSlider(index) {
+                    this.currentImageIndex = index;
+                    this.sliderMode = true;
                 },
 
-                getCount(year) {
-                    return this.getPhotosForYear(year).length;
+                closeGallery() {
+                    this.lightboxOpen = false;
+                    this.sliderMode = false;
                 },
 
-                openYear(year) {
-                    this.activeYear = year;
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                nextImage() {
+                    if (this.galleryImages.length > 1) {
+                        this.currentImageIndex = (this.currentImageIndex + 1) % this.galleryImages.length;
+                    }
                 },
 
-                openLightbox(photo) {
-                    this.activePhoto = photo;
-                    this.lightboxOpen = true;
+                prevImage() {
+                    if (this.galleryImages.length > 1) {
+                        this.currentImageIndex = (this.currentImageIndex - 1 + this.galleryImages.length) % this.galleryImages.length;
+                    }
                 }
             }
         }

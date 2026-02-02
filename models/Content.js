@@ -30,6 +30,18 @@ const Content = sequelize.define('Content', {
         type: DataTypes.STRING,
         allowNull: true
     },
+    profession: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    location: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    timing: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     isVisible: {
         type: DataTypes.BOOLEAN,
         defaultValue: true

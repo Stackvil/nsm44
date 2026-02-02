@@ -44,22 +44,22 @@
                     </a>
                     <a href="/admin/nsmosa-events"
                         class="sidebar-link <%= page === 'nsmosa_events' ? 'active' : '' %> flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 text-sm font-medium">
-                        <i class="fas fa-calendar-alt w-5"></i> NSMOSA Events
+                        <i class="fas fa-calendar-alt w-5"></i> NSM ALUMNI EVENTS
                     </a>
-                    <a href="#"
-                        class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 text-sm font-medium">
+                    <a href="/admin/photo-gallery"
+                        class="sidebar-link <%= page === 'photo_gallery' ? 'active' : '' %> flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 text-sm font-medium">
                         <i class="fas fa-images w-5"></i> Photo Gallery
                     </a>
-                    <a href="#"
-                        class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 text-sm font-medium">
+                    <a href="/admin/reunion-gallery"
+                        class="sidebar-link <%= page === 'reunion_gallery' ? 'active' : '' %> flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 text-sm font-medium">
                         <i class="fas fa-handshake w-5"></i> Reunion Photo Gallery
                     </a>
-                    <a href="#"
-                        class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 text-sm font-medium">
+                    <a href="/admin/alumni-events"
+                        class="sidebar-link <%= page === 'alumni_events' ? 'active' : '' %> flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 text-sm font-medium">
                         <i class="fas fa-calendar-check w-5"></i> Alumni Event
                     </a>
-                    <a href="#"
-                        class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 text-sm font-medium">
+                    <a href="/admin/alumni-directory"
+                        class="sidebar-link <%= page === 'alumni_directory' ? 'active' : '' %> flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 text-sm font-medium">
                         <i class="fas fa-address-book w-5"></i> Alumni Directory
                     </a>
                     <a href="#"
@@ -640,7 +640,8 @@
                             <% } %>
                     </div>
 
-                    <% } else if (page==='nsmosa_events' ) { %>
+                    <% } else if (page==='nsmosa_events' || page==='photo_gallery' || page==='reunion_gallery' ||
+                        page==='alumni_events' || page==='alumni_directory' ) { %>
                         <div class="flex-1 flex flex-col min-h-[600px]">
                             <% if (!locals.eventType) { %>
                                 <!-- Selection Screen -->
@@ -670,7 +671,7 @@
                                             </div>
                                             <div class="relative z-10">
                                                 <i class="fas fa-star text-6xl text-white mb-6"></i>
-                                                <h2 class="text-3xl font-bold text-white mb-2">NSMOSA Events</h2>
+                                                <h2 class="text-3xl font-bold text-white mb-2">NSM ALUMNI EVENTS</h2>
                                                 <p
                                                     class="text-orange-100 text-sm font-medium flex items-center justify-center gap-1 group-hover:gap-2 transition-all">
                                                     View Gallery <i class="fas fa-arrow-right"></i>
@@ -685,7 +686,7 @@
                                         class="bg-white rounded-2xl shadow-sm border border-gray-100 flex-1 flex flex-col p-6">
                                         <div class="flex items-center justify-between mb-8">
                                             <div class="flex items-center gap-4">
-                                                <a href="/admin/nsmosa-events"
+                                                <a href="<%= (page === 'photo_gallery' || page === 'reunion_gallery' || page === 'alumni_events' || page === 'alumni_directory') ? '/admin/dashboard' : '/admin/nsmosa-events' %>"
                                                     class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 transition">
                                                     <i class="fas fa-arrow-left"></i>
                                                 </a>
@@ -696,228 +697,685 @@
                                             <button
                                                 onclick="document.getElementById('add-event-form').classList.toggle('hidden')"
                                                 class="bg-[#003B73] text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-800 transition flex items-center gap-2 shadow-lg hover:shadow-xl">
-                                                <i class="fas fa-plus"></i> Add Event
+                                                <i class="fas fa-plus"></i>
+                                                <%= (page==='photo_gallery' || page==='reunion_gallery' )
+                                                    ? 'Add Gallery' : (page==='alumni_events' ? 'Add Alumni Event' :
+                                                    (page==='alumni_directory' ? 'Add Directory Entry' : 'Add Event' ))
+                                                    %>
                                             </button>
                                         </div>
 
                                         <!-- Add Event Form -->
-                                        <div id="add-event-form"
-                                            class="hidden mb-8 bg-gray-50 border border-gray-200 rounded-2xl p-6 shadow-inner">
-                                            <form action="/admin/create-event" method="POST"
-                                                enctype="multipart/form-data" class="space-y-4 max-w-2xl mx-auto">
-                                                <input type="hidden" name="eventType" value="<%= eventType %>">
+                                        <div id="add-event-form" class="hidden mb-10"></div>
+                                        <div
+                                            class="bg-white border border-gray-100 rounded-[2rem] p-8 shadow-xl relative overflow-hidden">
+                                            <!-- Decorative background element -->
+                                            <div
+                                                class="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full blur-3xl -mr-32 -mt-32 opacity-50 pointer-events-none">
+                                            </div>
 
-                                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                    <div>
-                                                        <label class="block text-sm font-bold text-gray-700 mb-1">Event
-                                                            Name</label>
+                                            <form action="/admin/create-event" method="POST"
+                                                enctype="multipart/form-data" class="space-y-8 relative z-10">
+                                                <input type="hidden" name="eventType" value="<%= eventType || page %>">
+
+
+                                                <div
+                                                    class="<%= page==='alumni_directory' ? 'grid grid-cols-1 gap-8' : 'grid grid-cols-1 md:grid-cols-2 gap-8' %>">
+                                                    <div class="group">
+                                                        <label class="block text-sm font-bold text-gray-700 mb-2 pl-1">
+                                                            <%= (page==='photo_gallery' || page==='reunion_gallery' )
+                                                                ? 'Gallery Name' : (page==='alumni_directory'
+                                                                ? 'Director Name' : 'Event Name' ) %>
+                                                        </label>
                                                         <input type="text" name="eventName" required
-                                                            class="w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                                                            class="w-full rounded-2xl bg-gray-50 border-gray-200 focus:bg-white focus:border-[#003B73] focus:ring-[#003B73] transition-all duration-300 py-3 px-4 font-medium"
                                                             placeholder="e.g. Annual Alumni Meet">
                                                     </div>
-                                                    <div>
+                                                    <% if (page !=='alumni_directory' ) { %>
+                                                        <div class="group">
+                                                            <label
+                                                                class="block text-sm font-bold text-gray-700 mb-2 pl-1">Year</label>
+                                                            <input type="number" name="eventYear" required
+                                                                class="w-full rounded-2xl bg-gray-50 border-gray-200 focus:bg-white focus:border-[#003B73] focus:ring-[#003B73] transition-all duration-300 py-3 px-4 font-medium"
+                                                                placeholder="e.g. 2024" min="1900" max="2100">
+                                                        </div>
+                                                        <% } %>
+                                                </div>
+
+                                                <% if (page==='alumni_events' ) { %>
+                                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                                        <div class="group">
+                                                            <label
+                                                                class="block text-sm font-bold text-gray-700 mb-2 pl-1">Location</label>
+                                                            <input type="text" name="location"
+                                                                class="w-full rounded-2xl bg-gray-50 border-gray-200 focus:bg-white focus:border-[#003B73] focus:ring-[#003B73] transition-all duration-300 py-3 px-4 font-medium"
+                                                                placeholder="e.g. School Auditorium">
+                                                        </div>
+                                                        <div class="group">
+                                                            <label
+                                                                class="block text-sm font-bold text-gray-700 mb-2 pl-1">Timing</label>
+                                                            <input type="text" name="timing"
+                                                                class="w-full rounded-2xl bg-gray-50 border-gray-200 focus:bg-white focus:border-[#003B73] focus:ring-[#003B73] transition-all duration-300 py-3 px-4 font-medium"
+                                                                placeholder="e.g. 10:00 AM - 6:00 PM">
+                                                        </div>
+                                                        <div class="group">
+                                                            <label
+                                                                class="block text-sm font-bold text-gray-700 mb-2 pl-1">Date</label>
+                                                            <input type="date" name="eventDate"
+                                                                class="w-full rounded-2xl bg-gray-50 border-gray-200 focus:bg-white focus:border-[#003B73] focus:ring-[#003B73] transition-all duration-300 py-3 px-4 font-medium">
+                                                        </div>
+                                                    </div>
+                                                    <div class="group">
                                                         <label
-                                                            class="block text-sm font-bold text-gray-700 mb-1">Year</label>
-                                                        <input type="number" name="eventYear" required
-                                                            class="w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                                                            placeholder="e.g. 2024" min="1900" max="2100">
+                                                            class="block text-sm font-bold text-gray-700 mb-2 pl-1">Event
+                                                            Description</label>
+                                                        <textarea name="description" rows="3"
+                                                            class="w-full rounded-2xl bg-gray-50 border-gray-200 focus:bg-white focus:border-[#003B73] focus:ring-[#003B73] transition-all duration-300 py-3 px-4 font-medium"
+                                                            placeholder="Write something about the event..."></textarea>
                                                     </div>
-                                                </div>
+                                                    <% } %>
 
-                                                <div>
-                                                    <label class="block text-sm font-bold text-gray-700 mb-1">Gallery
-                                                        Images</label>
-                                                    <div
-                                                        class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:bg-white transition bg-white/50 cursor-pointer relative">
-                                                        <input type="file" name="images" multiple accept="image/*"
-                                                            required
-                                                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                                                        <i
-                                                            class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
-                                                        <p class="text-sm text-gray-500 font-medium">Click to upload
-                                                            multiple images</p>
-                                                        <p class="text-xs text-gray-400 mt-1">supports jpg, png,
-                                                            jpeg</p>
-                                                    </div>
-                                                </div>
+                                                        <% if (page==='alumni_directory' ) { %>
+                                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                                <div class="group">
+                                                                    <label
+                                                                        class="block text-sm font-bold text-gray-700 mb-2 pl-1">Batch
+                                                                        Year</label>
+                                                                    <input type="text" name="batch"
+                                                                        class="w-full rounded-2xl bg-gray-50 border-gray-200 focus:bg-white focus:border-[#003B73] focus:ring-[#003B73] transition-all duration-300 py-3 px-4 font-medium"
+                                                                        placeholder="e.g. 2010">
+                                                                </div>
+                                                                <div class="group">
+                                                                    <label
+                                                                        class="block text-sm font-bold text-gray-700 mb-2 pl-1">Profession</label>
+                                                                    <input type="text" name="profession"
+                                                                        class="w-full rounded-2xl bg-gray-50 border-gray-200 focus:bg-white focus:border-[#003B73] focus:ring-[#003B73] transition-all duration-300 py-3 px-4 font-medium"
+                                                                        placeholder="e.g. Software Engineer">
+                                                                </div>
+                                                            </div>
+                                                            <% } %>
 
-                                                <div class="flex justify-end pt-2">
-                                                    <button type="submit"
-                                                        class="bg-green-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-green-700 transition shadow-md">
-                                                        Upload & Save Event
-                                                    </button>
-                                                </div>
+
+                                                                <div>
+                                                                    <label
+                                                                        class="block text-sm font-bold text-gray-700 mb-2 pl-1">Gallery
+                                                                        Images</label>
+                                                                    <div class="relative group cursor-pointer">
+                                                                        <div
+                                                                            class="border-2 border-dashed border-gray-300 rounded-2xl p-10 text-center transition-all duration-300 group-hover:border-[#003B73] group-hover:bg-blue-50/30 bg-gray-50/50">
+                                                                            <input type="file" name="images"
+                                                                                id="event-images-input" multiple
+                                                                                accept="image/*" required
+                                                                                onchange="previewImages(this)"
+                                                                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
+
+                                                                            <div
+                                                                                class="flex flex-col items-center justify-center transition-transform duration-300 group-hover:scale-105">
+                                                                                <div
+                                                                                    class="w-16 h-16 bg-white rounded-full shadow-md flex items-center justify-center mb-4 text-[#003B73]">
+                                                                                    <i
+                                                                                        class="fas fa-cloud-upload-alt text-2xl"></i>
+                                                                                </div>
+                                                                                <p
+                                                                                    class="text-base text-gray-600 font-bold mb-1 group-hover:text-[#003B73] transition-colors">
+                                                                                    Click to upload multiple images</p>
+                                                                                <p class="text-xs text-gray-400">
+                                                                                    supports jpg,
+                                                                                    png, jpeg
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <!-- Preview Container -->
+                                                                    <div id="image-preview-container"
+                                                                        class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 empty:hidden transition-all duration-300">
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="flex justify-end pt-2">
+                                                                    <button type="submit"
+                                                                        class="bg-[#22c55e] hover:bg-[#16a34a] text-white px-8 py-3.5 rounded-xl font-bold shadow-lg shadow-green-500/30 transform transition-all duration-200 hover:-translate-y-1 hover:shadow-xl active:translate-y-0 text-base">
+                                                                        <%= page==='photo_gallery'
+                                                                            ? 'Upload & Save Gallery' :
+                                                                            (page==='alumni_directory'
+                                                                            ? 'Save Directory Entry'
+                                                                            : 'Upload & Save Event' ) %>
+                                                                    </button>
+                                                                </div>
                                             </form>
                                         </div>
 
+                                    </div>
 
 
-                                        <!-- Existing Events Grid -->
-                                        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                                            <% if (events && events.length> 0) { %>
-                                                <% events.forEach(evt=> { %>
-                                                    <a href="#"
-                                                        class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition group block h-full">
-                                                        <div class="relative h-48 bg-gray-100 overflow-hidden">
-                                                            <% if (evt.images && evt.images.length> 0) { %>
-                                                                <img src="<%= evt.images[0].imageUrl %>"
+
+                                    <!-- Existing Events Grid -->
+                                    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                        <% if (events && events.length> 0) { %>
+                                            <% events.forEach(evt=> { %>
+                                                <a href="#"
+                                                    class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition group block h-full">
+                                                    <div class="relative h-48 bg-gray-100 overflow-hidden">
+                                                        <% if (page==='alumni_directory' ) { %>
+                                                            <% if (evt.imageUrl) { %>
+                                                                <img src="<%= evt.imageUrl %>"
                                                                     class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                                                                 <% } else { %>
                                                                     <div
                                                                         class="flex items-center justify-center h-full text-gray-300">
-                                                                        <i class="fas fa-image text-4xl"></i>
+                                                                        <i class="fas fa-user text-4xl"></i>
                                                                     </div>
                                                                     <% } %>
-                                                                        <div
-                                                                            class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition">
-                                                                        </div>
-
-                                                                        <!-- Action Menu -->
-                                                                        <div
-                                                                            class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
-                                                                            <div class="relative">
-                                                                                <button
-                                                                                    onclick="event.preventDefault(); document.getElementById('dropdown-<%= evt.id %>').classList.toggle('hidden')"
-                                                                                    class="bg-white text-gray-700 p-2 rounded-full shadow-md hover:bg-gray-100 w-8 h-8 flex items-center justify-center transition-transform hover:scale-105">
-                                                                                    <i
-                                                                                        class="fas fa-ellipsis-v text-xs"></i>
-                                                                                </button>
-                                                                                <div id="dropdown-<%= evt.id %>"
-                                                                                    class="hidden absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-xl z-50 overflow-hidden ring-1 ring-black ring-opacity-5">
-                                                                                    <button
-                                                                                        onclick="event.preventDefault(); openEditModal('<%= evt.title %>', '<%= evt.year %>', '<%= eventType %>')"
-                                                                                        class="block w-full text-left px-4 py-2 hover:bg-gray-50 text-sm text-gray-700 font-medium border-b border-gray-50">
+                                                                        <% } else { %>
+                                                                            <% if (evt.images && evt.images.length> 0) {
+                                                                                %>
+                                                                                <img src="<%= evt.images[0].imageUrl %>"
+                                                                                    class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                                                                <% } else { %>
+                                                                                    <div
+                                                                                        class="flex items-center justify-center h-full text-gray-300">
                                                                                         <i
-                                                                                            class="fas fa-edit mr-2 text-blue-500"></i>
-                                                                                        Edit
-                                                                                    </button>
-                                                                                    <form action="/admin/delete-event"
-                                                                                        method="POST"
-                                                                                        onsubmit="return confirm('Are you sure you want to delete this event and all its images?');">
-                                                                                        <input type="hidden"
-                                                                                            name="title"
-                                                                                            value="<%= evt.title %>">
-                                                                                        <input type="hidden" name="year"
-                                                                                            value="<%= evt.year %>">
-                                                                                        <input type="hidden"
-                                                                                            name="section"
-                                                                                            value="<%= eventType %>">
-                                                                                        <button type="submit"
-                                                                                            class="block w-full text-left px-4 py-2 hover:bg-red-50 text-sm text-red-600 font-medium">
-                                                                                            <i
-                                                                                                class="fas fa-trash-alt mr-2"></i>
-                                                                                            Delete
-                                                                                        </button>
-                                                                                    </form>
-                                                                                </div>
+                                                                                            class="fas fa-image text-4xl"></i>
+                                                                                    </div>
+                                                                                    <% } %>
+                                                                                        <% } %>
+                                                                                            <div
+                                                                                                class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition">
+                                                                                            </div>
+
+                                                                                            <!-- Action Menu -->
+                                                                                            <div
+                                                                                                class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                                                                                                <div class="relative">
+                                                                                                    <button
+                                                                                                        onclick="event.preventDefault(); document.getElementById('dropdown-<%= evt.id %>').classList.toggle('hidden')"
+                                                                                                        class="bg-white text-gray-700 p-2 rounded-full shadow-md hover:bg-gray-100 w-8 h-8 flex items-center justify-center transition-transform hover:scale-105">
+                                                                                                        <i
+                                                                                                            class="fas fa-ellipsis-v text-xs"></i>
+                                                                                                    </button>
+                                                                                                    <div id="dropdown-<%= evt.id %>"
+                                                                                                        class="hidden absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-xl z-50 overflow-hidden ring-1 ring-black ring-opacity-5">
+                                                                                                        <button
+                                                                                                            data-title="<%= evt.title %>"
+                                                                                                            data-year="<%= evt.year %>"
+                                                                                                            data-section="<%= eventType || page %>"
+                                                                                                            data-images='<%= page === "alumni_directory" ? JSON.stringify([{id: evt.id, imageUrl: evt.imageUrl}]) : JSON.stringify(evt.images) %>'
+                                                                                                            <% if
+                                                                                                            (eventType==='alumni_events'
+                                                                                                            ||
+                                                                                                            page==='alumni_events'
+                                                                                                            ) { %>
+                                                                                                            data-location="
+                                                                                                            <%= evt.location
+                                                                                                                || '' %>
+                                                                                                                "
+                                                                                                                data-timing="
+                                                                                                                <%= evt.timing
+                                                                                                                    || ''
+                                                                                                                    %>"
+                                                                                                                    data-eventdate="
+                                                                                                                    <%= evt.eventDate
+                                                                                                                        || ''
+                                                                                                                        %>
+                                                                                                                        "
+                                                                                                                        data-description="
+                                                                                                                        <%= evt.description
+                                                                                                                            || ''
+                                                                                                                            %>
+                                                                                                                            "
+                                                                                                                            <% }
+                                                                                                                                %>
+                                                                                                                                <% if
+                                                                                                                                    (page==='alumni_directory'
+                                                                                                                                    )
+                                                                                                                                    {
+                                                                                                                                    %>
+                                                                                                                                    data-batch="
+                                                                                                                                    <%= evt.batch
+                                                                                                                                        || ''
+                                                                                                                                        %>
+                                                                                                                                        "
+                                                                                                                                        data-profession="
+                                                                                                                                        <%= evt.profession
+                                                                                                                                            || ''
+                                                                                                                                            %>
+                                                                                                                                            "
+                                                                                                                                            <% }
+                                                                                                                                                %>
+                                                                                                                                                onclick="event.preventDefault();
+                                                                                                                                                handleEditModal(this)"
+                                                                                                                                                class="block
+                                                                                                                                                w-full
+                                                                                                                                                text-left
+                                                                                                                                                px-4
+                                                                                                                                                py-2
+                                                                                                                                                hover:bg-gray-50
+                                                                                                                                                text-sm
+                                                                                                                                                text-gray-700
+                                                                                                                                                font-medium
+                                                                                                                                                border-b
+                                                                                                                                                border-gray-50">
+                                                                                                                                                <i
+                                                                                                                                                    class="fas fa-edit mr-2 text-blue-500"></i>
+                                                                                                                                                Edit
+                                                                                                        </button>
+                                                                                                        <form
+                                                                                                            action="/admin/delete-event"
+                                                                                                            method="POST"
+                                                                                                            onsubmit="return confirm('Are you sure you want to delete this event and all its images?');">
+                                                                                                            <input
+                                                                                                                type="hidden"
+                                                                                                                name="title"
+                                                                                                                value="<%= evt.title %>">
+                                                                                                            <input
+                                                                                                                type="hidden"
+                                                                                                                name="year"
+                                                                                                                value="<%= evt.year %>">
+                                                                                                            <input
+                                                                                                                type="hidden"
+                                                                                                                name="section"
+                                                                                                                value="<%= eventType %>">
+                                                                                                            <button
+                                                                                                                type="submit"
+                                                                                                                class="block w-full text-left px-4 py-2 hover:bg-red-50 text-sm text-red-600 font-medium">
+                                                                                                                <i
+                                                                                                                    class="fas fa-trash-alt mr-2"></i>
+                                                                                                                Delete
+                                                                                                            </button>
+                                                                                                        </form>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+
+                                                    </div>
+                                                    <div class="p-4">
+                                                        <h4 class="font-bold text-gray-900 truncate text-lg">
+                                                            <%= evt.title %>
+                                                        </h4>
+
+                                                        <% if (eventType==='alumni_events' ) { %>
+                                                            <!-- Alumni Event Details -->
+                                                            <div class="mt-3 space-y-2">
+                                                                <% if (evt.location) { %>
+                                                                    <div
+                                                                        class="flex items-start gap-2 text-sm text-gray-600">
+                                                                        <i
+                                                                            class="fas fa-map-marker-alt text-blue-500 mt-0.5 flex-shrink-0"></i>
+                                                                        <span class="line-clamp-1">
+                                                                            <%= evt.location %>
+                                                                        </span>
+                                                                    </div>
+                                                                    <% } %>
+                                                                        <% if (evt.timing) { %>
+                                                                            <div
+                                                                                class="flex items-start gap-2 text-sm text-gray-600">
+                                                                                <i
+                                                                                    class="fas fa-clock text-blue-500 mt-0.5 flex-shrink-0"></i>
+                                                                                <span class="line-clamp-1">
+                                                                                    <%= evt.timing %>
+                                                                                </span>
                                                                             </div>
-                                                                        </div>
-
-                                                        </div>
-                                                        <div class="p-4">
-                                                            <h4 class="font-bold text-gray-900 truncate text-lg">
-                                                                <%= evt.title %>
-                                                            </h4>
-                                                            <div class="flex items-center justify-between mt-2">
-                                                                <div
-                                                                    class="flex items-center gap-2 text-sm text-gray-500 font-medium">
-                                                                    <i class="fas fa-calendar-alt text-gray-400"></i>
-                                                                    <span>
-                                                                        <%= evt.year %>
-                                                                    </span>
-                                                                </div>
-                                                                <span
-                                                                    class="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full font-semibold border border-gray-200">
-                                                                    <%= evt.images.length %> Items
-                                                                </span>
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Edit Modal (One generic modal appended at end of loop is better, but need unique IDs or JS to populate. I'll put the modal outside the loop) -->
-                                                    </a>
-                                                    <% }) %>
-                                                        <% } else { %>
-                                                            <div class="col-span-full py-12 text-center text-gray-400">
-                                                                <i
-                                                                    class="fas fa-folder-open text-4xl mb-4 text-gray-300"></i>
-                                                                <p>No events found for this category.</p>
+                                                                            <% } %>
+                                                                                <% if (evt.description) { %>
+                                                                                    <p
+                                                                                        class="text-xs text-gray-500 mt-2 line-clamp-2">
+                                                                                        <%= evt.description %>
+                                                                                    </p>
+                                                                                    <% } %>
                                                             </div>
                                                             <% } %>
-                                        </div>
+
+                                                                <% if (page==='alumni_directory' ) { %>
+                                                                    <!-- Alumni Directory Details -->
+                                                                    <div class="mt-3 space-y-2">
+                                                                        <% if (evt.batch) { %>
+                                                                            <div
+                                                                                class="flex items-start gap-2 text-sm text-gray-600">
+                                                                                <i
+                                                                                    class="fas fa-graduation-cap text-blue-500 mt-0.5 flex-shrink-0"></i>
+                                                                                <span class="line-clamp-1">Batch <%=
+                                                                                        evt.batch %></span>
+                                                                            </div>
+                                                                            <% } %>
+                                                                                <% if (evt.profession) { %>
+                                                                                    <div
+                                                                                        class="flex items-start gap-2 text-sm text-gray-600">
+                                                                                        <i
+                                                                                            class="fas fa-briefcase text-blue-500 mt-0.5 flex-shrink-0"></i>
+                                                                                        <span class="line-clamp-1">
+                                                                                            <%= evt.profession %>
+                                                                                        </span>
+                                                                                    </div>
+                                                                                    <% } %>
+                                                                    </div>
+                                                                    <% } %>
+
+
+                                                                        <div
+                                                                            class="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+                                                                            <% if (page !=='alumni_directory' &&
+                                                                                evt.year) { %>
+                                                                                <div
+                                                                                    class="flex items-center gap-2 text-sm text-gray-500 font-medium">
+                                                                                    <i
+                                                                                        class="fas fa-calendar-alt text-gray-400"></i>
+                                                                                    <span>
+                                                                                        <%= evt.year %>
+                                                                                    </span>
+                                                                                </div>
+                                                                                <% } else { %>
+                                                                                    <div></div>
+                                                                                    <% } %>
+                                                                                        <span
+                                                                                            class="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full font-semibold border border-gray-200">
+                                                                                            <%= page==='alumni_directory'
+                                                                                                ? '1 Photo' :
+                                                                                                (evt.images.length
+                                                                                                + ' Items' ) %>
+                                                                                        </span>
+                                                                        </div>
+                                                    </div>
+
+                                                    <!-- Edit Modal (One generic modal appended at end of loop is better, but need unique IDs or JS to populate. I'll put the modal outside the loop) -->
+                                                </a>
+                                                <% }) %>
+                                                    <% } else { %>
+                                                        <div class="col-span-full py-12 text-center text-gray-400">
+                                                            <i
+                                                                class="fas fa-folder-open text-4xl mb-4 text-gray-300"></i>
+                                                            <p>No events found for this category.</p>
+                                                        </div>
+                                                        <% } %>
                                     </div>
-                                    <% } %>
                         </div>
                         <% } %>
+    </div>
+    <% } %>
         </main>
-    </div>
-
-    <!-- Edit Event Modal -->
-    <div id="edit-event-modal"
-        class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center backdrop-blur-sm">
-        <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl transform transition-all scale-100">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-bold text-gray-900">Edit Event</h3>
-                <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600 transition">
-                    <i class="fas fa-times text-lg"></i>
-                </button>
-            </div>
-
-            <form action="/admin/update-event" method="POST" class="space-y-4">
-                <input type="hidden" name="section" id="edit-event-section">
-                <input type="hidden" name="originalTitle" id="edit-event-original-title">
-                <input type="hidden" name="originalYear" id="edit-event-original-year">
-
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-1">Event Name</label>
-                    <input type="text" name="newTitle" id="edit-event-title" required
-                        class="w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-1">Year</label>
-                    <input type="number" name="newYear" id="edit-event-year" required
-                        class="w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500" min="1900"
-                        max="2100">
-                </div>
-
-                <div class="flex justify-end gap-3 pt-4">
-                    <button type="button" onclick="closeEditModal()"
-                        class="px-5 py-2.5 rounded-xl font-medium text-gray-600 hover:bg-gray-100 transition">Cancel</button>
-                    <button type="submit"
-                        class="px-5 py-2.5 rounded-xl font-bold text-white bg-[#003B73] hover:bg-blue-800 transition shadow-lg">Save
-                        Changes</button>
-                </div>
-            </form>
         </div>
-    </div>
 
-    <script>
-        function openEditModal(title, year, section) {
-            document.getElementById('edit-event-modal').classList.remove('hidden');
-            document.getElementById('edit-event-title').value = title;
-            document.getElementById('edit-event-year').value = year;
+        <!-- Edit Event Modal -->
+        <div id="edit-event-modal"
+            class="fixed inset-0 bg-[#001f3f]/40 z-[100] hidden flex items-center justify-center backdrop-blur-md transition-all duration-300 p-4">
+            <div
+                class="bg-white rounded-[2.5rem] w-full max-w-2xl p-0 shadow-2xl overflow-hidden transform transition-all">
 
-            // Hidden fields for identification
-            document.getElementById('edit-event-original-title').value = title;
-            document.getElementById('edit-event-original-year').value = year;
-            document.getElementById('edit-event-section').value = section;
-        }
+                <!-- Modal Header -->
+                <div
+                    class="bg-gradient-to-r from-[#003B73] to-[#001f3f] px-8 py-6 flex items-center justify-between text-white">
+                    <div>
+                        <h3 class="text-2xl font-bold tracking-tight">Edit Gallery Details</h3>
+                        <p class="text-blue-200/80 text-xs font-medium uppercase tracking-widest mt-1">Manage content &
+                            assets</p>
+                    </div>
+                    <button onclick="closeEditModal()"
+                        class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all group">
+                        <i class="fas fa-times text-lg group-hover:rotate-90 transition-transform"></i>
+                    </button>
+                </div>
 
-        function closeEditModal() {
-            document.getElementById('edit-event-modal').classList.add('hidden');
-        }
+                <div class="p-8">
+                    <form action="/admin/update-event" method="POST" class="space-y-8">
+                        <input type="hidden" name="section" id="edit-event-section">
+                        <input type="hidden" name="originalTitle" id="edit-event-original-title">
+                        <input type="hidden" name="originalYear" id="edit-event-original-year">
 
-        // Close dropdowns when clicking outside
-        window.onclick = function (event) {
-            if (!event.target.matches('.fa-ellipsis-v') && !event.target.closest('button')) {
-                var dropdowns = document.querySelectorAll('[id^="dropdown-"]');
-                dropdowns.forEach(function (openDropdown) {
-                    if (!openDropdown.classList.contains('hidden')) {
-                        openDropdown.classList.add('hidden');
-                    }
+                        <!-- Basic Info Section -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-1.5">
+                                <label
+                                    class="block text-xs font-bold text-gray-500 uppercase tracking-wider pl-1 font-mono">Event/Gallery
+                                    Name</label>
+                                <input type="text" name="newTitle" id="edit-event-title" required
+                                    class="w-full rounded-2xl bg-gray-50 border-gray-100 focus:bg-white focus:border-[#003B73] focus:ring-4 focus:ring-blue-50 transition-all duration-300 py-3.5 px-5 font-semibold text-gray-800">
+                            </div>
+
+                            <div class="space-y-1.5">
+                                <label
+                                    class="block text-xs font-bold text-gray-500 uppercase tracking-wider pl-1 font-mono">Year</label>
+                                <input type="number" name="newYear" id="edit-event-year" required
+                                    class="w-full rounded-2xl bg-gray-50 border-gray-100 focus:bg-white focus:border-[#003B73] focus:ring-4 focus:ring-blue-50 transition-all duration-300 py-3.5 px-5 font-semibold text-gray-800"
+                                    min="1900" max="2100">
+                            </div>
+                        </div>
+
+                        <!-- Alumni Event Specific Fields -->
+                        <div id="alumni-event-fields" class="hidden space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="space-y-1.5">
+                                    <label
+                                        class="block text-xs font-bold text-gray-500 uppercase tracking-wider pl-1 font-mono">Location</label>
+                                    <input type="text" name="location" id="edit-event-location"
+                                        class="w-full rounded-2xl bg-gray-50 border-gray-100 focus:bg-white focus:border-[#003B73] focus:ring-4 focus:ring-blue-50 transition-all duration-300 py-3.5 px-5 font-semibold text-gray-800"
+                                        placeholder="e.g. School Auditorium">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label
+                                        class="block text-xs font-bold text-gray-500 uppercase tracking-wider pl-1 font-mono">Timing</label>
+                                    <input type="text" name="timing" id="edit-event-timing"
+                                        class="w-full rounded-2xl bg-gray-50 border-gray-100 focus:bg-white focus:border-[#003B73] focus:ring-4 focus:ring-blue-50 transition-all duration-300 py-3.5 px-5 font-semibold text-gray-800"
+                                        placeholder="e.g. 10:00 AM - 6:00 PM">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label
+                                        class="block text-xs font-bold text-gray-500 uppercase tracking-wider pl-1 font-mono">Event
+                                        Date</label>
+                                    <input type="date" name="eventDate" id="edit-event-date"
+                                        class="w-full rounded-2xl bg-gray-50 border-gray-100 focus:bg-white focus:border-[#003B73] focus:ring-4 focus:ring-blue-50 transition-all duration-300 py-3.5 px-5 font-semibold text-gray-800">
+                                </div>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label
+                                    class="block text-xs font-bold text-gray-500 uppercase tracking-wider pl-1 font-mono">Event
+                                    Description</label>
+                                <textarea name="description" id="edit-event-description" rows="3"
+                                    class="w-full rounded-2xl bg-gray-50 border-gray-100 focus:bg-white focus:border-[#003B73] focus:ring-4 focus:ring-blue-50 transition-all duration-300 py-3.5 px-5 font-semibold text-gray-800"
+                                    placeholder="Write something about the event..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Alumni Directory Specific Fields -->
+                        <div id="alumni-directory-fields" class="hidden space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-1.5">
+                                    <label
+                                        class="block text-xs font-bold text-gray-500 uppercase tracking-wider pl-1 font-mono">Batch
+                                        Year</label>
+                                    <input type="text" name="batch" id="edit-directory-batch"
+                                        class="w-full rounded-2xl bg-gray-50 border-gray-100 focus:bg-white focus:border-[#003B73] focus:ring-4 focus:ring-blue-50 transition-all duration-300 py-3.5 px-5 font-semibold text-gray-800"
+                                        placeholder="e.g. 2010">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label
+                                        class="block text-xs font-bold text-gray-500 uppercase tracking-wider pl-1 font-mono">Profession</label>
+                                    <input type="text" name="profession" id="edit-directory-profession"
+                                        class="w-full rounded-2xl bg-gray-50 border-gray-100 focus:bg-white focus:border-[#003B73] focus:ring-4 focus:ring-blue-50 transition-all duration-300 py-3.5 px-5 font-semibold text-gray-800"
+                                        placeholder="e.g. Software Engineer">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Image Management Section -->
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between pl-1">
+                                <label
+                                    class="block text-xs font-bold text-gray-500 uppercase tracking-wider font-mono">Manage
+                                    Images</label>
+                                <span class="text-[10px] text-gray-400 font-bold bg-gray-100 px-2 py-0.5 rounded-full"
+                                    id="image-count-badge">0 IMAGES</span>
+                            </div>
+
+                            <div id="edit-images-container"
+                                class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 max-h-[280px] overflow-y-auto pr-2 custom-scrollbar p-2 bg-gray-50/50 rounded-[1.5rem] border border-gray-100">
+                                <!-- Dynamic Images Here -->
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex items-center gap-4 pt-4">
+                            <button type="button" onclick="closeEditModal()"
+                                class="flex-1 px-6 py-4 rounded-2xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-all duration-200">
+                                Close Editor
+                            </button>
+                            <button type="submit"
+                                class="flex-[2] px-6 py-4 rounded-2xl font-bold text-white bg-gradient-to-r from-[#003B73] to-[#002a52] hover:shadow-[0_10px_20px_-5px_rgba(0,59,115,0.4)] transform hover:-translate-y-1 transition-all duration-200">
+                                Synchronize & Save
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .custom-scrollbar::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .custom-scrollbar::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            .custom-scrollbar::-webkit-scrollbar-thumb {
+                background: #e2e8f0;
+                border-radius: 10px;
+            }
+
+            .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                background: #cbd5e1;
+            }
+        </style>
+
+        <script>
+            function handleEditModal(btn) {
+                const title = btn.getAttribute('data-title');
+                const year = btn.getAttribute('data-year');
+                const section = btn.getAttribute('data-section');
+                const images = JSON.parse(btn.getAttribute('data-images'));
+                const location = btn.getAttribute('data-location');
+                const timing = btn.getAttribute('data-timing');
+                const eventDate = btn.getAttribute('data-eventdate');
+                const description = btn.getAttribute('data-description');
+                const batch = btn.getAttribute('data-batch');
+                const profession = btn.getAttribute('data-profession');
+
+                openEditModal(title, year, section, images, location, timing, eventDate, description, batch, profession);
+            }
+
+            function openEditModal(title, year, section, images, location, timing, eventDate, description, batch, profession) {
+                const modal = document.getElementById('edit-event-modal');
+                modal.classList.remove('hidden');
+
+                document.getElementById('edit-event-title').value = title;
+                document.getElementById('edit-event-year').value = year;
+                document.getElementById('edit-event-original-title').value = title;
+                document.getElementById('edit-event-original-year').value = year;
+                document.getElementById('edit-event-section').value = section;
+                document.getElementById('image-count-badge').textContent = `${images.length} IMAGES`;
+
+                // Show/hide alumni event fields
+                const alumniFields = document.getElementById('alumni-event-fields');
+                const directoryFields = document.getElementById('alumni-directory-fields');
+
+                if (section === 'alumni_events') {
+                    alumniFields.classList.remove('hidden');
+                    directoryFields.classList.add('hidden');
+                    document.getElementById('edit-event-location').value = location || '';
+                    document.getElementById('edit-event-timing').value = timing || '';
+                    document.getElementById('edit-event-date').value = eventDate || '';
+                    document.getElementById('edit-event-description').value = description || '';
+                } else if (section === 'alumni_directory') {
+                    directoryFields.classList.remove('hidden');
+                    alumniFields.classList.add('hidden');
+                    document.getElementById('edit-directory-batch').value = batch || '';
+                    document.getElementById('edit-directory-profession').value = profession || '';
+                } else {
+                    alumniFields.classList.add('hidden');
+                    directoryFields.classList.add('hidden');
+                }
+
+
+                const container = document.getElementById('edit-images-container');
+                container.innerHTML = '';
+
+                images.forEach(img => {
+                    const div = document.createElement('div');
+                    div.className = 'relative aspect-square rounded-xl overflow-hidden shadow-sm border border-white group bg-white';
+                    div.innerHTML = `
+                        <img src="${img.imageUrl}" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <button type="button" onclick="deleteSingleImage('${img.id}', this)" 
+                                class="bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-red-600 transition-all hover:scale-110 shadow-lg">
+                                <i class="fas fa-trash-alt text-xs"></i>
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(div);
                 });
             }
-        }
-    </script>
 
-    <%- include('../partials/footer') %>
+            function closeEditModal() {
+                document.getElementById('edit-event-modal').classList.add('hidden');
+            }
+
+            async function deleteSingleImage(imageId, btnElement) {
+                if (!confirm('Are you sure you want to delete this specific image?')) return;
+
+                try {
+                    const response = await fetch(`/admin/delete/${imageId}`, {
+                        method: 'POST',
+                    });
+
+                    if (response.ok) {
+                        btnElement.closest('.relative').remove();
+                        const badge = document.getElementById('image-count-badge');
+                        const currentCount = parseInt(badge.textContent) - 1;
+                        badge.textContent = `${currentCount} IMAGES`;
+                    } else {
+                        alert('Failed to delete image');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting the image');
+                }
+            }
+
+            // Close dropdowns when clicking outside
+            window.onclick = function (event) {
+                if (!event.target.matches('.fa-ellipsis-v') && !event.target.closest('button')) {
+                    var dropdowns = document.querySelectorAll('[id^="dropdown-"]');
+                    dropdowns.forEach(function (openDropdown) {
+                        if (!openDropdown.classList.contains('hidden')) {
+                            openDropdown.classList.add('hidden');
+                        }
+                    });
+                }
+            }
+
+            function previewImages(input) {
+                const container = document.getElementById('image-preview-container');
+                container.innerHTML = '';
+
+                if (input.files) {
+                    Array.from(input.files).forEach(file => {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            const div = document.createElement('div');
+                            div.className = 'relative aspect-square rounded-xl overflow-hidden shadow-md group';
+
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.className = 'w-full h-full object-cover transition-transform duration-300 group-hover:scale-110';
+
+                            div.appendChild(img);
+                            container.appendChild(div);
+                        }
+                        reader.readAsDataURL(file);
+                    });
+                    container.classList.remove('hidden');
+                }
+            }
+        </script>
+
+        <%- include('../partials/footer') %>

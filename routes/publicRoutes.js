@@ -41,9 +41,16 @@ router.get('/faq', (req, res) => {
 
 router.get('/gallery', async (req, res) => {
     try {
-        const gallery = await Content.findAll({ where: { isVisible: true } });
+        const gallery = await Content.findAll({
+            where: {
+                section: 'photo_gallery',
+                isVisible: true
+            },
+            order: [['createdAt', 'DESC']]
+        });
         res.render('gallery', { gallery, path: '/gallery' });
     } catch (err) {
+        console.error('Error fetching photo gallery:', err);
         res.render('gallery', { gallery: [], path: '/gallery' });
     }
 });
@@ -56,8 +63,42 @@ router.get('/alumni-chapters', (req, res) => {
     res.redirect('/alumni-chapter');
 });
 
-router.get('/alumni-events', (req, res) => {
-    res.render('alumni-events', { path: '/alumni-events' });
+router.get('/alumni-events', async (req, res) => {
+    try {
+        const rawEvents = await Content.findAll({
+            where: {
+                section: 'alumni_events',
+                isVisible: true
+            },
+            order: [['eventDate', 'DESC'], ['createdAt', 'DESC']]
+        });
+
+        // Group by Title + Year
+        const grouped = {};
+        rawEvents.forEach(item => {
+            const key = `${item.title}-${item.year}`;
+            if (!grouped[key]) {
+                grouped[key] = {
+                    title: item.title,
+                    year: item.year,
+                    location: item.location,
+                    timing: item.timing,
+                    eventDate: item.eventDate,
+                    description: item.description,
+                    images: []
+                };
+            }
+            if (item.imageUrl) {
+                grouped[key].images.push(item.imageUrl);
+            }
+        });
+
+        const events = Object.values(grouped);
+        res.render('alumni-events', { events, path: '/alumni-events' });
+    } catch (err) {
+        console.error('Error fetching alumni events:', err);
+        res.render('alumni-events', { events: [], path: '/alumni-events' });
+    }
 });
 
 router.get('/events', async (req, res) => {
@@ -120,8 +161,20 @@ router.get('/reunion-about', (req, res) => {
     res.render('reunion-about', { path: '/reunion-about' });
 });
 
-router.get('/reunion-gallery', (req, res) => {
-    res.render('reunion-gallery', { gallery: [], path: '/reunion-gallery' });
+router.get('/reunion-gallery', async (req, res) => {
+    try {
+        const gallery = await Content.findAll({
+            where: {
+                section: 'reunion_gallery',
+                isVisible: true
+            },
+            order: [['createdAt', 'DESC']]
+        });
+        res.render('reunion-gallery', { gallery, path: '/reunion-gallery' });
+    } catch (err) {
+        console.error('Error fetching reunion gallery:', err);
+        res.render('reunion-gallery', { gallery: [], path: '/reunion-gallery' });
+    }
 });
 
 router.get('/video-gallery', (req, res) => {

@@ -240,20 +240,209 @@ router.get('/nsmosa-events', ensureAuthenticated, ensureRole(['admin', 'super_ad
     }
 });
 
+// Photo Gallery Management Page
+router.get('/photo-gallery', ensureAuthenticated, ensureRole(['admin', 'super_admin', 'rep_admin']), async (req, res) => {
+    try {
+        const totalMembers = await User.count({ where: { role: 'user' } });
+        const pendingApproval = await Content.count({ where: { status: 'pending' } });
+        const totalCollections = 15000;
+
+        // Fetch content for photo_gallery section
+        const rawContent = await Content.findAll({
+            where: { section: 'photo_gallery' },
+            order: [['createdAt', 'DESC']]
+        });
+
+        // Group by Title + Year
+        const grouped = {};
+        rawContent.forEach(item => {
+            const key = `${item.title}-${item.year}`;
+            if (!grouped[key]) {
+                grouped[key] = {
+                    title: item.title,
+                    year: item.year,
+                    images: [],
+                    id: item.id
+                };
+            }
+            grouped[key].images.push(item);
+        });
+        const events = Object.values(grouped);
+
+        res.render('admin/dashboard', {
+            user: req.session.user,
+            page: 'photo_gallery',
+            section: null,
+            uploadedSessionImages: [],
+            events,
+            eventType: 'photo_gallery',
+            totalMembers,
+            pendingApproval,
+            totalCollections,
+            uploadedSessionEvents: req.session.uploadedEvents || []
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.redirect('/admin/dashboard');
+    }
+});
+
+// Reunion Gallery Management Page
+router.get('/reunion-gallery', ensureAuthenticated, ensureRole(['admin', 'super_admin', 'rep_admin']), async (req, res) => {
+    try {
+        const totalMembers = await User.count({ where: { role: 'user' } });
+        const pendingApproval = await Content.count({ where: { status: 'pending' } });
+        const totalCollections = 15000;
+
+        // Fetch content for reunion_gallery section
+        const rawContent = await Content.findAll({
+            where: { section: 'reunion_gallery' },
+            order: [['createdAt', 'DESC']]
+        });
+
+        // Group by Title + Year
+        const grouped = {};
+        rawContent.forEach(item => {
+            const key = `${item.title}-${item.year}`;
+            if (!grouped[key]) {
+                grouped[key] = {
+                    title: item.title,
+                    year: item.year,
+                    images: [],
+                    id: item.id
+                };
+            }
+            grouped[key].images.push(item);
+        });
+        const events = Object.values(grouped);
+
+        res.render('admin/dashboard', {
+            user: req.session.user,
+            page: 'reunion_gallery',
+            section: null,
+            uploadedSessionImages: [],
+            events,
+            eventType: 'reunion_gallery',
+            totalMembers,
+            pendingApproval,
+            totalCollections,
+            uploadedSessionEvents: req.session.uploadedEvents || []
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.redirect('/admin/dashboard');
+    }
+});
+
+// Alumni Events Management Page
+router.get('/alumni-events', ensureAuthenticated, ensureRole(['admin', 'super_admin', 'rep_admin']), async (req, res) => {
+    try {
+        const totalMembers = await User.count({ where: { role: 'user' } });
+        const pendingApproval = await Content.count({ where: { status: 'pending' } });
+        const totalCollections = 15000;
+
+        // Fetch content for alumni_events section
+        const rawContent = await Content.findAll({
+            where: { section: 'alumni_events' },
+            order: [['createdAt', 'DESC']]
+        });
+
+        // Group by Title + Year
+        const grouped = {};
+        rawContent.forEach(item => {
+            const key = `${item.title}-${item.year}`;
+            if (!grouped[key]) {
+                grouped[key] = {
+                    title: item.title,
+                    year: item.year,
+                    location: item.location,
+                    timing: item.timing,
+                    eventDate: item.eventDate,
+                    description: item.description,
+                    images: [],
+                    id: item.id
+                };
+            }
+            grouped[key].images.push(item);
+        });
+        const events = Object.values(grouped);
+
+        res.render('admin/dashboard', {
+            user: req.session.user,
+            page: 'alumni_events',
+            section: null,
+            uploadedSessionImages: [],
+            events,
+            eventType: 'alumni_events',
+            totalMembers,
+            pendingApproval,
+            totalCollections,
+            uploadedSessionEvents: req.session.uploadedEvents || []
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.redirect('/admin/dashboard');
+    }
+});
+
+// Alumni Directory Management Page
+router.get('/alumni-directory', ensureAuthenticated, ensureRole(['admin', 'super_admin', 'rep_admin']), async (req, res) => {
+    try {
+        const totalMembers = await User.count({ where: { role: 'user' } });
+        const pendingApproval = await Content.count({ where: { status: 'pending' } });
+        const totalCollections = 15000;
+
+        // Fetch content for alumni_directory section
+        const events = await Content.findAll({
+            where: { section: 'alumni_directory' },
+            order: [['createdAt', 'DESC']]
+        });
+
+        res.render('admin/dashboard', {
+            user: req.session.user,
+            page: 'alumni_directory',
+            section: null,
+            uploadedSessionImages: [],
+            events,
+            eventType: 'alumni_directory',
+            totalMembers,
+            pendingApproval,
+            totalCollections,
+            uploadedSessionEvents: req.session.uploadedEvents || []
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.redirect('/admin/dashboard');
+    }
+});
+
+
 // Create Event Action
 router.post('/create-event', ensureAuthenticated, (req, res) => {
     multiUpload(req, res, async (err) => {
+        const getRedirect = (t) => {
+            if (t === 'photo_gallery') return '/admin/photo-gallery';
+            if (t === 'reunion_gallery') return '/admin/reunion-gallery';
+            if (t === 'alumni_events') return '/admin/alumni-events';
+            if (t === 'alumni_directory') return '/admin/alumni-directory';
+            return `/admin/nsmosa-events?type=${t}`;
+        };
+
         if (err) {
             req.flash('error_msg', err);
-            return res.redirect('/admin/nsmosa-events');
+            return res.redirect('/admin/dashboard');
         }
 
-        const { eventName, eventYear, eventType } = req.body;
+        const { eventName, eventYear, eventType, location, timing, eventDate, description, batch, profession } = req.body;
         const files = req.files;
 
         if (!files || files.length === 0) {
             req.flash('error_msg', 'Please upload at least one image');
-            return res.redirect(`/admin/nsmosa-events?type=${eventType}`);
+            return res.redirect(getRedirect(eventType));
         }
 
         try {
@@ -262,10 +451,15 @@ router.post('/create-event', ensureAuthenticated, (req, res) => {
                 const imageUrl = `/uploads/${file.filename}`;
                 const newContent = await Content.create({
                     title: eventName,
-                    year: eventYear,
+                    year: eventYear || null,
                     section: eventType,
                     imageUrl: imageUrl,
-                    description: `Event: ${eventName}, Year: ${eventYear}`,
+                    location: location || null,
+                    timing: timing || null,
+                    eventDate: eventDate || null,
+                    description: description || `Event: ${eventName}${eventYear ? ', Year: ' + eventYear : ''}`,
+                    batch: batch || null,
+                    profession: profession || null,
                     status: 'approved', // Auto approve for simplicity or based on role
                     createdBy: req.session.user.id
                 });
@@ -286,12 +480,12 @@ router.post('/create-event', ensureAuthenticated, (req, res) => {
             });
 
             req.flash('success_msg', 'Event created and images uploaded successfully!');
-            res.redirect(`/admin/nsmosa-events?type=${eventType}`);
+            res.redirect(getRedirect(eventType));
 
         } catch (error) {
             console.error(error);
             req.flash('error_msg', 'Error creating event');
-            res.redirect(`/admin/nsmosa-events?type=${eventType}`);
+            res.redirect(getRedirect(eventType));
         }
     });
 });
@@ -299,6 +493,14 @@ router.post('/create-event', ensureAuthenticated, (req, res) => {
 // Delete Event (Grouped)
 router.post('/delete-event', ensureAuthenticated, ensureRole(['admin', 'super_admin']), async (req, res) => {
     const { title, year, section } = req.body;
+    const getRedirectUrl = (s) => {
+        if (s === 'photo_gallery') return '/admin/photo-gallery';
+        if (s === 'reunion_gallery') return '/admin/reunion-gallery';
+        if (s === 'alumni_events') return '/admin/alumni-events';
+        return `/admin/nsmosa-events?type=${s}`;
+    };
+    const redirectUrl = getRedirectUrl(section);
+
     try {
         await Content.destroy({
             where: {
@@ -312,21 +514,36 @@ router.post('/delete-event', ensureAuthenticated, ensureRole(['admin', 'super_ad
             req.session.uploadedEvents = req.session.uploadedEvents.filter(e => !(e.title === title && e.year == year && e.type === section));
         }
         req.flash('success_msg', 'Event deleted successfully');
-        res.redirect(`/admin/nsmosa-events?type=${section}`);
+        res.redirect(redirectUrl);
     } catch (err) {
         console.error(err);
         req.flash('error_msg', 'Failed to delete event');
-        res.redirect(`/admin/nsmosa-events?type=${section}`);
+        res.redirect(redirectUrl);
+    }
+});
+
+// Delete Single Image
+router.post('/delete/:id', ensureAuthenticated, ensureRole(['admin', 'super_admin']), async (req, res) => {
+    try {
+        await Content.destroy({ where: { id: req.params.id } });
+        res.status(200).json({ success: true, message: 'Image deleted successfully' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: 'Failed to delete image' });
     }
 });
 
 // Edit Event (Renaming)
 router.post('/update-event', ensureAuthenticated, ensureRole(['admin', 'super_admin']), async (req, res) => {
-    const { originalTitle, originalYear, newTitle, newYear, section } = req.body;
+    const { originalTitle, originalYear, newTitle, newYear, section, location, timing, eventDate, description } = req.body;
     try {
         await Content.update({
             title: newTitle,
-            year: newYear
+            year: newYear,
+            location: location,
+            timing: timing,
+            eventDate: eventDate,
+            description: description
         }, {
             where: {
                 title: originalTitle,
@@ -335,11 +552,23 @@ router.post('/update-event', ensureAuthenticated, ensureRole(['admin', 'super_ad
             }
         });
         req.flash('success_msg', 'Event updated successfully');
-        res.redirect(`/admin/nsmosa-events?type=${section}`);
+        const getRedirectUrl = (s) => {
+            if (s === 'photo_gallery') return '/admin/photo-gallery';
+            if (s === 'reunion_gallery') return '/admin/reunion-gallery';
+            if (s === 'alumni_events') return '/admin/alumni-events';
+            return `/admin/nsmosa-events?type=${s}`;
+        };
+        res.redirect(getRedirectUrl(section));
     } catch (err) {
         console.error(err);
         req.flash('error_msg', 'Failed to update event');
-        res.redirect(`/admin/nsmosa-events?type=${section}`);
+        const getRedirectUrl = (s) => {
+            if (s === 'photo_gallery') return '/admin/photo-gallery';
+            if (s === 'reunion_gallery') return '/admin/reunion-gallery';
+            if (s === 'alumni_events') return '/admin/alumni-events';
+            return `/admin/nsmosa-events?type=${s}`;
+        };
+        res.redirect(getRedirectUrl(section));
     }
 });
 
