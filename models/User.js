@@ -53,6 +53,10 @@ const User = sequelize.define('User', {
     batch: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    profileImage: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 }, {
     indexes: [

@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Content = require('../models/Content');
+const User = require('../models/User');
 const { ensureAuthenticated, preventCache } = require('../middleware/auth');
-
+const upload = require('../utils/fileUpload');
 
 router.get('/', async (req, res) => {
     try {
@@ -63,7 +64,7 @@ router.get('/alumni-chapters', (req, res) => {
     res.redirect('/alumni-chapter');
 });
 
-router.get('/alumni-events', async (req, res) => {
+router.get('/alumni-events', ensureAuthenticated, async (req, res) => {
     try {
         const rawEvents = await Content.findAll({
             where: {
@@ -120,8 +121,20 @@ router.get('/presidents-message', (req, res) => {
     res.render('presidents-message', { path: '/presidents-message' });
 });
 
-router.get('/executive-committee', (req, res) => {
-    res.render('executive-committee', { path: '/executive-committee' });
+router.get('/executive-committee', async (req, res) => {
+    try {
+        const members = await Content.findAll({
+            where: {
+                section: 'executive_committee',
+                isVisible: true
+            },
+            order: [['createdAt', 'ASC']] // Usually you want specific ordering, maybe add an 'order' field later? For now ASC creation might mimic insertion order.
+        });
+        res.render('executive-committee', { members, path: '/executive-committee' });
+    } catch (err) {
+        console.error('Error fetching executive committee:', err);
+        res.render('executive-committee', { members: [], path: '/executive-committee' });
+    }
 });
 
 router.get('/alumni-benefits', (req, res) => {
@@ -137,6 +150,52 @@ router.get('/my-profile', ensureAuthenticated, preventCache, (req, res) => {
     res.render('my-profile', { path: '/my-profile', user: req.session.user });
 });
 
+router.post('/update-profile', ensureAuthenticated, (req, res) => {
+    upload(req, res, async (err) => {
+        if (err) {
+            req.flash('error_msg', err);
+            return res.redirect('/my-profile');
+        }
+
+        const { fullName, phone, graduationYear, batch } = req.body;
+        try {
+            const user = await User.findByPk(req.session.user.id);
+            if (!user) {
+                req.flash('error_msg', 'User not found');
+                return res.redirect('/my-profile');
+            }
+
+            user.fullName = fullName || user.fullName;
+            user.phone = phone || user.phone;
+            user.graduationYear = graduationYear || user.graduationYear;
+            user.batch = batch || user.batch;
+
+            if (req.file) {
+                user.profileImage = `/uploads/${req.file.filename}`;
+            }
+
+            await user.save();
+
+            // Update session
+            req.session.user = {
+                ...req.session.user,
+                fullName: user.fullName,
+                phone: user.phone,
+                graduationYear: user.graduationYear,
+                batch: user.batch,
+                profileImage: user.profileImage
+            };
+
+            req.flash('success_msg', 'Profile updated successfully');
+            res.redirect('/my-profile');
+        } catch (err) {
+            console.error('Error updating profile:', err);
+            req.flash('error_msg', 'Failed to update profile');
+            res.redirect('/my-profile');
+        }
+    });
+});
+
 router.get('/how-to-give', (req, res) => {
     res.render('how-to-give', { path: '/how-to-give' });
 });
@@ -145,12 +204,36 @@ router.get('/connect-with-us', (req, res) => {
     res.redirect('/contact');
 });
 
-router.get('/alumni-directory', (req, res) => {
-    res.render('alumni-directory', { path: '/alumni-directory' });
+router.get('/alumni-directory', ensureAuthenticated, async (req, res) => {
+    try {
+        const alumni = await Content.findAll({
+            where: {
+                section: 'alumni_directory',
+                isVisible: true
+            },
+            order: [['title', 'ASC']] // Alphabetical order usually corresponds better for directories
+        });
+        res.render('alumni-directory', { alumni, path: '/alumni-directory' });
+    } catch (err) {
+        console.error('Error fetching alumni directory:', err);
+        res.render('alumni-directory', { alumni: [], path: '/alumni-directory' });
+    }
 });
 
-router.get('/business-directory', (req, res) => {
-    res.render('business-directory', { path: '/business-directory' });
+router.get('/business-directory', ensureAuthenticated, async (req, res) => {
+    try {
+        const businesses = await Content.findAll({
+            where: {
+                section: 'business_directory',
+                isVisible: true
+            },
+            order: [['createdAt', 'DESC']]
+        });
+        res.render('business-directory', { businesses, path: '/business-directory' });
+    } catch (err) {
+        console.error('Error fetching business directory:', err);
+        res.render('business-directory', { businesses: [], path: '/business-directory' });
+    }
 });
 
 router.get('/reunion', (req, res) => {
@@ -179,6 +262,12 @@ router.get('/reunion-gallery', async (req, res) => {
 
 router.get('/video-gallery', (req, res) => {
     res.render('video-gallery', { gallery: [], path: '/video-gallery' });
+});
+
+router.get('/donate', (req, res) => {
+    // Preserve query parameters (e.g., ?type=scholarship)
+    const queryString = req.url.indexOf('?') !== -1 ? req.url.substring(req.url.indexOf('?')) : '';
+    res.redirect('/payment/checkout' + queryString);
 });
 
 module.exports = router;

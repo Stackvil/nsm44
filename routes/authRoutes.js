@@ -25,15 +25,24 @@ router.post('/login', async (req, res) => {
 
         const match = await bcrypt.compare(password, user.password);
         if (match) {
-            req.session.user = { id: user.id, username: user.username, role: user.role, isActive: user.isActive, batch: user.batch };
+            req.session.user = {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                fullName: user.fullName,
+                role: user.role,
+                isActive: user.isActive,
+                batch: user.batch,
+                graduationYear: user.graduationYear,
+                phone: user.phone,
+                profileImage: user.profileImage
+            };
             req.flash('success_msg', 'Logged in successfully');
 
-            // Redirect based on role
-            if (user.role === 'user') {
-                res.redirect('/user/dashboard');
-            } else {
-                res.redirect('/admin/dashboard');
-            }
+            // Redirect based on role or returnTo
+            const redirectUrl = req.session.returnTo || (user.role === 'user' ? '/user/dashboard' : '/admin/dashboard');
+            delete req.session.returnTo; // Clear the returnTo session variable
+            res.redirect(redirectUrl);
         } else {
             req.flash('error_msg', 'Incorrect password');
             res.redirect('/auth/login');

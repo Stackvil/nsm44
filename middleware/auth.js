@@ -4,6 +4,7 @@ module.exports = {
             return next();
         }
         req.flash('error_msg', 'Please log in to view that resource');
+        req.session.returnTo = req.originalUrl; // Store the requested URL
         res.redirect('/auth/login');
     },
     ensureRole: (...roles) => {

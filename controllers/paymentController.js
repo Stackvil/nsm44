@@ -1,8 +1,9 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 exports.getCheckout = (req, res) => {
-    res.render('payment/checkout', {
-        key: process.env.STRIPE_PUBLISHABLE_KEY
+    res.render('donation-form', {
+        key: process.env.STRIPE_PUBLISHABLE_KEY,
+        path: '/payment/checkout' // Added path for consistency
     });
 };
 

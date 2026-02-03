@@ -76,42 +76,164 @@
                     at any time.</p>
             </div>
 
-            <!-- Login Required Card (Mockup State) -->
-            <div class="flex justify-center py-8">
-                <div
-                    class="bg-white rounded-[2rem] shadow-2xl p-16 max-w-xl w-full text-center border border-gray-100/50 backdrop-blur-sm relative overflow-hidden group">
-                    <!-- Background Decorative Element -->
-                    <div
-                        class="absolute -top-10 -right-10 w-40 h-40 bg-blue-50 rounded-full opacity-50 group-hover:scale-110 transition-transform duration-700">
-                    </div>
+            <!-- Profile Content -->
+            <% if (user) { %>
+                <div class="bg-white rounded-[2rem] shadow-xl p-8 lg:p-12 max-w-4xl mx-auto border border-gray-100">
+                    <form action="/update-profile" method="POST" enctype="multipart/form-data" class="space-y-8">
+                        <!-- Header -->
+                        <div class="flex items-center space-x-6 pb-8 border-b border-gray-100">
+                            <div class="relative group">
+                                <div
+                                    class="w-24 h-24 rounded-2xl overflow-hidden shadow-lg border-4 border-white relative">
+                                    <% if (user.profileImage) { %>
+                                        <img id="profileImagePreview" src="<%= user.profileImage %>" alt="Profile"
+                                            class="w-full h-full object-cover">
+                                        <% } else { %>
+                                            <div id="profileInitial"
+                                                class="w-full h-full bg-[#0A2040] flex items-center justify-center text-white text-3xl font-bold">
+                                                <%= user.username.charAt(0).toUpperCase() %>
+                                            </div>
+                                            <% } %>
+                                </div>
+                                <label for="profileImage"
+                                    class="absolute -bottom-2 -right-2 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:bg-blue-700 transition-colors z-10">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                </label>
+                                <input type="file" id="profileImage" name="image" class="hidden" accept="image/*"
+                                    onchange="previewImage(this)">
+                            </div>
 
-                    <div class="relative">
-                        <div
-                            class="inline-flex items-center justify-center w-24 h-24 bg-[#0A2040] rounded-3xl shadow-xl shadow-blue-900/20 mb-8 border-4 border-white transform rotate-3 group-hover:rotate-0 transition-transform duration-500">
-                            <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                            </svg>
+                            <div class="flex-1">
+                                <h2 class="text-2xl font-bold text-[#0A2040]">
+                                    <%= user.fullName || user.username %>
+                                </h2>
+                                <p class="text-gray-500 mb-2">
+                                    <%= user.email %>
+                                </p>
+                                <label for="profileImage"
+                                    class="text-sm text-blue-600 font-bold hover:text-blue-800 cursor-pointer inline-flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                                    </svg>
+                                    Change Profile Photo
+                                </label>
+                            </div>
                         </div>
 
-                        <h2 class="text-4xl font-black text-[#0A2040] mb-4">Login Required</h2>
-                        <p class="text-gray-500 mb-10 max-w-sm mx-auto leading-relaxed text-[17px]">
-                            Please login to manage your profile. Once logged in, you'll be able to view and edit your
-                            profile details.
-                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <!-- Full Name -->
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-gray-700 uppercase tracking-wide">Full Name</label>
+                                <input type="text" name="fullName" value="<%= user.fullName %>"
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all font-medium text-gray-700">
+                            </div>
 
-                        <a href="/auth/login"
-                            class="inline-flex items-center justify-center px-12 py-5 bg-[#0A2040] text-white font-bold rounded-2xl hover:bg-blue-900 transition-all duration-300 shadow-xl shadow-blue-900/10 group/btn active:scale-95">
-                            <svg class="w-6 h-6 mr-3 transition-transform group-hover/btn:-translate-x-1" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                    d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                            </svg>
-                            <span class="tracking-widest uppercase text-sm">Login to Manage Profile</span>
-                        </a>
-                    </div>
+                            <!-- Email (Read Only) -->
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-gray-400 uppercase tracking-wide">Email
+                                    Address</label>
+                                <input type="email" value="<%= user.email %>" readonly
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-100 bg-gray-50 text-gray-500 font-medium cursor-not-allowed">
+                            </div>
+
+                            <!-- Phone -->
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-gray-700 uppercase tracking-wide">Phone
+                                    Number</label>
+                                <input type="tel" name="phone" value="<%= user.phone || '' %>"
+                                    placeholder="+1 (555) 000-0000"
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all font-medium text-gray-700">
+                            </div>
+
+                            <!-- Graduation Year -->
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-gray-700 uppercase tracking-wide">Graduation
+                                    Year</label>
+                                <input type="number" name="graduationYear" value="<%= user.graduationYear || '' %>"
+                                    placeholder="2024"
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all font-medium text-gray-700">
+                            </div>
+
+                            <!-- Batch -->
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-gray-700 uppercase tracking-wide">Batch</label>
+                                <input type="text" name="batch" value="<%= user.batch || '' %>"
+                                    placeholder="Class of '24"
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all font-medium text-gray-700">
+                            </div>
+                            <!-- Role (Read Only) -->
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-gray-400 uppercase tracking-wide">Account
+                                    Role</label>
+                                <div
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-100 bg-gray-50 flex items-center">
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 uppercase">
+                                        <%= user.role %>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="pt-8 border-t border-gray-100 flex items-center justify-end gap-4">
+                            <button type="button" onclick="window.history.back()"
+                                class="px-6 py-3 text-gray-500 font-bold hover:text-[#0A2040] transition-colors">
+                                Cancel
+                            </button>
+                            <button type="submit"
+                                class="px-8 py-3 bg-[#0A2040] text-white font-bold rounded-xl shadow-lg shadow-blue-900/20 hover:bg-blue-900 hover:-translate-y-0.5 transition-all duration-300">
+                                Save Changes
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            </div>
+                <% } else { %>
+                    <!-- Login Required Card -->
+                    <div class="flex justify-center py-8">
+                        <div
+                            class="bg-white rounded-[2rem] shadow-2xl p-16 max-w-xl w-full text-center border border-gray-100/50 backdrop-blur-sm relative overflow-hidden group">
+                            <!-- Background Decorative Element -->
+                            <div
+                                class="absolute -top-10 -right-10 w-40 h-40 bg-blue-50 rounded-full opacity-50 group-hover:scale-110 transition-transform duration-700">
+                            </div>
+
+                            <div class="relative">
+                                <div
+                                    class="inline-flex items-center justify-center w-24 h-24 bg-[#0A2040] rounded-3xl shadow-xl shadow-blue-900/20 mb-8 border-4 border-white transform rotate-3 group-hover:rotate-0 transition-transform duration-500">
+                                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                </div>
+
+                                <h2 class="text-4xl font-black text-[#0A2040] mb-4">Login Required</h2>
+                                <p class="text-gray-500 mb-10 max-w-sm mx-auto leading-relaxed text-[17px]">
+                                    Please login to manage your profile. Once logged in, you'll be able to view and edit
+                                    your
+                                    profile details.
+                                </p>
+
+                                <a href="/auth/login"
+                                    class="inline-flex items-center justify-center px-12 py-5 bg-[#0A2040] text-white font-bold rounded-2xl hover:bg-blue-900 transition-all duration-300 shadow-xl shadow-blue-900/10 group/btn active:scale-95">
+                                    <svg class="w-6 h-6 mr-3 transition-transform group-hover/btn:-translate-x-1"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                            d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                                    </svg>
+                                    <span class="tracking-widest uppercase text-sm">Login to Manage Profile</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
         </div>
     </div>
 
@@ -125,5 +247,36 @@
             scrollbar-width: none;
         }
     </style>
+
+    <script>
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.getElementById('profileImagePreview');
+                    const initialDiv = document.getElementById('profileInitial');
+
+                    if (initialDiv) {
+                        initialDiv.style.display = 'none';
+                    }
+
+                    if (img) {
+                        img.src = e.target.result;
+                        img.style.display = 'block';
+                    } else {
+                        // If image tag doesn't exist (because user had initial), create it
+                        const container = document.querySelector('.w-24.h-24');
+                        const newImg = document.createElement('img');
+                        newImg.id = 'profileImagePreview';
+                        newImg.src = e.target.result;
+                        newImg.alt = 'Profile';
+                        newImg.className = 'w-full h-full object-cover';
+                        container.appendChild(newImg);
+                    }
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
 
     <%- include('partials/footer') %>

@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const Content = require('../models/Content');
+const Transaction = require('../models/Transaction');
 const { ensureAuthenticated, ensureRole, preventCache } = require('../middleware/auth');
 
 // Change Password Page
@@ -54,8 +55,16 @@ router.get('/dashboard', ensureAuthenticated, preventCache, async (req, res) => 
         // Get session uploaded images
         const uploadedSessionImages = req.session.uploadedSessionImages || [];
 
+        // Calculate Display Name
+        const user = req.session.user;
+        let displayName = user.fullName || user.username;
+        if (user.role === 'super_admin') displayName = 'Super Admin';
+        else if (user.role === 'admin') displayName = 'Admin';
+        else if (user.role === 'rep_admin') displayName = 'Representative Admin';
+
         res.render('admin/dashboard', {
             user: req.session.user,
+            displayName, // Pass displayName
             totalMembers,
             pendingApproval,
             totalCollections,
@@ -169,8 +178,15 @@ router.get('/members', ensureAuthenticated, ensureRole(['admin', 'super_admin', 
         const pendingApproval = await Content.count({ where: { status: 'pending' } });
         const totalCollections = 15000;
 
+        // Calculate Display Name
+        let displayName = req.session.user.fullName || req.session.user.username;
+        if (req.session.user.role === 'super_admin') displayName = 'Super Admin';
+        else if (req.session.user.role === 'admin') displayName = 'Admin';
+        else if (req.session.user.role === 'rep_admin') displayName = 'Representative Admin';
+
         res.render('admin/dashboard', {
             user: req.session.user,
+            displayName,
             page: 'members',
             section: null,
             uploadedSessionImages: [],
@@ -221,8 +237,15 @@ router.get('/nsmosa-events', ensureAuthenticated, ensureRole(['admin', 'super_ad
             events = Object.values(grouped);
         }
 
+        // Calculate Display Name
+        let displayName = req.session.user.fullName || req.session.user.username;
+        if (req.session.user.role === 'super_admin') displayName = 'Super Admin';
+        else if (req.session.user.role === 'admin') displayName = 'Admin';
+        else if (req.session.user.role === 'rep_admin') displayName = 'Representative Admin';
+
         res.render('admin/dashboard', {
             user: req.session.user,
+            displayName,
             page: 'nsmosa_events',
             section: null, // sub-section of dashboard
             uploadedSessionImages: [],
@@ -269,8 +292,15 @@ router.get('/photo-gallery', ensureAuthenticated, ensureRole(['admin', 'super_ad
         });
         const events = Object.values(grouped);
 
+        // Calculate Display Name
+        let displayName = req.session.user.fullName || req.session.user.username;
+        if (req.session.user.role === 'super_admin') displayName = 'Super Admin';
+        else if (req.session.user.role === 'admin') displayName = 'Admin';
+        else if (req.session.user.role === 'rep_admin') displayName = 'Representative Admin';
+
         res.render('admin/dashboard', {
             user: req.session.user,
+            displayName,
             page: 'photo_gallery',
             section: null,
             uploadedSessionImages: [],
@@ -317,8 +347,15 @@ router.get('/reunion-gallery', ensureAuthenticated, ensureRole(['admin', 'super_
         });
         const events = Object.values(grouped);
 
+        // Calculate Display Name
+        let displayName = req.session.user.fullName || req.session.user.username;
+        if (req.session.user.role === 'super_admin') displayName = 'Super Admin';
+        else if (req.session.user.role === 'admin') displayName = 'Admin';
+        else if (req.session.user.role === 'rep_admin') displayName = 'Representative Admin';
+
         res.render('admin/dashboard', {
             user: req.session.user,
+            displayName,
             page: 'reunion_gallery',
             section: null,
             uploadedSessionImages: [],
@@ -369,8 +406,15 @@ router.get('/alumni-events', ensureAuthenticated, ensureRole(['admin', 'super_ad
         });
         const events = Object.values(grouped);
 
+        // Calculate Display Name
+        let displayName = req.session.user.fullName || req.session.user.username;
+        if (req.session.user.role === 'super_admin') displayName = 'Super Admin';
+        else if (req.session.user.role === 'admin') displayName = 'Admin';
+        else if (req.session.user.role === 'rep_admin') displayName = 'Representative Admin';
+
         res.render('admin/dashboard', {
             user: req.session.user,
+            displayName,
             page: 'alumni_events',
             section: null,
             uploadedSessionImages: [],
@@ -401,8 +445,15 @@ router.get('/alumni-directory', ensureAuthenticated, ensureRole(['admin', 'super
             order: [['createdAt', 'DESC']]
         });
 
+        // Calculate Display Name
+        let displayName = req.session.user.fullName || req.session.user.username;
+        if (req.session.user.role === 'super_admin') displayName = 'Super Admin';
+        else if (req.session.user.role === 'admin') displayName = 'Admin';
+        else if (req.session.user.role === 'rep_admin') displayName = 'Representative Admin';
+
         res.render('admin/dashboard', {
             user: req.session.user,
+            displayName,
             page: 'alumni_directory',
             section: null,
             uploadedSessionImages: [],
@@ -421,6 +472,123 @@ router.get('/alumni-directory', ensureAuthenticated, ensureRole(['admin', 'super
 });
 
 
+// Financial Reports Page
+router.get('/financial-reports', ensureAuthenticated, ensureRole(['admin', 'super_admin', 'rep_admin']), async (req, res) => {
+    try {
+        const totalMembers = await User.count({ where: { role: 'user' } });
+        const pendingApproval = await Content.count({ where: { status: 'pending' } });
+        const totalCollections = await Transaction.sum('amount', { where: { status: 'completed' } }) || 0;
+
+        const transactions = await Transaction.findAll({
+            include: [{ model: User, as: 'user', attributes: ['fullName', 'email'] }],
+            order: [['transactionDate', 'DESC']]
+        });
+
+        // Calculate Display Name
+        let displayName = req.session.user.fullName || req.session.user.username;
+        if (req.session.user.role === 'super_admin') displayName = 'Super Admin';
+        else if (req.session.user.role === 'admin') displayName = 'Admin';
+        else if (req.session.user.role === 'rep_admin') displayName = 'Representative Admin';
+
+        res.render('admin/dashboard', {
+            user: req.session.user,
+            displayName,
+            page: 'financial_reports',
+            section: null,
+            uploadedSessionImages: [],
+            transactions,
+            totalMembers,
+            pendingApproval,
+            totalCollections,
+            uploadedSessionEvents: []
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.redirect('/admin/dashboard');
+    }
+});
+
+// Business Directory Management Page
+router.get('/business-directory', ensureAuthenticated, ensureRole(['admin', 'super_admin', 'rep_admin']), async (req, res) => {
+    try {
+        const totalMembers = await User.count({ where: { role: 'user' } });
+        const pendingApproval = await Content.count({ where: { status: 'pending' } });
+        const totalCollections = 15000;
+
+        // Fetch content for business_directory section
+        const events = await Content.findAll({
+            where: { section: 'business_directory' },
+            order: [['createdAt', 'DESC']]
+        });
+
+        // Calculate Display Name
+        let displayName = req.session.user.fullName || req.session.user.username;
+        if (req.session.user.role === 'super_admin') displayName = 'Super Admin';
+        else if (req.session.user.role === 'admin') displayName = 'Admin';
+        else if (req.session.user.role === 'rep_admin') displayName = 'Representative Admin';
+
+        res.render('admin/dashboard', {
+            user: req.session.user,
+            displayName,
+            page: 'business_directory',
+            section: null,
+            uploadedSessionImages: [],
+            events,
+            eventType: 'business_directory',
+            totalMembers,
+            pendingApproval,
+            totalCollections,
+            uploadedSessionEvents: req.session.uploadedEvents || []
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.redirect('/admin/dashboard');
+    }
+});
+
+// Executive Committee Page
+router.get('/executive-committee', ensureAuthenticated, ensureRole(['admin', 'super_admin', 'rep_admin']), async (req, res) => {
+    try {
+        const totalMembers = await User.count({ where: { role: 'user' } });
+        const pendingApproval = await Content.count({ where: { status: 'pending' } });
+        const totalCollections = await Transaction.sum('amount', { where: { status: 'completed' } }) || 0;
+
+        const committee = await Content.findAll({
+            where: { section: 'executive_committee', isVisible: true },
+            order: [['createdAt', 'DESC']]
+        });
+
+        // Fetch uploaded images for the current session (optional context)
+        const uploadedSessionImages = req.session.uploadedImages || [];
+
+        // Calculate Display Name
+        let displayName = req.session.user.fullName || req.session.user.username;
+        if (req.session.user.role === 'super_admin') displayName = 'Super Admin';
+        else if (req.session.user.role === 'admin') displayName = 'Admin';
+        else if (req.session.user.role === 'rep_admin') displayName = 'Representative Admin';
+
+        res.render('admin/dashboard', {
+            user: req.session.user,
+            displayName,
+            page: 'executive_committee',
+            section: 'executive_committee',
+            eventType: 'executive_committee', // Fixes selection screen issue
+            uploadedSessionImages,
+            events: committee, // Renamed to events to match view expectation
+            totalMembers,
+            pendingApproval,
+            totalCollections,
+            uploadedSessionEvents: []
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.redirect('/admin/dashboard');
+    }
+});
+
 // Create Event Action
 router.post('/create-event', ensureAuthenticated, (req, res) => {
     multiUpload(req, res, async (err) => {
@@ -429,6 +597,8 @@ router.post('/create-event', ensureAuthenticated, (req, res) => {
             if (t === 'reunion_gallery') return '/admin/reunion-gallery';
             if (t === 'alumni_events') return '/admin/alumni-events';
             if (t === 'alumni_directory') return '/admin/alumni-directory';
+            if (t === 'business_directory') return '/admin/business-directory';
+            if (t === 'executive_committee') return '/admin/executive-committee';
             return `/admin/nsmosa-events?type=${t}`;
         };
 
@@ -440,27 +610,47 @@ router.post('/create-event', ensureAuthenticated, (req, res) => {
         const { eventName, eventYear, eventType, location, timing, eventDate, description, batch, profession } = req.body;
         const files = req.files;
 
-        if (!files || files.length === 0) {
+        if ((!files || files.length === 0) && eventType !== 'executive_committee') {
             req.flash('error_msg', 'Please upload at least one image');
             return res.redirect(getRedirect(eventType));
         }
 
         try {
             const createdItems = [];
-            for (const file of files) {
-                const imageUrl = `/uploads/${file.filename}`;
+
+            if (files && files.length > 0) {
+                for (const file of files) {
+                    const imageUrl = `/uploads/${file.filename}`;
+                    const newContent = await Content.create({
+                        title: eventName,
+                        year: eventYear || null,
+                        section: eventType,
+                        imageUrl: imageUrl,
+                        location: location || null,
+                        timing: timing || null,
+                        eventDate: eventDate || null,
+                        description: description || `Event: ${eventName}${eventYear ? ', Year: ' + eventYear : ''}`,
+                        batch: batch || null,
+                        profession: profession || null,
+                        status: 'approved',
+                        createdBy: req.session.user.id
+                    });
+                    createdItems.push(newContent);
+                }
+            } else if (eventType === 'executive_committee') {
+                // Handle creation without image
                 const newContent = await Content.create({
                     title: eventName,
                     year: eventYear || null,
                     section: eventType,
-                    imageUrl: imageUrl,
+                    imageUrl: null,
                     location: location || null,
                     timing: timing || null,
                     eventDate: eventDate || null,
-                    description: description || `Event: ${eventName}${eventYear ? ', Year: ' + eventYear : ''}`,
+                    description: description || `Member: ${eventName}`,
                     batch: batch || null,
                     profession: profession || null,
-                    status: 'approved', // Auto approve for simplicity or based on role
+                    status: 'approved',
                     createdBy: req.session.user.id
                 });
                 createdItems.push(newContent);
@@ -475,8 +665,8 @@ router.post('/create-event', ensureAuthenticated, (req, res) => {
                 title: eventName,
                 year: eventYear,
                 type: eventType,
-                coverImage: `/uploads/${files[0].filename}`,
-                count: files.length
+                coverImage: (files && files.length > 0) ? `/uploads/${files[0].filename}` : null,
+                count: (files && files.length > 0) ? files.length : 1
             });
 
             req.flash('success_msg', 'Event created and images uploaded successfully!');
@@ -497,6 +687,7 @@ router.post('/delete-event', ensureAuthenticated, ensureRole(['admin', 'super_ad
         if (s === 'photo_gallery') return '/admin/photo-gallery';
         if (s === 'reunion_gallery') return '/admin/reunion-gallery';
         if (s === 'alumni_events') return '/admin/alumni-events';
+        if (s === 'business_directory') return '/admin/business-directory';
         return `/admin/nsmosa-events?type=${s}`;
     };
     const redirectUrl = getRedirectUrl(section);
@@ -556,6 +747,7 @@ router.post('/update-event', ensureAuthenticated, ensureRole(['admin', 'super_ad
             if (s === 'photo_gallery') return '/admin/photo-gallery';
             if (s === 'reunion_gallery') return '/admin/reunion-gallery';
             if (s === 'alumni_events') return '/admin/alumni-events';
+            if (s === 'business_directory') return '/admin/business-directory';
             return `/admin/nsmosa-events?type=${s}`;
         };
         res.redirect(getRedirectUrl(section));
@@ -566,6 +758,7 @@ router.post('/update-event', ensureAuthenticated, ensureRole(['admin', 'super_ad
             if (s === 'photo_gallery') return '/admin/photo-gallery';
             if (s === 'reunion_gallery') return '/admin/reunion-gallery';
             if (s === 'alumni_events') return '/admin/alumni-events';
+            if (s === 'business_directory') return '/admin/business-directory';
             return `/admin/nsmosa-events?type=${s}`;
         };
         res.redirect(getRedirectUrl(section));

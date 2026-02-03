@@ -29,155 +29,91 @@
             <!-- Directory Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-                <!-- Business 1 -->
-                <div
-                    class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-2xl transition-all duration-300 group border border-gray-100 flex flex-col">
-                    <div class="h-48 bg-gray-200 relative overflow-hidden">
-                        <!-- Placeholder Cover -->
-                        <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-                            alt="TechNova Solutions"
-                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <% if (businesses && businesses.length> 0) { %>
+                    <% businesses.forEach(business=> { %>
                         <div
-                            class="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-xs font-bold text-[#0A2040] shadow-sm uppercase tracking-wide">
-                            Technology</div>
-                    </div>
-                    <div class="p-6 flex flex-col flex-grow">
-                        <div class="flex items-start justify-between mb-4">
-                            <div>
-                                <h3
-                                    class="text-xl font-bold text-[#0A2040] mb-1 group-hover:text-blue-700 transition-colors">
-                                    TechNova Solutions</h3>
-                                <p class="text-sm text-gray-500">Founded by <span
-                                        class="font-semibold text-gray-700">Rajesh Verma</span> (Class of 2005)</p>
+                            class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-2xl transition-all duration-300 group border border-gray-100 flex flex-col">
+                            <div class="h-48 bg-gray-200 relative overflow-hidden">
+                                <% if (business.imageUrl) { %>
+                                    <img src="<%= business.imageUrl %>" alt="<%= business.title %>"
+                                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                    <% } else { %>
+                                        <div
+                                            class="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
+                                            <svg class="w-16 h-16" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                            </svg>
+                                        </div>
+                                        <% } %>
+                                            <% if (business.profession) { %>
+                                                <div
+                                                    class="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-xs font-bold text-[#0A2040] shadow-sm uppercase tracking-wide">
+                                                    <%= business.profession %>
+                                                </div>
+                                                <% } %>
+                            </div>
+                            <div class="p-6 flex flex-col flex-grow">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div>
+                                        <h3
+                                            class="text-xl font-bold text-[#0A2040] mb-1 group-hover:text-blue-700 transition-colors">
+                                            <%= business.title %>
+                                        </h3>
+                                        <% if (business.profession) { %>
+                                            <!-- Using profession for category/industry as per admin -->
+                                            <!-- <p class="text-sm text-gray-500">Industry: <span class="font-semibold text-gray-700"><%= business.profession %></span></p> -->
+                                            <% } %>
+                                    </div>
+                                </div>
+                                <% if (business.description) { %>
+                                    <p class="text-gray-600 text-sm mb-6 flex-grow line-clamp-3">
+                                        <%= business.description %>
+                                    </p>
+                                    <% } %>
+
+                                        <% if (business.location) { %>
+                                            <div class="flex items-center text-xs text-gray-500 mb-6">
+                                                <svg class="w-4 h-4 mr-1 text-[#0A2040]" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                </svg>
+                                                <%= business.location %>
+                                            </div>
+                                            <% } %>
+
+                                                <div class="grid grid-cols-2 gap-3 mt-auto">
+                                                    <button
+                                                        class="px-4 py-2 bg-gray-50 text-[#0A2040] text-sm font-semibold rounded-lg hover:bg-gray-100 transition-colors border border-gray-200">
+                                                        View Details
+                                                    </button>
+                                                    <a href="/contact"
+                                                        class="flex items-center justify-center px-4 py-2 bg-[#0A2040] text-white text-sm font-semibold rounded-lg hover:bg-blue-900 transition-colors shadow-md">
+                                                        Contact
+                                                    </a>
+                                                </div>
                             </div>
                         </div>
-                        <p class="text-gray-600 text-sm mb-6 flex-grow line-clamp-3">
-                            Leading provider of custom software development and cloud migration services for enterprise
-                            clients.
-                        </p>
-
-                        <div class="flex items-center text-xs text-gray-500 mb-6">
-                            <svg class="w-4 h-4 mr-1 text-[#0A2040]" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            Hyderabad, India
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-3 mt-auto">
-                            <button
-                                class="px-4 py-2 bg-gray-50 text-[#0A2040] text-sm font-semibold rounded-lg hover:bg-gray-100 transition-colors border border-gray-200">
-                                View Details
-                            </button>
-                            <button
-                                class="px-4 py-2 bg-[#0A2040] text-white text-sm font-semibold rounded-lg hover:bg-blue-900 transition-colors shadow-md">
-                                Contact
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Business 2 -->
-                <div
-                    class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-2xl transition-all duration-300 group border border-gray-100 flex flex-col">
-                    <div class="h-48 bg-gray-200 relative overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1556740758-90de374c12ad?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-                            alt="GreenLeaf Organics"
-                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div
-                            class="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-xs font-bold text-green-700 shadow-sm uppercase tracking-wide">
-                            Retail</div>
-                    </div>
-                    <div class="p-6 flex flex-col flex-grow">
-                        <div class="flex items-start justify-between mb-4">
-                            <div>
-                                <h3
-                                    class="text-xl font-bold text-[#0A2040] mb-1 group-hover:text-blue-700 transition-colors">
-                                    GreenLeaf Organics</h3>
-                                <p class="text-sm text-gray-500">Founded by <span
-                                        class="font-semibold text-gray-700">Sneha Reddy</span> (Class of 2011)</p>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 text-sm mb-6 flex-grow line-clamp-3">
-                            A chain of organic grocery stores promoting sustainable living and farm-to-table produce.
-                        </p>
-
-                        <div class="flex items-center text-xs text-gray-500 mb-6">
-                            <svg class="w-4 h-4 mr-1 text-[#0A2040]" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            Bangalore, India
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-3 mt-auto">
-                            <button
-                                class="px-4 py-2 bg-gray-50 text-[#0A2040] text-sm font-semibold rounded-lg hover:bg-gray-100 transition-colors border border-gray-200">
-                                View Details
-                            </button>
-                            <button
-                                class="px-4 py-2 bg-[#0A2040] text-white text-sm font-semibold rounded-lg hover:bg-blue-900 transition-colors shadow-md">
-                                Visit Store
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Business 3 -->
-                <div
-                    class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-2xl transition-all duration-300 group border border-gray-100 flex flex-col">
-                    <div class="h-48 bg-gray-200 relative overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-                            alt="Apex Consulting Group"
-                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div
-                            class="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-xs font-bold text-blue-800 shadow-sm uppercase tracking-wide">
-                            Consulting</div>
-                    </div>
-                    <div class="p-6 flex flex-col flex-grow">
-                        <div class="flex items-start justify-between mb-4">
-                            <div>
-                                <h3
-                                    class="text-xl font-bold text-[#0A2040] mb-1 group-hover:text-blue-700 transition-colors">
-                                    Apex Consulting Group</h3>
-                                <p class="text-sm text-gray-500">Founded by <span
-                                        class="font-semibold text-gray-700">Vikram Singh</span> (Class of 1998)</p>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 text-sm mb-6 flex-grow line-clamp-3">
-                            Strategic management consulting for manufacturing and logistics sectors with a focus on
-                            operational efficiency.
-                        </p>
-
-                        <div class="flex items-center text-xs text-gray-500 mb-6">
-                            <svg class="w-4 h-4 mr-1 text-[#0A2040]" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            Mumbai, India
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-3 mt-auto">
-                            <button
-                                class="px-4 py-2 bg-gray-50 text-[#0A2040] text-sm font-semibold rounded-lg hover:bg-gray-100 transition-colors border border-gray-200">
-                                View Details
-                            </button>
-                            <button
-                                class="px-4 py-2 bg-[#0A2040] text-white text-sm font-semibold rounded-lg hover:bg-blue-900 transition-colors shadow-md">
-                                Contact
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                        <% }) %>
+                            <% } else { %>
+                                <div class="col-span-full text-center py-12">
+                                    <div
+                                        class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 mb-4">
+                                        <svg class="w-8 h-8 text-[#0A2040]" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">No businesses listed yet</h3>
+                                    <p class="text-gray-500">Check back soon for alumni businesses!</p>
+                                </div>
+                                <% } %>
 
             </div>
         </div>
