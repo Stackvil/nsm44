@@ -20,6 +20,7 @@ if (dbConfig.storage) {
         dbConfig.password,
         {
             host: dbConfig.host,
+            port: process.env.DB_PORT || 5432,
             dialect: dbConfig.dialect,
             logging: false,
             dialectOptions: dbConfig.dialectOptions

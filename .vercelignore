@@ -1,0 +1,5 @@
+# Vercel Ignore
+node_modules
+public/images
+.git
+.env
